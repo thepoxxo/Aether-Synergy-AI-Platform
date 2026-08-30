@@ -19,13 +19,23 @@ import {
   Download,
   Eye,
   Layers,
-  Cpu
+  Cpu,
+  Monitor,
+  Smartphone,
+  Square,
+  Clock,
+  Zap,
+  Gauge,
+  CheckCircle2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 
 export type AIVideoEngine = 'sora' | 'runway' | 'kling' | 'luma' | 'midjourney';
 export type CameraMove = 'orbit' | 'fpv' | 'zoom' | 'whippan' | 'dutch' | 'tracking';
+export type VideoAspectRatio = '9:16' | '16:9' | '1:1' | '4:5';
+export type VideoQuality = '4K' | '1080p' | '720p' | 'prores';
+export type VideoDuration = '5s' | '15s' | '30s' | '60s';
 
 export const AdGenAI: React.FC = () => {
   const { consumeCredit } = useAuth();
@@ -33,14 +43,16 @@ export const AdGenAI: React.FC = () => {
 
   // Generation Configuration
   const [selectedEngine, setSelectedEngine] = useState<AIVideoEngine>('sora');
-  const [cameraMove, setCameraMove] = useState<CameraMove>('orbit');
+  const [cameraMove, setCameraMove] = useState<CameraMove>('zoom');
   const [prompt, setPrompt] = useState(
     'Hyper-realistic cinematic 4K commercial: A futuristic techwear jacket with glowing amber seams in a rainy Tokyo street at night. Neon reflections on wet asphalt, volumetric fog, dynamic camera whip pan around the product with cinematic slow motion.'
   );
   const [hookText, setHookText] = useState('DON\'T SLEEP ON THIS DROP 🔥');
-  const [platform, setPlatform] = useState('TikTok / Reels (9:16)');
-  const [quality, setQuality] = useState('4K Ultra HD (60fps)');
-  const [length, setLength] = useState('15s');
+  
+  // 📐 Formato, Calidad y Tiempo Interactivos
+  const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('9:16');
+  const [quality, setQuality] = useState<VideoQuality>('4K');
+  const [duration, setDuration] = useState<VideoDuration>('15s');
   const [musicTrack, setMusicTrack] = useState('Trap Neón 140 BPM');
   const [videoSpeed, setVideoSpeed] = useState<number>(1.0);
   const [subtitleStyle, setSubtitleStyle] = useState<'neon' | 'gold' | 'typewriter'>('neon');
@@ -132,9 +144,9 @@ export const AdGenAI: React.FC = () => {
   ];
 
   const cameraMoves = [
+    { id: 'zoom' as CameraMove, label: 'Crash Zoom (Gancho Viral)', icon: Sliders },
     { id: 'orbit' as CameraMove, label: '360° Drone Orbit', icon: Camera },
     { id: 'fpv' as CameraMove, label: 'FPV Fly-Through', icon: Film },
-    { id: 'zoom' as CameraMove, label: 'Dynamic Crash Zoom', icon: Sliders },
     { id: 'whippan' as CameraMove, label: 'Slow-Mo Whip Pan', icon: RefreshCw },
     { id: 'dutch' as CameraMove, label: 'Dutch Angle Tilt', icon: Camera },
     { id: 'tracking' as CameraMove, label: 'Runway Dolly Track', icon: Film }
@@ -147,6 +159,21 @@ export const AdGenAI: React.FC = () => {
       setIsGenerating(false);
       setIsPlaying(true);
     }, 2200);
+  };
+
+  // Helper for dynamic player aspect ratio class
+  const getPlayerAspectClass = () => {
+    switch (aspectRatio) {
+      case '16:9':
+        return 'aspect-video max-w-full';
+      case '1:1':
+        return 'aspect-square max-w-[360px]';
+      case '4:5':
+        return 'aspect-[4/5] max-w-[340px]';
+      case '9:16':
+      default:
+        return 'aspect-[9/16] max-w-[320px]';
+    }
   };
 
   return (
@@ -167,7 +194,7 @@ export const AdGenAI: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Generación y edición de video publicitario cinemático con múltiples IAs y análisis de retención viral
+              Generación y edición de video publicitario cinemático con formato, calidad y duración personalizables
             </p>
           </div>
         </div>
@@ -210,7 +237,7 @@ export const AdGenAI: React.FC = () => {
               {/* AI Engine Selection Grid */}
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
-                  Seleccionar Motor de Inteligencia Artificial:
+                  1. Seleccionar Motor de Inteligencia Artificial:
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {engines.map((eng) => (
@@ -233,10 +260,142 @@ export const AdGenAI: React.FC = () => {
                 </div>
               </div>
 
+              {/* 📐 2. FORMATO, CALIDAD Y TIEMPO DEL VIDEO (SUPER INTERACTIVOS) */}
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-gold/40 shadow-md space-y-3.5">
+                <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
+                  <span className="font-tech font-bold text-xs uppercase text-cyber-gold flex items-center gap-1.5">
+                    <Sliders className="w-4 h-4" /> 2. CONFIGURACIÓN DEL VIDEO (FORMATO, CALIDAD Y DURACIÓN)
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                    ADAPTATIVO EN VIVO
+                  </span>
+                </div>
+
+                {/* Formato / Proporción */}
+                <div>
+                  <label className="text-[11px] font-semibold text-slate-300 block mb-1.5 flex items-center justify-between">
+                    <span>Proporción / Formato de Pantalla:</span>
+                    <span className="text-cyber-gold font-mono text-[10px] font-bold">
+                      {aspectRatio === '9:16' ? 'TikTok / Reels / Shorts' : aspectRatio === '16:9' ? 'YouTube / TV Horizontal' : aspectRatio === '1:1' ? 'Instagram Feed Cuadrado' : 'Instagram Portrait'}
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { id: '9:16' as VideoAspectRatio, label: '9:16 Vertical', icon: Smartphone },
+                      { id: '16:9' as VideoAspectRatio, label: '16:9 Horizontal', icon: Monitor },
+                      { id: '1:1' as VideoAspectRatio, label: '1:1 Cuadrado', icon: Square },
+                      { id: '4:5' as VideoAspectRatio, label: '4:5 Retrato', icon: Film }
+                    ].map((fmt) => {
+                      const Icon = fmt.icon;
+                      const isSel = aspectRatio === fmt.id;
+                      return (
+                        <button
+                          key={fmt.id}
+                          type="button"
+                          onClick={() => setAspectRatio(fmt.id)}
+                          className={`p-2 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all ${
+                            isSel
+                              ? 'bg-cyber-gold text-black border-cyber-gold shadow-gold-glow'
+                              : 'bg-cyber-900 border-cyber-800 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span className="text-[10px] font-mono">{fmt.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Calidad de Render y Duración */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  {/* Calidad */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-300 block mb-1.5">
+                      Calidad de Render:
+                    </label>
+                    <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono font-bold">
+                      {[
+                        { id: '4K' as VideoQuality, label: '4K HDR (60fps)' },
+                        { id: '1080p' as VideoQuality, label: '1080p Full HD' },
+                        { id: '720p' as VideoQuality, label: '720p Rápido' },
+                        { id: 'prores' as VideoQuality, label: 'ProRes 422 Cine' }
+                      ].map((q) => (
+                        <button
+                          key={q.id}
+                          type="button"
+                          onClick={() => setQuality(q.id)}
+                          className={`py-1.5 px-2 rounded-lg border text-center transition-all ${
+                            quality === q.id
+                              ? 'bg-cyan-400 text-black border-cyan-400 shadow-cyan-glow'
+                              : 'bg-cyber-900 border-cyber-800 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {q.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Duración */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-300 block mb-1.5">
+                      Tiempo / Duración:
+                    </label>
+                    <div className="grid grid-cols-4 gap-1.5 text-[10px] font-mono font-bold">
+                      {[
+                        { id: '5s' as VideoDuration, label: '5s' },
+                        { id: '15s' as VideoDuration, label: '15s' },
+                        { id: '30s' as VideoDuration, label: '30s' },
+                        { id: '60s' as VideoDuration, label: '60s' }
+                      ].map((d) => (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => setDuration(d.id)}
+                          className={`py-1.5 rounded-lg border text-center transition-all ${
+                            duration === d.id
+                              ? 'bg-purple-500 text-white border-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.5)]'
+                              : 'bg-cyber-900 border-cyber-800 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {d.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Banda Sonora / Beat IA */}
+                <div className="pt-1">
+                  <label className="text-[11px] font-semibold text-slate-300 block mb-1.5 flex items-center justify-between">
+                    <span>Banda Sonora / Beat Comercial con IA:</span>
+                    <button
+                      type="button"
+                      onClick={handleToggleSynth}
+                      className="text-purple-300 hover:underline text-[10px] font-mono flex items-center gap-1"
+                    >
+                      <Volume2 className="w-3 h-3" /> {isSynthPlaying ? 'Detener' : 'Probar Sintetizador en Vivo'}
+                    </button>
+                  </label>
+                  <select
+                    value={musicTrack}
+                    onChange={(e) => setMusicTrack(e.target.value)}
+                    className="w-full bg-cyber-900 border border-cyber-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyber-gold cursor-pointer"
+                  >
+                    <option value="Trap Neón 140 BPM">🔥 Trap Neón 140 BPM (Sub-bass 808 pesado para Moda)</option>
+                    <option value="Cyber Synthwave 120 BPM">⚡ Cyber Synthwave 120 BPM (Arpegios analógicos retro)</option>
+                    <option value="Lo-Fi Chill 85 BPM">☕ Lo-Fi Chill Hop 85 BPM (Ambiente relajado e interiores)</option>
+                    <option value="Cinematic Epic 100 BPM">🎬 Cinematic Epic Tech 100 BPM (Cuerdas y percusión pesada)</option>
+                    <option value="Phonk Drift 135 BPM">🏎️ Phonk Drift Bass 135 BPM (Cowbell distorsionado viral)</option>
+                  </select>
+                </div>
+              </div>
+
               {/* Camera Movement Selection */}
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
-                  Movimiento de Cámara Cinemático:
+                  3. Movimiento de Cámara Cinemático:
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {cameraMoves.map((cam) => {
@@ -262,29 +421,57 @@ export const AdGenAI: React.FC = () => {
               {/* Prompt Textarea */}
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5 mb-2">
-                  <Wand2 className="w-3.5 h-3.5 text-cyber-gold" /> Prompt de Dirección de Arte:
+                  <Wand2 className="w-3.5 h-3.5 text-cyber-gold" /> 4. Prompt de Dirección de Arte:
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   className="w-full bg-cyber-950 border border-cyber-700 rounded-2xl p-3.5 text-xs text-slate-200 focus:outline-none focus:border-cyber-gold transition-colors leading-relaxed font-sans"
                 />
               </div>
 
-              {/* Specs Bar */}
-              <div className="grid grid-cols-3 gap-2 text-center text-xs pt-1">
-                <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
-                  <span className="text-slate-500 block text-[10px]">Formato de Salida</span>
-                  <span className="font-mono font-bold text-cyber-gold">9:16 Vertical</span>
+              {/* ⚡ 5. ANALIZADOR PREDICTIVO DE RETENCIÓN IA (DE 3 SEGUNDOS) - MUY VISIBLE */}
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-emerald-500/40 shadow-md space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                      <Gauge className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-tech font-bold text-xs uppercase text-white block">
+                        ANALIZADOR PREDICTIVO DE RETENCIÓN (PRIMEROS 3 SEGUNDOS)
+                      </span>
+                      <span className="text-[10px] text-slate-400">Algoritmo predictivo entrenado con 500k videos virales</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-lg font-tech font-extrabold text-emerald-400 block leading-tight">96%</span>
+                    <span className="text-[9px] font-mono text-emerald-300 uppercase font-bold">Gancho Explosivo</span>
+                  </div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
-                  <span className="text-slate-500 block text-[10px]">Resolución / FPS</span>
-                  <span className="font-mono font-bold text-white">4K 60 FPS HDR</span>
+
+                {/* Visual Retention Curve */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-mono text-slate-400">
+                    <span>0s (100%)</span>
+                    <span>1s (98%)</span>
+                    <span>2s (97%)</span>
+                    <span className="text-emerald-400 font-bold">3s (96% Retención)</span>
+                    <span>15s (89%)</span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-cyber-900 overflow-hidden flex border border-cyber-800">
+                    <div className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 w-[96%]" />
+                    <div className="bg-rose-500 w-[4%]" />
+                  </div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
-                  <span className="text-slate-500 block text-[10px]">Duración Máxima</span>
-                  <span className="font-mono font-bold text-white">15 Segundos</span>
+
+                <div className="p-2.5 rounded-xl bg-cyber-900 border border-cyber-800 text-[11px] text-slate-300 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>
+                    <strong>Diagnóstico IA:</strong> Movimiento <em>Crash Zoom</em> y subtítulo neón activados en el segundo 0. Cero riesgo de abandono en feed.
+                  </span>
                 </div>
               </div>
 
@@ -296,45 +483,32 @@ export const AdGenAI: React.FC = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>RENDERIZANDO CON {selectedEngine.toUpperCase()} EN GPU H100...</span>
+                    <span>RENDERIZANDO EN {quality} ({duration}) CON {selectedEngine.toUpperCase()}...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-5 h-5" />
-                    <span>GENERAR ANUNCIO DE VIDEO CINEMÁTICO</span>
+                    <Zap className="w-5 h-5" />
+                    <span>GENERAR ANUNCIO {aspectRatio} • {quality} ({duration})</span>
                   </>
                 )}
               </button>
             </div>
           )}
 
-          {/* TAB 2: MULTI-TRACK TIMELINE EDITOR */}
+          {/* TAB 2: TIMELINE EDITOR */}
           {activeTab === 'timeline' && (
             <div className="bg-cyber-900 p-5 rounded-3xl border border-cyber-800 shadow-cyber-card space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-cyber-800">
                 <h3 className="font-tech font-bold text-base text-white flex items-center gap-2">
                   <Scissors className="w-4 h-4 text-cyber-gold" /> Editor de Línea de Tiempo Multipista
                 </h3>
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="text-slate-400">Velocidad:</span>
-                  {[0.5, 1.0, 2.0].map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setVideoSpeed(s)}
-                      className={`px-2 py-0.5 rounded-md font-mono ${
-                        videoSpeed === s ? 'bg-cyber-gold text-black font-bold' : 'bg-cyber-950 text-slate-400'
-                      }`}
-                    >
-                      {s}x
-                    </button>
-                  ))}
-                </div>
+                <span className="text-slate-400 font-mono text-xs">Duración: {duration}</span>
               </div>
 
-              {/* Hook Text Input */}
-              <div>
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1">
-                  Texto Hook Viral en Pantalla (Subtítulo Dinámico):
+              {/* Subtitle Hook Input */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5">
+                  <Type className="w-3.5 h-3.5 text-cyber-gold" /> Texto de Gancho en Pantalla (Hook Subtítulo):
                 </label>
                 <input
                   type="text"
@@ -350,9 +524,9 @@ export const AdGenAI: React.FC = () => {
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-[11px] text-slate-400">
                     <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
-                      <Film className="w-3.5 h-3.5" /> Pista 1: Video Clip 4K
+                      <Film className="w-3.5 h-3.5" /> Pista 1: Video Clip ({aspectRatio})
                     </span>
-                    <span className="font-mono">00:00 - 00:15</span>
+                    <span className="font-mono">00:00 - 00:{duration}</span>
                   </div>
                   <div className="relative h-10 rounded-xl bg-cyan-950/60 border border-cyan-500/40 overflow-hidden flex items-center px-3">
                     <div
@@ -360,7 +534,7 @@ export const AdGenAI: React.FC = () => {
                       style={{ left: `${(timelinePlayhead / 15) * 100}%` }}
                     />
                     <span className="text-[10px] font-mono text-cyan-300 font-bold">
-                      Clip_Tokyo_Techwear_Sora.mp4 ({videoSpeed}x)
+                      Clip_Tokyo_Techwear_{selectedEngine}.mp4 ({quality})
                     </span>
                   </div>
                 </div>
@@ -375,7 +549,7 @@ export const AdGenAI: React.FC = () => {
                   </div>
                   <div className="relative h-8 rounded-xl bg-purple-950/60 border border-purple-500/40 overflow-hidden flex items-center px-3">
                     <span className="text-[10px] font-mono text-purple-300">
-                      ♫ Phonk_Drift_Bass_Drop.wav (Sidechain Ducking Activo)
+                      ♫ {musicTrack} (Sidechain Ducking Activo)
                     </span>
                   </div>
                 </div>
@@ -390,7 +564,7 @@ export const AdGenAI: React.FC = () => {
                   </div>
                   <div className="relative h-8 rounded-xl bg-amber-950/50 border border-cyber-gold/40 overflow-hidden flex items-center px-3">
                     <span className="text-[10px] font-mono text-cyber-gold font-bold">
-                      [00:00 - 00:04] "{hookText}"
+                      [00:00 - 00:03] "{hookText}"
                     </span>
                   </div>
                 </div>
@@ -411,7 +585,7 @@ export const AdGenAI: React.FC = () => {
                   <span>00:00</span>
                   <span>00:05</span>
                   <span>00:10</span>
-                  <span>00:15</span>
+                  <span>00:{duration}</span>
                 </div>
               </div>
             </div>
@@ -449,20 +623,12 @@ export const AdGenAI: React.FC = () => {
                 </div>
               </div>
 
-              {/* Trending Hashtags & 3s Retention Analyzer */}
+              {/* Trending Hashtags */}
               <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-tech font-bold text-xs text-slate-300 uppercase block">
-                    ⚡ Retención Primeros 3 Segundos:
-                  </span>
-                  <span className="text-emerald-400 font-mono font-bold text-xs">96% Gancho Viral (Retención Alta)</span>
-                </div>
-                {/* Visual Retention Curve */}
-                <div className="h-2 rounded-full bg-cyber-900 overflow-hidden flex">
-                  <div className="bg-emerald-400 w-[96%]" />
-                  <div className="bg-rose-500 w-[4%]" />
-                </div>
-                <div className="flex flex-wrap gap-1.5 font-mono text-[11px] pt-1">
+                <span className="font-tech font-bold text-xs text-slate-300 uppercase block">
+                  Hashtags de Alto Tráfico para Publicar:
+                </span>
+                <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
                   {['#techwear2026', '#3ddesign', '#streetwearfashion', '#cyberpunkstyle', '#aivideo', '#viralreels', '#aethersynergy'].map((tag) => (
                     <span key={tag} className="px-2 py-0.5 rounded bg-cyber-900 border border-cyber-700 text-cyan-300">
                       {tag}
@@ -474,9 +640,9 @@ export const AdGenAI: React.FC = () => {
           )}
         </div>
 
-        {/* Right Column: 9:16 Vertical Video Player Stage */}
+        {/* Right Column: Dynamic Aspect Ratio Video Player Stage */}
         <div className="lg:col-span-5 flex flex-col items-center">
-          <div className="relative w-full max-w-[320px] aspect-[9/16] rounded-3xl bg-cyber-950 border-2 border-cyber-gold/50 shadow-gold-glow-lg overflow-hidden flex flex-col justify-between p-4 group">
+          <div className={`relative w-full ${getPlayerAspectClass()} rounded-3xl bg-cyber-950 border-2 border-cyber-gold/50 shadow-gold-glow-lg overflow-hidden flex flex-col justify-between p-4 group transition-all duration-500`}>
             {/* Video Background Simulation */}
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
@@ -494,9 +660,10 @@ export const AdGenAI: React.FC = () => {
                 <span className="text-cyber-gold font-tech font-bold text-xs">
                   {selectedEngine.toUpperCase()}
                 </span>
+                <span className="text-slate-400 text-[10px] font-mono font-bold">({aspectRatio})</span>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/70 text-emerald-400 border border-emerald-500/40">
-                4K HDR 60fps
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/70 text-emerald-400 border border-emerald-500/40 font-bold">
+                {quality} • {duration}
               </span>
             </div>
 
@@ -539,10 +706,10 @@ export const AdGenAI: React.FC = () => {
 
               <div className="flex gap-2">
                 <button
-                  onClick={() => alert('Descargando Video 4K Master en formato .MP4')}
+                  onClick={() => alert(`Descargando Video ${quality} Master en formato .MP4 (${aspectRatio}, ${duration})`)}
                   className="flex-1 py-2.5 rounded-xl bg-cyber-gold text-black font-tech font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1.5"
                 >
-                  <Download className="w-3.5 h-3.5" /> Descargar 4K
+                  <Download className="w-3.5 h-3.5" /> Descargar {quality}
                 </button>
                 <button
                   onClick={() => alert('Enlace de video copiado al portapapeles para compartir con tu equipo.')}
@@ -552,11 +719,11 @@ export const AdGenAI: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between text-[10px] text-slate-300 pt-1">
-                <span className="flex items-center gap-1">
-                  <Volume2 className="w-3 h-3 text-cyber-gold" /> {musicTrack}
+              <div className="flex items-center justify-between text-[10px] text-slate-300 pt-1 font-mono">
+                <span className="flex items-center gap-1 truncate max-w-[180px]">
+                  <Volume2 className="w-3 h-3 text-cyber-gold shrink-0" /> {musicTrack}
                 </span>
-                <span>00:{length}</span>
+                <span className="font-bold text-cyber-gold">00:{duration}</span>
               </div>
             </div>
           </div>
