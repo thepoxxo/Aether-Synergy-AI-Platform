@@ -513,7 +513,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Generador de Videos Cinemáticos 360° en 4K (Turntable MP4 a 60 FPS)',
     desc: 'Renderizado de video cinemático con rotación 360°, profundidad de campo bokeh e iluminación de estudio listo para TikTok y Reels.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'multi_tenant_agency_workspaces',
@@ -521,7 +521,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Espacios de Trabajo Multi-Marca para Agencias y Equipos con Roles',
     desc: 'Creación de sub-marcas independientes con gestión de roles de equipo (Director Creativo, Patronista, Comprador) y enlaces de revisión con contraseña.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'ai_capsule_collection_generator',
@@ -529,7 +529,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Generador de Colecciones Cápsula Completas de 6 Prendas con 1 Clic',
     desc: 'Síntesis paralela de conjunto coordinado (Chaqueta, Hoodie, Pantalón Cargo, Sneaker, Camiseta y Beanie) con la misma paleta y estilo visual.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'live_factory_material_stock_api',
@@ -537,7 +537,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Conexión en Tiempo Real con Stock de Metraje Textil en Fábricas',
     desc: 'Consulta en vivo de metros lineales de algodón 460 GSM y nylon ripstop disponibles en almacenes de Portugal, Turquía y Colombia.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'seam_stress_tensile_heatmap',
@@ -545,7 +545,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Simulador de Tensión de Hilos & Mapa de Calor de Resistencia Textil',
     desc: 'Detección de puntos de tensión y riesgo de desgarro en costuras durante el movimiento articular del avatar.',
-    isInitialDone: false
+    isInitialDone: true
   }
 ];
 

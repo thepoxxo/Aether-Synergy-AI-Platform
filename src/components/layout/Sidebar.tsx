@@ -26,7 +26,9 @@ import {
   Radio,
   Scissors,
   Camera,
-  TrendingUp
+  TrendingUp,
+  Film,
+  Building2
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -59,8 +61,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'aurora3d', nameKey: 'sidebar.aurora3d', icon: Layers, requiredRole: 'free', badge: '3D' },
     { id: 'scanner3d', nameKey: 'sidebar.scanner3d', icon: Scan, requiredRole: 'pro', badge: 'PRO' },
     { id: 'adgen', nameKey: 'sidebar.adgen', icon: Video, requiredRole: 'pro', badge: 'PRO' },
+    { id: 'turntable', nameKey: 'Video Cinemático 360°', icon: Film, requiredRole: 'pro', badge: 'CINEMA', isLiteralLabel: true },
     { id: 'lookbook', nameKey: 'Lookbook IA Modelos', icon: Camera, requiredRole: 'pro', badge: 'PHOTO', isLiteralLabel: true },
     { id: 'trendforecast', nameKey: 'Tendencias & Ventas IA', icon: TrendingUp, requiredRole: 'agency', badge: 'WGSN', isLiteralLabel: true },
+    { id: 'workspaces', nameKey: 'Espacios Multi-Marca', icon: Building2, requiredRole: 'agency', badge: 'TEAMS', isLiteralLabel: true },
     { id: 'clothify', nameKey: 'sidebar.clothify', icon: Shirt, requiredRole: 'pro', badge: 'PRO' },
     { id: 'pattern2d', nameKey: 'Patronaje 2D (DXF)', icon: Scissors, requiredRole: 'pro', badge: 'CAD', isLiteralLabel: true },
     { id: 'runway', nameKey: 'Pasarela en Vivo 3D', icon: Radio, requiredRole: 'pro', badge: 'LIVE', isLiteralLabel: true },

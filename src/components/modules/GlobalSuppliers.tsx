@@ -273,6 +273,7 @@ export const GlobalSuppliers: React.FC = () => {
   const [isFreightModalOpen, setIsFreightModalOpen] = useState(false);
   const [isDPPModalOpen, setIsDPPModalOpen] = useState(false);
   const [isShopifySyncModalOpen, setIsShopifySyncModalOpen] = useState(false);
+  const [isLiveStockModalOpen, setIsLiveStockModalOpen] = useState(false);
   const [destinationCountry, setDestinationCountry] = useState('Estados Unidos (US)');
   const [shippingMethod, setShippingMethod] = useState<'air' | 'sea'>('air');
   const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
@@ -633,6 +634,14 @@ export const GlobalSuppliers: React.FC = () => {
               >
                 <Package className="w-4 h-4" />
                 <span>🛍️ Publicar en Tienda Shopify & WooCommerce (1-Click)</span>
+              </button>
+
+              <button
+                onClick={() => setIsLiveStockModalOpen(true)}
+                className="w-full py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Layers className="w-4 h-4" />
+                <span>🏭 Stock Textil en Fábrica en Vivo (Metraje)</span>
               </button>
 
               <button
@@ -1076,6 +1085,90 @@ export const GlobalSuppliers: React.FC = () => {
               <Package className="w-4 h-4" />
               <span>Publicar en mi Tienda Shopify Ahora (1-Click)</span>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🏭 7. MODAL STOCK TEXTIL EN FÁBRICA EN VIVO */}
+      {isLiveStockModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-2xl bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsLiveStockModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                <Layers className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">STOCK DE METRAJE TEXTIL EN FÁBRICAS (EN VIVO)</h3>
+                <p className="text-xs text-slate-400">Rollos de tela listos para corte y confección inmediata</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 font-mono text-xs max-h-[50vh] overflow-y-auto pr-1">
+              {[
+                {
+                  fab: '🇵🇹 Fábrica Oporto • Portugal',
+                  material: 'Algodón Orgánico 460 GSM GOTS',
+                  meters: '2,850 m disponibles',
+                  rolls: '57 rollos de 50m',
+                  colors: 'Cyber Gold, Negro Azabache, Blanco',
+                  dispatch: 'Despacho en 24-48 hrs'
+                },
+                {
+                  fab: '🇹🇷 Fábrica Bursa • Turquía',
+                  material: 'Nylon Ripstop 3-Capas Hidrofóbico (20k mm)',
+                  meters: '4,200 m disponibles',
+                  rolls: '84 rollos de 50m',
+                  colors: 'Negro Mate, Cyan Reflectivo',
+                  dispatch: 'Despacho en 72 hrs'
+                },
+                {
+                  fab: '🇨🇴 Fábrica Medellín • Colombia',
+                  material: 'Denim Elástico Premium 14 oz',
+                  meters: '1,900 m disponibles',
+                  rolls: '38 rollos de 50m',
+                  colors: 'Indigo Oscuro, Gris Carbón',
+                  dispatch: 'Despacho en 24 hrs'
+                },
+                {
+                  fab: '🇮🇹 Fábrica Biella • Italia',
+                  material: 'Lana Merino Extrafina 280 GSM',
+                  meters: '850 m disponibles',
+                  rolls: '17 rollos de 50m',
+                  colors: 'Camel, Carbón, Marfil',
+                  dispatch: 'Despacho en 4-5 días'
+                }
+              ].map((stock, i) => (
+                <div key={i} className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-tech font-bold text-white text-sm">{stock.fab}</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px]">
+                      {stock.dispatch}
+                    </span>
+                  </div>
+                  <div className="text-slate-300">{stock.material}</div>
+                  <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-cyber-800/80">
+                    <span className="text-cyber-gold font-bold">{stock.meters} ({stock.rolls})</span>
+                    <span>Colores: {stock.colors}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      alert(`¡Apartado de 200m reservado con éxito en ${stock.fab}! Ficha de corte enviada.`);
+                      setIsLiveStockModalOpen(false);
+                    }}
+                    className="w-full mt-2 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500 text-purple-300 font-bold text-xs uppercase transition-colors"
+                  >
+                    Reservar Metraje para Producción Inmediata
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

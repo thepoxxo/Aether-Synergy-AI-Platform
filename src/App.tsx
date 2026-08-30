@@ -30,6 +30,8 @@ import { VirtualRunwayLive } from './components/modules/VirtualRunwayLive';
 import { PatternCutting2D } from './components/modules/PatternCutting2D';
 import { AILookbookStudio } from './components/modules/AILookbookStudio';
 import { TrendForecaster } from './components/modules/TrendForecaster';
+import { AgencyWorkspaces } from './components/modules/AgencyWorkspaces';
+import { CinematicTurntable } from './components/modules/CinematicTurntable';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -100,10 +102,14 @@ const MainLayout: React.FC = () => {
         return <Scanner3D />;
       case 'adgen':
         return <AdGenAI />;
+      case 'turntable':
+        return <CinematicTurntable />;
       case 'lookbook':
         return <AILookbookStudio />;
       case 'trendforecast':
         return <TrendForecaster />;
+      case 'workspaces':
+        return <AgencyWorkspaces />;
       case 'clothify':
         return <ClothifySourcing />;
       case 'pattern2d':

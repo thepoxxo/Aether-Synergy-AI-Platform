@@ -42,7 +42,8 @@ import {
   Glasses,
   Mic,
   MicOff,
-  Send
+  Send,
+  Activity
 } from 'lucide-react';
 
 export type ModelType =
@@ -113,6 +114,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
   // 🌧️ Weather Rain & Hydrophobic Droplets State
   const [isRainActive, setIsRainActive] = useState(false);
   const [isVisionProModalOpen, setIsVisionProModalOpen] = useState(false);
+  const [isSeamStressActive, setIsSeamStressActive] = useState(false);
 
   // ⚡ WebGPU & Adaptive Level of Detail (LOD) State
   const [lodLevel, setLodLevel] = useState<'high' | 'mid' | 'low'>('high');
@@ -612,6 +614,14 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
 
     // Material generator based on Active Shader
     const createMat = (color: THREE.Color, roughness = 0.4, metalness = 0.1) => {
+      if (isSeamStressActive) {
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color('#f43f5e'),
+          roughness: 0.3,
+          metalness: 0.2
+        });
+      }
+
       switch (activeShader) {
         case 'clay':
           return new THREE.MeshStandardMaterial({
@@ -760,7 +770,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
     }
 
     group.position.set(0, 0, 0);
-  }, [type, internalColor, internalAccent, activeShader]);
+  }, [type, internalColor, internalAccent, activeShader, isSeamStressActive]);
 
   // Update Exploded View Factor
   useEffect(() => {
@@ -1060,6 +1070,24 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
         </div>
       )}
 
+      {/* 🪡 Seam Stress Tensile Heatmap HUD */}
+      {isSeamStressActive && (
+        <div className="absolute top-16 left-4 z-30 pointer-events-none p-3.5 rounded-2xl bg-black/85 border border-rose-500/60 backdrop-blur-md text-white font-mono text-xs space-y-1.5 shadow-[0_0_20px_rgba(244,63,94,0.3)] animate-fadeIn">
+          <div className="flex items-center gap-2 text-rose-400 font-bold">
+            <Activity className="w-4 h-4 animate-pulse" />
+            <span>MAPA DE TENSIÓN DE COSTURAS (ISO 13934)</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px]">
+            <span className="w-3 h-3 rounded bg-emerald-500" /> 0-30% Normal
+            <span className="w-3 h-3 rounded bg-amber-500 ml-1" /> 31-70% Elástico
+            <span className="w-3 h-3 rounded bg-rose-500 ml-1" /> 71-100% Tensión Alta
+          </div>
+          <div className="text-[10px] text-slate-300 pt-1 border-t border-white/10">
+            Resistencia a la Tracción: <span className="text-emerald-400 font-bold">420 N/cm² (Óptimo)</span>
+          </div>
+        </div>
+      )}
+
       {/* 🤖 AI Feedback Toast */}
       {aiFeedbackToast && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-purple-950/90 border border-purple-400 text-purple-200 px-4 py-2 rounded-2xl font-mono text-xs shadow-[0_0_20px_rgba(168,85,247,0.5)] animate-bounce flex items-center gap-2">
@@ -1233,6 +1261,19 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             title={isWindActive ? 'Desactivar Simulación de Viento y Físicas de Tela' : 'Activar Físicas de Tela y Viento en Tiempo Real'}
           >
             <Wind className="w-4 h-4" />
+          </button>
+
+          {/* 🪡 Seam Stress Heatmap Toggle */}
+          <button
+            onClick={() => setIsSeamStressActive(!isSeamStressActive)}
+            className={`p-2 rounded-xl border transition-all shadow-md flex items-center gap-1 ${
+              isSeamStressActive
+                ? 'bg-rose-500/20 text-rose-300 border-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.4)] animate-pulse'
+                : 'bg-cyber-950/90 text-slate-400 border-cyber-700 hover:text-white'
+            }`}
+            title={isSeamStressActive ? 'Ocultar Mapa de Tensión de Costuras' : 'Simulador de Tensión de Hilos & Mapa de Calor Textil'}
+          >
+            <Activity className="w-4 h-4" />
           </button>
 
           {/* Eyedropper Button */}
