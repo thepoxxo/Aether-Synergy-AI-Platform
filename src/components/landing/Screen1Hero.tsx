@@ -145,12 +145,14 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
           {/* Center 3D Interactive Canvas with Dynamic Model Swapping */}
           <div className="h-[380px] sm:h-[430px] lg:h-[480px] w-full rounded-2xl overflow-hidden">
             <Model3DCanvas
-              key={currentModel.id}
+              key={`${currentModel.id}-${isTransparentStage}`}
               type={currentModel.id}
               primaryColor="#171E2E"
               accentColor="#E5A93C"
               celShaded={true}
               autoRotate={true}
+              transparentStage={isTransparentStage}
+              initialCamera="front"
             />
           </div>
 

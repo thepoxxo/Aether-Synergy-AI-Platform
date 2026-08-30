@@ -49,6 +49,8 @@ interface Model3DCanvasProps {
   celShaded?: boolean;
   showDecal?: boolean;
   autoRotate?: boolean;
+  transparentStage?: boolean;
+  initialCamera?: CameraPreset;
   onModelLoaded?: (name: string) => void;
 }
 
@@ -60,6 +62,8 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
   celShaded = true,
   showDecal = true,
   autoRotate = true,
+  transparentStage = false,
+  initialCamera = 'front',
   onModelLoaded
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -70,9 +74,9 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [loadedFileName, setLoadedFileName] = useState<string | null>(null);
   const [explodedFactor, setExplodedFactor] = useState<number>(0);
-  const [activeCamera, setActiveCamera] = useState<CameraPreset>('perspective');
+  const [activeCamera, setActiveCamera] = useState<CameraPreset>(initialCamera);
   const [activeHDRI, setActiveHDRI] = useState<HDRIEnvironment>('tokyo_cyberpunk');
-  const [showGridFloor, setShowGridFloor] = useState(true);
+  const [showGridFloor, setShowGridFloor] = useState(!transparentStage);
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
 
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -640,7 +644,11 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
       }}
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleFileDrop}
-      className="relative w-full h-full min-h-[440px] rounded-3xl bg-gradient-to-b from-cyber-900/90 to-cyber-950/95 border-2 border-cyber-gold/40 shadow-2xl overflow-hidden group flex flex-col justify-between select-none"
+      className={`relative w-full h-full min-h-[440px] rounded-3xl overflow-hidden group flex flex-col justify-between select-none transition-all duration-500 ${
+        transparentStage
+          ? 'bg-transparent border-none shadow-none'
+          : 'bg-gradient-to-b from-cyber-900/90 to-cyber-950/95 border-2 border-cyber-gold/40 shadow-2xl'
+      }`}
     >
       {/* 3D Canvas Viewport */}
       <div ref={mountRef} className="absolute inset-0 cursor-grab active:cursor-grabbing touch-none" />
