@@ -28,7 +28,9 @@ import {
   Camera,
   TrendingUp,
   Film,
-  Building2
+  Building2,
+  ShoppingBag,
+  Cpu
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -61,6 +63,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'aurora3d', nameKey: 'sidebar.aurora3d', icon: Layers, requiredRole: 'free', badge: '3D' },
     { id: 'scanner3d', nameKey: 'sidebar.scanner3d', icon: Scan, requiredRole: 'pro', badge: 'PRO' },
     { id: 'adgen', nameKey: 'sidebar.adgen', icon: Video, requiredRole: 'pro', badge: 'PRO' },
+    { id: 'shopifylanding', nameKey: 'Landings Shopify IA', icon: ShoppingBag, requiredRole: 'pro', badge: 'LANDING', isLiteralLabel: true },
+    { id: 'agentswarm', nameKey: 'Enjambre Agentes IA', icon: Cpu, requiredRole: 'free', badge: 'SWARM', isLiteralLabel: true },
     { id: 'turntable', nameKey: 'Video Cinemático 360°', icon: Film, requiredRole: 'pro', badge: 'CINEMA', isLiteralLabel: true },
     { id: 'lookbook', nameKey: 'Lookbook IA Modelos', icon: Camera, requiredRole: 'pro', badge: 'PHOTO', isLiteralLabel: true },
     { id: 'trendforecast', nameKey: 'Tendencias & Ventas IA', icon: TrendingUp, requiredRole: 'agency', badge: 'WGSN', isLiteralLabel: true },

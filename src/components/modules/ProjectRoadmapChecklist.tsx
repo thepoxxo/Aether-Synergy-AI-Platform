@@ -546,6 +546,26 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Simulador de Tensión de Hilos & Mapa de Calor de Resistencia Textil',
     desc: 'Detección de puntos de tensión y riesgo de desgarro en costuras durante el movimiento articular del avatar.',
     isInitialDone: true
+  },
+
+  // ==========================================
+  // 🚀 7. NIVEL 7: SHOPIFY AI LANDINGS & AUTONOMOUS AGENT SWARM
+  // ==========================================
+  {
+    id: 'shopify_landing_builder_ai',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Creador de Landing Pages Shopify con IA (Prompts Publicitarios & Multi-Mercado)',
+    desc: 'Generación integral de landings para Shopify con prompts fotográficos comerciales, copy persuasivo AIDA adaptado a 4 mercados globales y exportación Liquid.',
+    isInitialDone: true
+  },
+  {
+    id: 'autonomous_ai_agent_swarm',
+    module: 'Copiloto IA & Mascotas',
+    category: 'advanced',
+    title: 'Orquestador de Enjambre de Agentes Autónomos (6 Agentes Especializados 24/7)',
+    desc: 'Sistema de agentes autónomos que supervisan en tiempo real optimización 3D, copywriting viral, aranceles de fábrica, predicción de tendencias y conversión.',
+    isInitialDone: true
   }
 ];
 
@@ -559,7 +579,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
         }
       });
 
-      const saved = localStorage.getItem('aether_roadmap_checklist_v3');
+      const saved = localStorage.getItem('aether_roadmap_checklist_v4');
       if (saved) {
         return { ...initial, ...JSON.parse(saved) };
       }
@@ -574,7 +594,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    localStorage.setItem('aether_roadmap_checklist_v3', JSON.stringify(checkedItems));
+    localStorage.setItem('aether_roadmap_checklist_v4', JSON.stringify(checkedItems));
   }, [checkedItems]);
 
   const toggleItem = (id: string) => {

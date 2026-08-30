@@ -32,6 +32,8 @@ import { AILookbookStudio } from './components/modules/AILookbookStudio';
 import { TrendForecaster } from './components/modules/TrendForecaster';
 import { AgencyWorkspaces } from './components/modules/AgencyWorkspaces';
 import { CinematicTurntable } from './components/modules/CinematicTurntable';
+import { ShopifyLandingBuilderAI } from './components/modules/ShopifyLandingBuilderAI';
+import { AutonomousAgentSwarm } from './components/modules/AutonomousAgentSwarm';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -102,6 +104,10 @@ const MainLayout: React.FC = () => {
         return <Scanner3D />;
       case 'adgen':
         return <AdGenAI />;
+      case 'shopifylanding':
+        return <ShopifyLandingBuilderAI />;
+      case 'agentswarm':
+        return <AutonomousAgentSwarm />;
       case 'turntable':
         return <CinematicTurntable />;
       case 'lookbook':
