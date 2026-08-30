@@ -5,11 +5,12 @@
 @layer base {
   body {
     @apply bg-cyber-950 text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
-    font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   h1, h2, h3, .font-tech {
-    font-family: 'Syne', 'Rajdhani', 'Outfit', sans-serif;
+    font-family: 'Rajdhani', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: 0.025em;
   }
 
   .font-mono {

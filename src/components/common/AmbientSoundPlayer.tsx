@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Music, Sparkles } from 'lucide-react';
+import { Volume2, VolumeX, Sparkles, Disc } from 'lucide-react';
 import { ambientAudio } from '../../services/ambientAudio444Hz';
 
 export const AmbientSoundPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.2);
+  const [volume, setVolume] = useState(0.25);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
   const togglePlayback = () => {
@@ -30,13 +30,15 @@ export const AmbientSoundPlayer: React.FC = () => {
         onMouseEnter={() => setShowVolumeSlider(true)}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all ${
           isPlaying
-            ? 'bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 border-amber-500 text-amber-300 shadow-gold-glow animate-pulse'
+            ? 'bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 border-amber-500 text-amber-400 shadow-gold-glow animate-pulse'
             : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300 dark:bg-cyber-900 dark:text-slate-300 dark:border-cyber-700'
         }`}
-        title={isPlaying ? 'Pausar Frecuencia 444Hz' : 'Activar Música Ambiental Cálida 444Hz'}
+        title={isPlaying ? 'Pausar Música Ambiental Interestelar' : 'Activar Música Ambiental Interestelar (Hans Zimmer Style)'}
       >
-        <Music className={`w-3.5 h-3.5 ${isPlaying ? 'text-amber-400 animate-bounce' : 'text-slate-400'}`} />
-        <span className="hidden sm:inline">444Hz {isPlaying ? 'ON' : 'OFF'}</span>
+        <span className={`text-xs ${isPlaying ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }}>
+          🌌
+        </span>
+        <span className="hidden sm:inline">Interestelar {isPlaying ? 'ON' : 'OFF'}</span>
         {isPlaying && (
           <span className="flex gap-0.5 items-end h-3">
             <span className="w-0.5 h-2 bg-amber-400 animate-ping" />
@@ -56,7 +58,7 @@ export const AmbientSoundPlayer: React.FC = () => {
           <input
             type="range"
             min="0.01"
-            max="0.6"
+            max="0.8"
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}

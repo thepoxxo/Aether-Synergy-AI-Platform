@@ -4,6 +4,7 @@ import { Screen1Hero } from './Screen1Hero';
 import { Screen2Avantgarde } from './Screen2Avantgarde';
 import { Screen3Pricing } from './Screen3Pricing';
 import { Screen4About } from './Screen4About';
+import { ShootingStarsBackground } from '../common/ShootingStarsBackground';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
 
@@ -16,7 +17,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onExploreStudio, onOpe
   const { upgradePlan } = useAuth();
 
   return (
-    <div className="w-full min-h-screen bg-cyber-950 text-slate-100 flex flex-col font-sans selection:bg-cyber-gold selection:text-black">
+    <div className="relative w-full min-h-screen bg-cyber-950 text-slate-100 flex flex-col font-sans selection:bg-cyber-gold selection:text-black">
+      {/* Falling Cosmic Shooting Stars & Twinkling Background Canvas */}
+      <ShootingStarsBackground />
+
       {/* Exact Screen 1 Header Navbar */}
       <LandingNavbar onOpenLogin={onOpenLogin} />
 
