@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Video,
   Camera,
@@ -230,10 +230,7 @@ export const VirtualRunwayLive: React.FC = () => {
               <Model3DCanvas
                 type="jacket"
                 primaryColor="#e5a93c"
-                secondaryColor="#1a1a24"
                 accentColor="#06b6d4"
-                roughness={0.25}
-                metalness={0.35}
                 clothPhysicsEnabled={true}
               />
             </div>
