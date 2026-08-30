@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Volume2,
   VolumeX,
@@ -13,7 +13,9 @@ import {
   Zap,
   Target,
   BrainCircuit,
-  MessageSquare
+  Send,
+  MessageSquare,
+  Bot
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -21,10 +23,15 @@ export interface VoiceGuideStep {
   title: string;
   desc: string;
   speechText: string;
-  highlightId?: string;
 }
 
 export type AvatarMood = 'focused' | 'creative' | 'happy' | 'analytical';
+
+interface ChatMessage {
+  sender: 'user' | 'kai';
+  text: string;
+  time: string;
+}
 
 export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => void }> = ({ onNavigateToModule }) => {
   const { language } = useLanguage();
@@ -33,46 +40,63 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [recognizedText, setRecognizedText] = useState<string>('');
+  const [textInput, setTextInput] = useState('');
   const [mood, setMood] = useState<AvatarMood>('creative');
+
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
+    {
+      sender: 'kai',
+      text: '¡Hola! Soy Kai, tu copiloto inteligente de diseño 3D, video marketing y sourcing. Puedes hablarme por micrófono o escribir tu consulta.',
+      time: 'Ahora'
+    }
+  ]);
+
+  const recognitionRef = useRef<any>(null);
+  const chatBottomRef = useRef<HTMLDivElement>(null);
 
   const guideSteps: VoiceGuideStep[] = [
     {
-      title: 'Paso 1: Selecciona tu Nicho y Modelo 3D',
-      desc: 'Elige entre Moda & Streetwear (chaquetas, hoodies, sneakers), Diseño de Interiores (muebles lounge) o Instrumentalización (hardware de audio).',
+      title: 'Paso 1: Selección de Nicho y Modelo 3D Base',
+      desc: 'Elige entre Moda & Streetwear (chaqueta techwear, hoodie, sneaker), Diseño de Interiores (sillón nórdico, mesa) o Hardware de Audio.',
       speechText: 'Bienvenido a Aether Synergy. Para comenzar, selecciona tu nicho de diseño y tu modelo 3D en la barra superior del estudio.'
     },
     {
-      title: 'Paso 2: Texturizado PBR & Shaders Anime',
-      desc: 'Personaliza los colores de base y acento, ajusta el grosor de los bordes de tinta y elige entre Cel-Shaded o PBR Realista.',
-      speechText: 'En el panel derecho puedes ajustar las propiedades del shader, cambiar entre Cel-Shaded anime y PBR hiperrealista, y añadir calcomanías personalizadas.'
+      title: 'Paso 2: Círculo Cromático y Versiones IA',
+      desc: 'Usa el nuevo círculo cromático, ingresa códigos Hexadecimales (#E5A93C) y prueba las variantes estilísticas de IA con 1 clic.',
+      speechText: 'En el panel izquierdo tienes total libertad de color con el círculo cromático y puedes alternar entre las versiones IA de tu producto.'
     },
     {
       title: 'Paso 3: Entornos HDRi & Despiece 3D',
-      desc: 'Usa las cámaras rápidas frontal, superior o isométrica, y desliza el control de despiece para ver la estructura interna.',
-      speechText: 'Explora tu modelo con los controles táctiles o el ratón, prueba las diferentes cámaras de estudio y usa el deslizador de despiece para ver los componentes internos.'
+      desc: 'Prueba la iluminación Tokyo Cyberpunk, Nordic Studio o Golden Hour, y desliza el control de despiece 3D para ver las capas internas.',
+      speechText: 'Explora tu modelo con los controles táctiles, prueba la iluminación de estudio y desliza el control de despiece.'
     },
     {
-      title: 'Paso 4: Generación de Video Ads en AdGen AI',
-      desc: 'Conecta con OpenAI Sora, Runway Gen-3, Kling o Luma para crear anuncios de video 9:16 con movimientos de cámara cinemáticos.',
-      speechText: 'Cuando tu modelo 3D esté listo, ve a AdGen AI para generar videos publicitarios hiperrealistas con movimientos de cámara cinematográficos.'
+      title: 'Paso 4: Video Marketing con Sora & Gen-3 en AdGen',
+      desc: 'Genera anuncios en video 9:16 para TikTok y Reels con movimientos de cámara cinemáticos (FPV Drone, 360 Orbit).',
+      speechText: 'En AdGen AI puedes crear videos publicitarios cinematográficos conectando con los mejores modelos de video de inteligencia artificial.'
     },
     {
-      title: 'Paso 5: Cotización y Conexión con Fábricas B2B',
-      desc: 'Cotiza en tiempo real con fábricas en Portugal, Turquía, Colombia y Asia para producir tus piezas a escala.',
-      speechText: 'Finalmente, conecta con nuestra red de proveedores globales verificados para cotizar y fabricar tu producción con ficha técnica 3D.'
+      title: 'Paso 5: Sourcing Global B2B & Ficha Técnica Tech Pack',
+      desc: 'Genera la ficha técnica en PDF con medidas duales (cm/pulgadas) y cotiza directo por WhatsApp con fábricas en Portugal, Turquía y Colombia.',
+      speechText: 'Finalmente, conecta con nuestra red auditada de fabricantes y genera tu ficha técnica oficial para iniciar producción.'
     }
   ];
 
   const currentStep = guideSteps[currentStepIndex];
 
+  // Scroll to bottom of chat
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory, isOpen]);
+
   // Speech Synthesis
-  const speakCurrentStep = (text: string) => {
+  const speakText = (text: string) => {
     if (!isVoiceEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'fr' ? 'fr-FR' : language === 'it' ? 'it-IT' : 'es-ES';
+    utterance.lang =
+      language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'fr' ? 'fr-FR' : language === 'it' ? 'it-IT' : language === 'pt' ? 'pt-BR' : 'es-ES';
     utterance.rate = 1.05;
     utterance.pitch = 1.0;
 
@@ -83,39 +107,43 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
     window.speechSynthesis.speak(utterance);
   };
 
-  // Speech Recognition (Microphone listening)
-  const toggleListening = () => {
+  // Safe Speech Recognition Implementation
+  const startListening = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('El reconocimiento de voz está soportado en navegadores Google Chrome, Brave y Edge.');
+      alert('Tu navegador no soporta Speech Recognition nativo. Puedes escribir tu mensaje en la casilla de texto inferior.');
       return;
     }
 
-    if (isListening) {
-      setIsListening(false);
-      return;
-    }
+    // Always stop TTS before opening mic to avoid feedback
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
 
     try {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+
       const recognition = new SpeechRecognition();
-      recognition.lang = language === 'en' ? 'en-US' : 'es-ES';
+      recognitionRef.current = recognition;
+
+      recognition.lang = language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'pt' ? 'pt-BR' : 'es-ES';
       recognition.continuous = false;
       recognition.interimResults = false;
 
       recognition.onstart = () => {
         setIsListening(true);
-        setRecognizedText('Escuchando tu voz por el micrófono...');
       };
 
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
-        setRecognizedText(`"${transcript}"`);
         setIsListening(false);
-        speakCurrentStep(`Entendido. Analizando tu instrucción sobre ${transcript}.`);
+        handleUserMessage(transcript);
       };
 
-      recognition.onerror = () => {
+      recognition.onerror = (e: any) => {
+        console.warn('SpeechRecognition error:', e.error);
         setIsListening(false);
       };
 
@@ -124,28 +152,56 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
       };
 
       recognition.start();
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error('Error starting SpeechRecognition:', err);
       setIsListening(false);
     }
   };
 
-  const handleToggleVoice = () => {
-    if (isVoiceEnabled) {
-      window.speechSynthesis?.cancel();
-      setIsSpeaking(false);
-      setIsVoiceEnabled(false);
-    } else {
-      setIsVoiceEnabled(true);
-      speakCurrentStep(currentStep.speechText);
+  const stopListening = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
     }
+    setIsListening(false);
+  };
+
+  const handleUserMessage = (msg: string) => {
+    if (!msg.trim()) return;
+
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // 1. Append user message
+    const updatedHistory: ChatMessage[] = [...chatHistory, { sender: 'user', text: msg, time }];
+    setChatHistory(updatedHistory);
+    setTextInput('');
+
+    // 2. Generate intelligent response based on keywords
+    let responseText = '';
+    const lower = msg.toLowerCase();
+
+    if (lower.includes('color') || lower.includes('hex') || lower.includes('paleta')) {
+      responseText = 'Para ajustar los colores, abre el nuevo Círculo Cromático en el panel izquierdo o escribe directamente el código Hexadecimal (ej: #E5A93C). También puedes alternar entre las Variantes IA del producto.';
+    } else if (lower.includes('shader') || lower.includes('cel') || lower.includes('pbr') || lower.includes('3d')) {
+      responseText = 'Puedes presionar la tecla S en tu teclado para rotar entre los 5 shaders (Cel-Shaded, PBR, Clay, Wireframe y X-Ray) o presionar R para girar en 360 grados.';
+    } else if (lower.includes('fabrica') || lower.includes('proveedor') || lower.includes('tech pack') || lower.includes('precio')) {
+      responseText = 'En el módulo de Proveedores Globales B2B puedes generar tu Ficha Técnica Tech Pack con medidas duales en centímetros y pulgadas, y contactar a las fábricas de Portugal, Turquía y Colombia por WhatsApp.';
+    } else if (lower.includes('video') || lower.includes('sora') || lower.includes('tiktok') || lower.includes('adgen')) {
+      responseText = 'En AdGen AI puedes conectar con OpenAI Sora v2, Runway Gen-3 o Kling AI para generar comerciales cinematográficos en formato vertical 9:16 con movimientos de cámara tipo FPV Drone.';
+    } else {
+      responseText = `Entendido: "${msg}". Estoy a tu servicio para asistirte en modelado 3D, video marketing con IA y conexión con fabricantes globales.`;
+    }
+
+    setTimeout(() => {
+      setChatHistory((prev) => [...prev, { sender: 'kai', text: responseText, time }]);
+      speakText(responseText);
+    }, 400);
   };
 
   const handleNextStep = () => {
     if (currentStepIndex < guideSteps.length - 1) {
       const nextIdx = currentStepIndex + 1;
       setCurrentStepIndex(nextIdx);
-      speakCurrentStep(guideSteps[nextIdx].speechText);
+      speakText(guideSteps[nextIdx].speechText);
     }
   };
 
@@ -153,13 +209,8 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
     if (currentStepIndex > 0) {
       const prevIdx = currentStepIndex - 1;
       setCurrentStepIndex(prevIdx);
-      speakCurrentStep(guideSteps[prevIdx].speechText);
+      speakText(guideSteps[prevIdx].speechText);
     }
-  };
-
-  const handleOpenGuide = () => {
-    setIsOpen(true);
-    speakCurrentStep(currentStep.speechText);
   };
 
   const getMoodIcon = () => {
@@ -178,11 +229,14 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
 
   return (
     <>
-      {/* Floating Avatar Trigger Button */}
+      {/* Floating Trigger */}
       {!isOpen && (
         <div className="fixed bottom-6 left-6 z-40 flex items-center gap-2">
           <button
-            onClick={handleOpenGuide}
+            onClick={() => {
+              setIsOpen(true);
+              speakText(currentStep.speechText);
+            }}
             className="group flex items-center gap-2.5 p-2 pr-4 rounded-full bg-cyber-900/90 hover:bg-cyber-850 border-2 border-cyber-gold/50 shadow-gold-glow-lg transition-all backdrop-blur-xl"
           >
             <div className="relative w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-cyber-gold flex items-center justify-center text-xl shadow-md group-hover:scale-110 transition-transform">
@@ -191,62 +245,53 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             </div>
             <div className="text-left">
               <div className="font-tech font-bold text-xs text-white group-hover:text-cyber-gold transition-colors flex items-center gap-1">
-                <span>Kai Copiloto IA</span>
+                <span>Kai Copiloto & Voz</span>
                 <Sparkles className="w-3 h-3 text-cyber-gold" />
               </div>
-              <span className="text-[10px] text-slate-400 font-mono">Voz & Micrófono Activo</span>
+              <span className="text-[10px] text-slate-400 font-mono">Micrófono & Asistente</span>
             </div>
           </button>
         </div>
       )}
 
-      {/* Expanded Interactive Voice Guide Modal / HUD */}
+      {/* Expanded Interactive Voice Guide & Chat Modal */}
       {isOpen && (
-        <div className="fixed bottom-6 left-6 z-50 w-full max-w-sm sm:max-w-md bg-cyber-900/95 border-2 border-cyber-gold/60 rounded-3xl p-5 shadow-gold-glow-lg backdrop-blur-2xl animate-fadeIn space-y-3.5">
+        <div className="fixed bottom-6 left-6 z-50 w-full max-w-sm sm:max-w-md bg-cyber-900/95 border-2 border-cyber-gold/60 rounded-3xl p-4 sm:p-5 shadow-gold-glow-lg backdrop-blur-2xl animate-fadeIn space-y-3 flex flex-col max-h-[85vh]">
           {/* Header */}
           <div className="flex items-center justify-between pb-2 border-b border-cyber-800">
             <div className="flex items-center gap-2.5">
               <div className="relative w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-cyber-gold flex items-center justify-center text-xl shadow-gold-glow">
                 🦊
                 {isSpeaking && (
-                  <span className="absolute -bottom-1 -right-1 text-xs animate-bounce">
-                    💬
-                  </span>
+                  <span className="absolute -bottom-1 -right-1 text-xs animate-bounce">💬</span>
                 )}
               </div>
               <div>
                 <div className="font-tech font-bold text-sm text-white flex items-center gap-1.5">
-                  <span>Kai Copiloto & Guía de Diseño</span>
+                  <span>Kai Copiloto IA</span>
                   <div className="flex items-center gap-1 bg-cyber-950 px-2 py-0.5 rounded-full border border-cyber-800">
                     {getMoodIcon()}
                     <span className="text-[9px] font-mono text-slate-300 capitalize">{mood}</span>
                   </div>
                 </div>
-                <div className="text-[10px] text-slate-400">Paso {currentStepIndex + 1} de {guideSteps.length}</div>
+                <div className="text-[10px] text-slate-400">Guía de Diseño • Paso {currentStepIndex + 1} de {guideSteps.length}</div>
               </div>
             </div>
 
             <div className="flex items-center gap-1">
-              {/* Mic Button */}
               <button
-                onClick={toggleListening}
+                onClick={() => {
+                  if (isVoiceEnabled) {
+                    window.speechSynthesis?.cancel();
+                    setIsSpeaking(false);
+                    setIsVoiceEnabled(false);
+                  } else {
+                    setIsVoiceEnabled(true);
+                    speakText(currentStep.speechText);
+                  }
+                }}
                 className={`p-2 rounded-xl border transition-all ${
-                  isListening
-                    ? 'bg-rose-500 text-white border-rose-400 animate-pulse shadow-lg'
-                    : 'bg-cyber-950 text-slate-400 border-cyber-800 hover:text-white'
-                }`}
-                title="Hablar por Micrófono (Speech-to-Text)"
-              >
-                {isListening ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-              </button>
-
-              {/* Voice toggle */}
-              <button
-                onClick={handleToggleVoice}
-                className={`p-2 rounded-xl border transition-all ${
-                  isVoiceEnabled
-                    ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold'
-                    : 'bg-cyber-950 text-slate-500 border-cyber-800'
+                  isVoiceEnabled ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-950 text-slate-500 border-cyber-800'
                 }`}
                 title={isVoiceEnabled ? 'Silenciar Voz' : 'Activar Voz'}
               >
@@ -256,6 +301,7 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
               <button
                 onClick={() => {
                   window.speechSynthesis?.cancel();
+                  if (recognitionRef.current) recognitionRef.current.abort();
                   setIsOpen(false);
                 }}
                 className="p-2 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 text-slate-400 hover:text-white transition-colors"
@@ -265,74 +311,128 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             </div>
           </div>
 
-          {/* Mood Selector Buttons */}
-          <div className="flex items-center justify-between text-[10px] bg-cyber-950 p-1 rounded-xl border border-cyber-850">
-            <span className="text-slate-500 font-tech font-bold uppercase px-1">Mood:</span>
-            {(['creative', 'focused', 'analytical', 'happy'] as AvatarMood[]).map((m) => (
+          {/* Current Step Banner */}
+          <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-tech font-bold text-cyber-gold">{currentStep.title}</span>
               <button
-                key={m}
-                onClick={() => setMood(m)}
-                className={`px-2 py-0.5 rounded-lg capitalize transition-all ${
-                  mood === m ? 'bg-cyber-gold text-black font-bold' : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => speakText(currentStep.speechText)}
+                className="p-1 text-slate-400 hover:text-cyber-gold"
+                title="Repetir audio del paso"
               >
-                {m}
+                <Play className="w-3 h-3" />
               </button>
-            ))}
+            </div>
+            <p className="text-[11px] text-slate-300 leading-snug">{currentStep.desc}</p>
           </div>
 
-          {/* Current Step Content */}
-          <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1.5">
-            <div className="font-tech font-bold text-xs sm:text-sm text-cyber-gold flex items-center gap-1.5">
-              <span>{currentStep.title}</span>
-            </div>
-            <p className="text-xs text-slate-200 leading-relaxed font-sans">
-              {currentStep.desc}
-            </p>
-          </div>
-
-          {/* Recognized Voice Transcript Bar */}
-          {recognizedText && (
-            <div className="p-2 rounded-xl bg-cyber-950/80 border border-cyan-500/40 text-[11px] text-cyan-300 font-mono">
-              🎙️ {recognizedText}
-            </div>
-          )}
-
-          {/* Controls: Prev / Replay Voice / Next */}
-          <div className="flex items-center justify-between gap-2 pt-1">
+          {/* Step Navigation Bar */}
+          <div className="flex items-center justify-between gap-2 pt-1 border-t border-cyber-800 text-xs">
             <button
               onClick={handlePrevStep}
               disabled={currentStepIndex === 0}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1 border transition-all ${
-                currentStepIndex === 0
-                  ? 'opacity-40 cursor-not-allowed border-cyber-800 text-slate-600'
-                  : 'bg-cyber-950 border-cyber-700 text-slate-300 hover:text-white'
+              className={`px-3 py-1.5 rounded-xl flex items-center gap-1 border transition-all ${
+                currentStepIndex === 0 ? 'opacity-40 cursor-not-allowed border-cyber-800 text-slate-600' : 'bg-cyber-950 border-cyber-700 text-slate-300 hover:text-white'
               }`}
             >
               <ChevronLeft className="w-3.5 h-3.5" /> Anterior
             </button>
 
-            <button
-              onClick={() => speakCurrentStep(currentStep.speechText)}
-              className="p-2 rounded-xl bg-cyber-950 hover:bg-cyber-850 border border-cyber-700 text-cyber-gold transition-colors"
-              title="Repetir audio"
-            >
-              <Play className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex gap-1">
+              {guideSteps.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    idx === currentStepIndex ? 'bg-cyber-gold w-4' : 'bg-cyber-800'
+                  }`}
+                />
+              ))}
+            </div>
 
             <button
               onClick={handleNextStep}
               disabled={currentStepIndex === guideSteps.length - 1}
-              className={`px-4 py-2 rounded-xl font-tech font-bold text-xs uppercase tracking-wider flex items-center gap-1 transition-all ${
+              className={`px-3 py-1.5 rounded-xl font-tech font-bold uppercase tracking-wider flex items-center gap-1 transition-all ${
                 currentStepIndex === guideSteps.length - 1
                   ? 'bg-cyber-800 text-slate-500 cursor-not-allowed border border-cyber-700'
-                  : 'bg-gradient-to-r from-cyber-gold to-amber-500 text-black shadow-gold-glow hover:opacity-90'
+                  : 'bg-cyber-gold text-black shadow-gold-glow hover:opacity-90'
               }`}
             >
               <span>Siguiente</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          {/* Live Interactive Chat Area */}
+          <div className="flex-1 overflow-y-auto space-y-2 p-2.5 rounded-2xl bg-cyber-950/80 border border-cyber-800 min-h-[120px] max-h-[180px]">
+            {chatHistory.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex gap-2 text-xs ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                {msg.sender === 'kai' && (
+                  <div className="w-6 h-6 rounded-full bg-cyber-gold/20 border border-cyber-gold text-cyber-gold flex items-center justify-center text-[10px] shrink-0">
+                    🦊
+                  </div>
+                )}
+                <div
+                  className={`p-2.5 rounded-2xl max-w-[80%] leading-relaxed ${
+                    msg.sender === 'user'
+                      ? 'bg-cyber-gold text-black font-semibold rounded-br-none shadow-sm'
+                      : 'bg-cyber-900 border border-cyber-750 text-slate-200 rounded-bl-none'
+                  }`}
+                >
+                  <p>{msg.text}</p>
+                  <span className={`text-[9px] block mt-1 ${msg.sender === 'user' ? 'text-black/60' : 'text-slate-500 font-mono'}`}>
+                    {msg.time}
+                  </span>
+                </div>
+              </div>
+            ))}
+            <div ref={chatBottomRef} />
+          </div>
+
+          {/* Microphone & Chat Input Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUserMessage(textInput);
+            }}
+            className="flex items-center gap-2 pt-1"
+          >
+            <button
+              type="button"
+              onClick={isListening ? stopListening : startListening}
+              className={`p-2.5 rounded-2xl border transition-all shrink-0 ${
+                isListening
+                  ? 'bg-rose-500 text-white border-rose-400 animate-pulse shadow-lg ring-4 ring-rose-500/30'
+                  : 'bg-cyber-950 border-cyber-700 text-cyber-gold hover:border-cyber-gold shadow-sm'
+              }`}
+              title={isListening ? 'Detener micrófono' : 'Hablar por Micrófono'}
+            >
+              {isListening ? <Mic className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </button>
+
+            <input
+              type="text"
+              value={textInput}
+              onChange={(e) => setTextInput(e.target.value)}
+              placeholder={isListening ? '🎙️ Escuchando tu voz...' : 'Escribe o háblale a Kai...'}
+              className="flex-1 bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-2xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+            />
+
+            <button
+              type="submit"
+              disabled={!textInput.trim()}
+              className={`p-2.5 rounded-2xl transition-all shrink-0 ${
+                textInput.trim()
+                  ? 'bg-cyber-gold text-black font-bold shadow-gold-glow'
+                  : 'bg-cyber-950 border border-cyber-800 text-slate-600 cursor-not-allowed'
+              }`}
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
         </div>
       )}
     </>

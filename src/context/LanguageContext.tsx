@@ -53,7 +53,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'landing.pricing': 'Precios & Planes',
     'landing.about': 'Manifiesto & Misión',
 
-    // Hero Screen 1
     'hero.titleTop': 'EL MOTOR DEFINITIVO',
     'hero.titleBottom': 'DE MARKETING CON IA',
     'hero.subtitle': 'Transformando Mundos 3D en Campañas Cautivadoras',
@@ -66,16 +65,11 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'hero.launchBtn': 'INGRESAR AL ESPACIO DE TRABAJO',
     'hero.integrated': 'MOTORES DE IA Y 3D INTEGRADOS',
 
-    // Avantgarde Screen 2
     'avantgarde.badge': 'ESTÉTICA CEL-SHADED • DISEÑO DE VANGUARDIA',
     'avantgarde.title': 'EL FUTURO DEL STREETWEAR & HARDWARE',
     'avantgarde.desc': 'Fusionamos la precisión del modelado paramétrico con la estética cel-shaded anime, texturas PBR físicas y simulación en tiempo real.',
-    'avantgarde.feature1': 'Shaders Toon Anime con Bordes de Tinta Regulables',
-    'avantgarde.feature2': 'Modo Focus de Alta Densidad para Diseñadores',
-    'avantgarde.feature3': 'Simulación de Iluminación de Estudio y Pasarela',
     'avantgarde.btn': 'Explorar Shaders 3D',
 
-    // Pricing Screen 3
     'pricing.badge': 'PLANES & PRECIOS TRANSPARENTES',
     'pricing.title': 'ESCALA TU ESTUDIO DE DISEÑO',
     'pricing.subtitle': 'Desde creadores independientes hasta agencias globales de moda y producto.',
@@ -90,7 +84,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'pricing.agencyDesc': 'Para agencias con equipo, conexión B2B con fábricas y Tech Packs.',
     'pricing.popular': 'MÁS POPULAR',
 
-    // About Screen 4
     'about.badge': 'NUESTRA MISIÓN • ECOSISTEMA AETHER',
     'about.title': 'REDEFINIENDO EL CICLO DE CREACIÓN DE PRODUCTO',
     'about.desc': 'De la idea al render 3D, del video publicitario viral a la cotización con fábricas en minutos.',
@@ -98,7 +91,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.pillar2': '2. Video Marketing con IA (Sora & Gen-3)',
     'about.pillar3': '3. Sourcing Global con Fábricas Auditadas',
 
-    // Workspace & Sidebar
     'sidebar.title': 'Módulos del Ecosistema',
     'sidebar.aurora3d': 'Motor 3D & Shaders',
     'sidebar.scanner3d': 'Escáner 3D IA (Luma)',
@@ -135,7 +127,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'landing.pricing': 'Pricing & Plans',
     'landing.about': 'Manifesto & Mission',
 
-    // Hero Screen 1
     'hero.titleTop': 'THE ULTIMATE',
     'hero.titleBottom': 'AI MARKETING ENGINE',
     'hero.subtitle': 'Transforming 3D Worlds into Captivating Campaigns',
@@ -148,16 +139,11 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'hero.launchBtn': 'LAUNCH WORKSPACE',
     'hero.integrated': 'INTEGRATED AI & 3D ENGINES',
 
-    // Avantgarde Screen 2
     'avantgarde.badge': 'CEL-SHADED AESTHETICS • AVANT-GARDE DESIGN',
     'avantgarde.title': 'THE FUTURE OF STREETWEAR & HARDWARE',
     'avantgarde.desc': 'We fuse the precision of parametric 3D modeling with cel-shaded anime aesthetics, physical PBR textures, and real-time cloth simulation.',
-    'avantgarde.feature1': 'Toon Anime Shaders with Adjustable Ink Stroke Outlines',
-    'avantgarde.feature2': 'High-Density Focus Mode for Professional Creators',
-    'avantgarde.feature3': 'Studio & Runway Photorealistic Lighting Simulation',
     'avantgarde.btn': 'Explore 3D Shaders',
 
-    // Pricing Screen 3
     'pricing.badge': 'TRANSPARENT PRICING & PLANS',
     'pricing.title': 'SCALE YOUR DESIGN STUDIO',
     'pricing.subtitle': 'From independent creators to global fashion & product design agencies.',
@@ -172,7 +158,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'pricing.agencyDesc': 'For teams requiring B2B factory connections and Tech Pack PDF generation.',
     'pricing.popular': 'MOST POPULAR',
 
-    // About Screen 4
     'about.badge': 'OUR MISSION • AETHER ECOSYSTEM',
     'about.title': 'REDEFINING THE PRODUCT CREATION LIFECYCLE',
     'about.desc': 'From concept to 3D render, from viral video ads to factory sourcing in minutes.',
@@ -180,7 +165,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.pillar2': '2. Video Marketing with AI (Sora & Gen-3)',
     'about.pillar3': '3. Global Sourcing with Audited Factories',
 
-    // Workspace & Sidebar
     'sidebar.title': 'Ecosystem Modules',
     'sidebar.aurora3d': '3D Engine & Shaders',
     'sidebar.scanner3d': '3D AI Scanner (Luma)',
@@ -217,7 +201,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'landing.pricing': '料金プラン',
     'landing.about': 'マニフェスト',
 
-    // Hero Screen 1
     'hero.titleTop': '究極の',
     'hero.titleBottom': 'AIマーケティングエンジン',
     'hero.subtitle': '3Dワールドを魅力的なキャンペーンに変革する',
@@ -230,16 +213,11 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'hero.launchBtn': 'ワークスペースを開く',
     'hero.integrated': '統合AI＆3Dエンジン',
 
-    // Avantgarde Screen 2
     'avantgarde.badge': 'セルシェーディング美学 • アバンギャルド',
     'avantgarde.title': 'ストリートウェア＆ハードウェアの未来',
     'avantgarde.desc': '工業デザインの精度とアニメのセルルック、PBRテクスチャを融合。',
-    'avantgarde.feature1': 'インクライン調節可能なトゥーンシェーダー',
-    'avantgarde.feature2': '高密度フォーカスモード',
-    'avantgarde.feature3': 'スタジオ＆ランウェイライティング',
     'avantgarde.btn': '3Dシェーダーを体験',
 
-    // Pricing Screen 3
     'pricing.badge': '透明な料金プラン',
     'pricing.title': 'デザインスタジオをスケールアップ',
     'pricing.subtitle': 'インディーデザイナーからグローバルエージェンシーまで。',
@@ -254,7 +232,6 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'pricing.agencyDesc': 'チーム利用、工場連携、Tech Pack生成。',
     'pricing.popular': '一番人気',
 
-    // About Screen 4
     'about.badge': '私たちのミッション',
     'about.title': '製品開発サイクルを再定義する',
     'about.desc': 'アイデアから3Dレンダリング、バイラル動画から工場発注まで数分で完了。',
@@ -307,12 +284,22 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'pricing.title': 'ESCALONE SEU ESTÚDIO',
     'pricing.subtitle': 'De criadores independentes a grandes marcas globais.',
     'pricing.free': 'Free Starter',
+    'pricing.freePrice': '$0',
+    'pricing.freeDesc': 'Para testar o motor 3D e shaders.',
     'pricing.pro': 'Pro Designer',
+    'pricing.proPrice': '$49',
+    'pricing.proDesc': 'Exportação 4K e criação de anúncios em vídeo.',
     'pricing.agency': 'Agência Enterprise',
+    'pricing.agencyPrice': '$149',
+    'pricing.agencyDesc': 'Conexão B2B com fábricas e fichas técnicas Tech Pack.',
+    'pricing.popular': 'MAIS POPULAR',
 
     'about.badge': 'NOSSA MISSÃO',
     'about.title': 'REDEFININDO O CICLO DE CRIAÇÃO',
     'about.desc': 'Do conceito ao render 3D, do anúncio viral à confecção em minutos.',
+    'about.pillar1': '1. Ideação & Modelagem 3D',
+    'about.pillar2': '2. Video Marketing IA (Sora/Gen-3)',
+    'about.pillar3': '3. Sourcing Global com Fábricas',
 
     'sidebar.title': 'Módulos do Ecossistema',
     'sidebar.aurora3d': 'Motor 3D & Shaders',
@@ -326,6 +313,254 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sidebar.admin': 'Super Admin & Métricas',
     'sidebar.accessLevel': 'NÍVEL DE ACESSO',
     'sidebar.upgradeBtn': 'ATUALIZAR MEU PLANO'
+  },
+  fr: {
+    'landing.badge': 'SUITE SAAS • DESIGN 3D & IA DE POINTE',
+    'landing.title': 'DESIGN ET MODE AVEC IA NOUVELLE GÉNÉRATION',
+    'landing.subtitle': 'Créez des modèles 3D ultra-réalistes, des publicités vidéo virales et connectez-vous avec des usines mondiales.',
+    'landing.startFree': 'Essai Gratuit',
+    'landing.explore3d': 'Explorer le Studio 3D',
+    'landing.login': 'Connexion',
+    'landing.register': 'S\'inscrire',
+    'landing.pricing': 'Tarifs & Plans',
+    'landing.about': 'Manifeste',
+
+    'hero.titleTop': 'LE MOTEUR ULTIME',
+    'hero.titleBottom': 'DE MARKETING PAR IA',
+    'hero.subtitle': 'Transformer des Mondes 3D en Campagnes Captivantes',
+    'hero.realtime': 'Données en Temps Réel',
+    'hero.category': 'Streetwear & Mode 3D',
+    'hero.followers': '+23% Abonnés',
+    'hero.performance': 'Performance de Campagne:',
+    'hero.roi': '+189% ROI',
+    'hero.tagline': 'RÉVOLUTION DU DESIGN 3D & DU STREETWEAR',
+    'hero.launchBtn': 'LANCER LE WORKSPACE',
+    'hero.integrated': 'MOTEURS IA & 3D INTÉGRÉS',
+
+    'avantgarde.badge': 'ESTHÉTIQUE CEL-SHADED • AVANT-GARDE',
+    'avantgarde.title': 'L\'AVENIR DU STREETWEAR & DU HARDWARE',
+    'avantgarde.desc': 'Fusion de la précision industrielle avec l\'esthétique cel-shaded anime et simulation de tissus en temps réel.',
+    'avantgarde.btn': 'Explorer les Shaders 3D',
+
+    'pricing.badge': 'TARIFS CLAIRS & TRANSPARENTS',
+    'pricing.title': 'DÉPLOYEZ VOTRE STUDIO',
+    'pricing.subtitle': 'Des créateurs indépendants aux agences mondiales de mode.',
+    'pricing.free': 'Free Starter',
+    'pricing.freePrice': '$0',
+    'pricing.freeDesc': 'Pour tester le moteur 3D et shaders.',
+    'pricing.pro': 'Pro Designer',
+    'pricing.proPrice': '$49',
+    'pricing.proDesc': 'Export 4K et génération de vidéos publicitaires.',
+    'pricing.agency': 'Agence Enterprise',
+    'pricing.agencyPrice': '$149',
+    'pricing.agencyDesc': 'Équipes, sourcing usines et génération de Tech Packs.',
+    'pricing.popular': 'LE PLUS POPULAIRE',
+
+    'about.badge': 'NOTRE MISSION',
+    'about.title': 'REDÉFINIR LE CYCLE DE CRÉATION',
+    'about.desc': 'Du concept au rendu 3D, de la vidéo virale à l\'usine en quelques minutes.',
+    'about.pillar1': '1. Modélisation 3D & Idéation',
+    'about.pillar2': '2. Vidéo Marketing IA (Sora/Gen-3)',
+    'about.pillar3': '3. Sourcing Mondial d\'Usines',
+
+    'sidebar.title': 'Modules de l\'Écosystème',
+    'sidebar.aurora3d': 'Moteur 3D & Shaders',
+    'sidebar.scanner3d': 'Scanner 3D IA',
+    'sidebar.adgen': 'Marketing Vidéo (AdGen)',
+    'sidebar.clothify': 'Sourcing Textile',
+    'sidebar.solesmith': 'Design Chaussures',
+    'sidebar.automo': 'Calendrier Réseaux',
+    'sidebar.suppliers': 'Fournisseurs B2B',
+    'sidebar.mascot': 'Copilote & Mascottes',
+    'sidebar.admin': 'Super Admin & Métriques',
+    'sidebar.accessLevel': 'NIVEAU D\'ACCÈS',
+    'sidebar.upgradeBtn': 'AMÉLIORER MON PLAN'
+  },
+  it: {
+    'landing.badge': 'SUITE SAAS • DESIGN 3D + AI AVANZATA',
+    'landing.title': 'DESIGN E MODA CON IA DI NUOVA GENERAZIONE',
+    'landing.subtitle': 'Crea modelli 3D iperrealistici, video virali e quota con fornitori globali in tempo reale.',
+    'landing.startFree': 'Inizia Prova Gratuita',
+    'landing.explore3d': 'Esplora Studio 3D',
+    'landing.login': 'Accedi',
+    'landing.register': 'Registrati',
+    'landing.pricing': 'Piani & Prezzi',
+    'landing.about': 'Manifesto',
+
+    'hero.titleTop': 'IL MOTORE DEFINITIVO',
+    'hero.titleBottom': 'DI MARKETING CON IA',
+    'hero.subtitle': 'Trasforma Mondi 3D in Campagne Vincenti',
+    'hero.realtime': 'Dati in Tempo Reale',
+    'hero.category': 'Moda & Streetwear 3D',
+    'hero.followers': '+23% Follower',
+    'hero.performance': 'Performance Campagna:',
+    'hero.roi': '+189% ROI',
+    'hero.tagline': 'RIVOLUZIONE DEL DESIGN 3D E DELLO STREETWEAR',
+    'hero.launchBtn': 'ACCEDI AL WORKSPACE',
+    'hero.integrated': 'MOTORI IA E 3D INTEGRATI',
+
+    'avantgarde.badge': 'ESTETICA CEL-SHADED • AVANGUARDIA',
+    'avantgarde.title': 'IL FUTURO DELLO STREETWEAR E DELL\'HARDWARE',
+    'avantgarde.desc': 'Unione di precisione ingegneristica con estetica cel-shaded anime e simulazione tessile.',
+    'avantgarde.btn': 'Esplora Shader 3D',
+
+    'pricing.badge': 'PIANI E PREZZI TRASPARENTI',
+    'pricing.title': 'SCALA IL TUO STUDIO',
+    'pricing.subtitle': 'Dai creator indipendenti alle agenzie di moda globali.',
+    'pricing.free': 'Free Starter',
+    'pricing.freePrice': '$0',
+    'pricing.freeDesc': 'Per testare il motore 3D e shader.',
+    'pricing.pro': 'Pro Designer',
+    'pricing.proPrice': '$49',
+    'pricing.proDesc': 'Export 4K e generazione video ads.',
+    'pricing.agency': 'Agenzia Enterprise',
+    'pricing.agencyPrice': '$149',
+    'pricing.agencyDesc': 'Team, fabbriche B2B e schede Tech Pack.',
+    'pricing.popular': 'PIÙ POPOLARE',
+
+    'about.badge': 'LA NOSTRA MISSIONE',
+    'about.title': 'RIDEFINIRE LA CREAZIONE PRODOTTO',
+    'about.desc': 'Dall\'idea al render 3D, dal video virale alla produzione in pochi minuti.',
+    'about.pillar1': '1. Modellazione 3D',
+    'about.pillar2': '2. Video Marketing IA',
+    'about.pillar3': '3. Sourcing Globale con Fabbriche',
+
+    'sidebar.title': 'Moduli Ecosistema',
+    'sidebar.aurora3d': 'Motore 3D & Shader',
+    'sidebar.scanner3d': 'Scanner 3D AI',
+    'sidebar.adgen': 'Video Marketing (AdGen)',
+    'sidebar.clothify': 'Sourcing Tessile (Clothify)',
+    'sidebar.solesmith': 'Design Calzature (SoleSmith)',
+    'sidebar.automo': 'Calendario Social',
+    'sidebar.suppliers': 'Fornitori Globali B2B',
+    'sidebar.mascot': 'Copilota & Mascotte',
+    'sidebar.admin': 'Super Admin & Metriche',
+    'sidebar.accessLevel': 'LIVELLO ACCESSO',
+    'sidebar.upgradeBtn': 'AGGIORNA PIANO'
+  },
+  de: {
+    'landing.badge': 'SAAS-PLATTFORM • KI + 3D-DESIGN-SUITE',
+    'landing.title': 'KI-DESIGN & MODE DER NÄCHSTEN GENERATION',
+    'landing.subtitle': 'Erstellen Sie ultra-realistische 3D-Modelle, virale Videoanzeigen und kalkulieren Sie in Echtzeit mit globalen Fabriken.',
+    'landing.startFree': 'Kostenlos Testen',
+    'landing.explore3d': '3D-Studio Erkunden',
+    'landing.login': 'Anmelden',
+    'landing.register': 'Registrieren',
+    'landing.pricing': 'Preise & Tarife',
+    'landing.about': 'Manifest',
+
+    'hero.titleTop': 'DIE ULTIMATIVE',
+    'hero.titleBottom': 'KI-MARKETING-ENGINE',
+    'hero.subtitle': '3D-Welten in Fesselnde Kampagnen Verwandeln',
+    'hero.realtime': 'Echtzeit-Daten',
+    'hero.category': '3D Streetwear & Mode',
+    'hero.followers': '+23% Follower',
+    'hero.performance': 'Kampagnen-Performance:',
+    'hero.roi': '+189% ROI',
+    'hero.tagline': 'REVOLUTION IM 3D-DESIGN & STREETWEAR',
+    'hero.launchBtn': 'WORKSPACE STARTEN',
+    'hero.integrated': 'INTEGRIERTE KI- & 3D-ENGINES',
+
+    'avantgarde.badge': 'CEL-SHADED ÄSTHETIK • AVANTGARDE',
+    'avantgarde.title': 'DIE ZUKUNFT VON STREETWEAR & HARDWARE',
+    'avantgarde.desc': 'Präzises 3D-Modeling kombiniert mit Cel-Shaded Anime-Ästhetik und physikalischer Stoffsimulation.',
+    'avantgarde.btn': '3D-Shader Erkunden',
+
+    'pricing.badge': 'TRANSPARENTE TARIFE',
+    'pricing.title': 'SKALIEREN SIE IHR DESIGN-STUDIO',
+    'pricing.subtitle': 'Von Solo-Designern bis hin zu globalen Mode-Agenturen.',
+    'pricing.free': 'Free Starter',
+    'pricing.freePrice': '$0',
+    'pricing.freeDesc': 'Zum Testen der 3D-Engine.',
+    'pricing.pro': 'Pro Designer',
+    'pricing.proPrice': '$49',
+    'pricing.proDesc': '4K-Export und Video-Ad-Generierung.',
+    'pricing.agency': 'Agentur Enterprise',
+    'pricing.agencyPrice': '$149',
+    'pricing.agencyDesc': 'Teams, Fabrikvernetzung und Tech Pack PDF.',
+    'pricing.popular': 'BELIEBTESTER PLAN',
+
+    'about.badge': 'UNSERE MISSION',
+    'about.title': 'PRODUKTENTWICKLUNG NEU DEFINIERT',
+    'about.desc': 'Vom Konzept zum 3D-Render, vom viralen Video zur Fabrik in Minuten.',
+    'about.pillar1': '1. 3D-Modellierung',
+    'about.pillar2': '2. KI-Videomarketing',
+    'about.pillar3': '3. Globales Sourcing mit Fabriken',
+
+    'sidebar.title': 'Ökosystem-Module',
+    'sidebar.aurora3d': '3D-Engine & Shader',
+    'sidebar.scanner3d': '3D-KI-Scanner',
+    'sidebar.adgen': 'Video-Marketing (AdGen)',
+    'sidebar.clothify': 'Textilbeschaffung',
+    'sidebar.solesmith': 'Schuhdesign',
+    'sidebar.automo': 'Social-Media-Kalender',
+    'sidebar.suppliers': 'Globale B2B-Lieferanten',
+    'sidebar.mascot': 'KI-Copilot & Maskottchen',
+    'sidebar.admin': 'Super-Admin-Konsole',
+    'sidebar.accessLevel': 'ZUGANGSSTUFE',
+    'sidebar.upgradeBtn': 'PLAN UPGRADEN'
+  },
+  zh: {
+    'landing.badge': 'SaaS 平台 • 下一代 AI + 3D 设计套件',
+    'landing.title': '下一代人工智能时尚与三维设计',
+    'landing.subtitle': '创建超写实3D网格模型、社交媒体爆款视频、与语音助手互动并实时对接全球制造商。',
+    'landing.startFree': '免费开始试用',
+    'landing.explore3d': '进入 3D 工作室',
+    'landing.login': '登录',
+    'landing.register': '注册',
+    'landing.pricing': '价格与方案',
+    'landing.about': '设计宣言',
+
+    'hero.titleTop': '终极',
+    'hero.titleBottom': 'AI 营销引擎',
+    'hero.subtitle': '将 3D 世界转化为极具吸引力的商业营销活动',
+    'hero.realtime': '实时数据分析',
+    'hero.category': '3D 街头潮流服饰',
+    'hero.followers': '+23% 粉丝增长',
+    'hero.performance': '营销效果回报:',
+    'hero.roi': '+189% ROI',
+    'hero.tagline': '颠覆 3D 设计与潮流时尚',
+    'hero.launchBtn': '进入工作区',
+    'hero.integrated': '整合 AI 与 3D 渲染引擎',
+
+    'avantgarde.badge': '赛博卡通渲染 • 先锋设计',
+    'avantgarde.title': '街头潮流与智能硬件的未来',
+    'avantgarde.desc': '融合工业参数化建模精度与日系赛璐珞卡通渲染风格，支持实时物理布料解算。',
+    'avantgarde.btn': '体验 3D 着色器',
+
+    'pricing.badge': '透明价格与方案',
+    'pricing.title': '赋能您的设计工作室',
+    'pricing.subtitle': '从独立设计师到全球顶级时尚与产品设计机构。',
+    'pricing.free': '免费体验版',
+    'pricing.freePrice': '$0',
+    'pricing.freeDesc': '体验实时 3D 引擎与着色器。',
+    'pricing.pro': '专业设计师版',
+    'pricing.proPrice': '$49',
+    'pricing.proDesc': '4K超清导出与 AI 视频广告生成。',
+    'pricing.agency': '企业机构版',
+    'pricing.agencyPrice': '$149',
+    'pricing.agencyDesc': '团队协同、全球代工厂直连与工艺制单生成。',
+    'pricing.popular': '最受欢迎',
+
+    'about.badge': '核心使命',
+    'about.title': '重构产品设计与制造全生命周期',
+    'about.desc': '数分钟内实现从概念草图到 3D 渲染、从爆款短视频到全球工厂打样。',
+    'about.pillar1': '1. 3D 概念与模型设计',
+    'about.pillar2': '2. AI 视频广告营销 (Sora/Gen-3)',
+    'about.pillar3': '3. 优质认证代工厂全球直连',
+
+    'sidebar.title': '生态系统模块',
+    'sidebar.aurora3d': '3D 引擎与着色器',
+    'sidebar.scanner3d': '3D AI 扫描仪',
+    'sidebar.adgen': '视频营销 (AdGen)',
+    'sidebar.clothify': '面料与面辅料采购',
+    'sidebar.solesmith': '鞋履设计 (SoleSmith)',
+    'sidebar.automo': '社交媒体日历',
+    'sidebar.suppliers': '全球 B2B 供应商',
+    'sidebar.mascot': 'AI 伴侣与吉祥物',
+    'sidebar.admin': '超级管理后台',
+    'sidebar.accessLevel': '当前权限级别',
+    'sidebar.upgradeBtn': '升级我的方案'
   }
 };
 
@@ -345,7 +580,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const saved = localStorage.getItem('aether_language');
       if (saved) return saved;
-      // Auto-detect browser language
       if (typeof navigator !== 'undefined' && navigator.language) {
         const browserCode = navigator.language.slice(0, 2).toLowerCase();
         const found = ALL_WORLD_LANGUAGES.find((l) => l.code === browserCode);
@@ -378,15 +612,12 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     POPULAR_LANGUAGES[0];
 
   const t = (key: string): string => {
-    // 1. Check active language
     if (TRANSLATIONS[language] && TRANSLATIONS[language][key]) {
       return TRANSLATIONS[language][key];
     }
-    // 2. Fallback to English
     if (TRANSLATIONS['en'] && TRANSLATIONS['en'][key]) {
       return TRANSLATIONS['en'][key];
     }
-    // 3. Fallback to Spanish
     if (TRANSLATIONS['es'] && TRANSLATIONS['es'][key]) {
       return TRANSLATIONS['es'][key];
     }

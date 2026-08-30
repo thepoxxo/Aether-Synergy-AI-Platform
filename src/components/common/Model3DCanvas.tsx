@@ -52,7 +52,7 @@ interface Model3DCanvasProps {
   onModelLoaded?: (name: string) => void;
 }
 
-export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
+const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
   type = 'jacket',
   primaryColor = '#1e293b',
   accentColor = '#e5a93c',
@@ -869,3 +869,5 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     </div>
   );
 };
+
+export const Model3DCanvas = React.memo(Model3DCanvasBase);

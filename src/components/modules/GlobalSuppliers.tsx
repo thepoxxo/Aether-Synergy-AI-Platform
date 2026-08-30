@@ -21,7 +21,10 @@ import {
   Leaf,
   Ruler,
   Tag,
-  Barcode
+  Barcode,
+  HelpCircle,
+  PenTool,
+  Check
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -31,6 +34,7 @@ export interface Supplier {
   country: string;
   flag: string;
   city: string;
+  defaultLang: 'pt' | 'tr' | 'es' | 'it' | 'en';
   moq: number;
   leadTime: string;
   pricePerUnit: number;
@@ -41,6 +45,8 @@ export interface Supplier {
   image: string;
 }
 
+export type TechPackLanguage = 'en' | 'pt' | 'tr' | 'es' | 'it';
+
 export const GlobalSuppliers: React.FC = () => {
   const { user } = useAuth();
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
@@ -50,6 +56,7 @@ export const GlobalSuppliers: React.FC = () => {
   const [selectedCert, setSelectedCert] = useState('all');
   const [isTechPackModalOpen, setIsTechPackModalOpen] = useState(false);
   const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
+  const [techPackLang, setTechPackLang] = useState<TechPackLanguage>('en');
 
   const suppliers: Supplier[] = [
     {
@@ -58,6 +65,7 @@ export const GlobalSuppliers: React.FC = () => {
       country: 'Portugal',
       flag: '🇵🇹',
       city: 'Oporto',
+      defaultLang: 'pt',
       moq: 100,
       leadTime: '18 - 24 días',
       pricePerUnit: 24.50,
@@ -73,6 +81,7 @@ export const GlobalSuppliers: React.FC = () => {
       country: 'Turquía',
       flag: '🇹🇷',
       city: 'Estambul',
+      defaultLang: 'tr',
       moq: 150,
       leadTime: '15 - 20 días',
       pricePerUnit: 18.20,
@@ -88,6 +97,7 @@ export const GlobalSuppliers: React.FC = () => {
       country: 'Colombia',
       flag: '🇨🇴',
       city: 'Medellín',
+      defaultLang: 'es',
       moq: 80,
       leadTime: '12 - 16 días',
       pricePerUnit: 14.80,
@@ -103,6 +113,7 @@ export const GlobalSuppliers: React.FC = () => {
       country: 'Italia',
       flag: '🇮🇹',
       city: 'Milán',
+      defaultLang: 'it',
       moq: 50,
       leadTime: '25 - 30 días',
       pricePerUnit: 48.00,
@@ -125,6 +136,13 @@ export const GlobalSuppliers: React.FC = () => {
   });
 
   const activeSupplier = selectedSupplier || suppliers[0];
+
+  const handleOpenTechPack = (sup?: Supplier) => {
+    const target = sup || activeSupplier;
+    setSelectedSupplier(target);
+    setTechPackLang(target.defaultLang || 'en');
+    setIsTechPackModalOpen(true);
+  };
 
   const totalProductionCost = activeSupplier.pricePerUnit * orderQuantity;
   const estimatedShippingAir = Math.round(orderQuantity * 3.2);
@@ -163,11 +181,11 @@ export const GlobalSuppliers: React.FC = () => {
         </div>
 
         <button
-          onClick={() => setIsTechPackModalOpen(true)}
+          onClick={() => handleOpenTechPack()}
           className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
         >
           <FileText className="w-4 h-4" />
-          <span>Generar Tech Pack PDF (Dual CM / IN)</span>
+          <span>Generar Tech Pack PDF Multilingüe</span>
         </button>
       </div>
 
@@ -211,7 +229,7 @@ export const GlobalSuppliers: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Grid: Suppliers List + Live Quote Calculator */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left 7 Cols: Suppliers Cards */}
         <div className="lg:col-span-7 space-y-4">
@@ -348,32 +366,32 @@ export const GlobalSuppliers: React.FC = () => {
               </button>
 
               <button
-                onClick={() => setIsTechPackModalOpen(true)}
+                onClick={() => handleOpenTechPack()}
                 className="w-full py-3 rounded-2xl bg-cyber-950 hover:bg-cyber-850 border border-cyber-700 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
               >
                 <FileText className="w-4 h-4 text-cyber-gold" />
-                <span>Ver Ficha Técnica Tech Pack (CM / IN)</span>
+                <span>Ver Ficha Técnica Tech Pack Multilingüe</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* INDUSTRIAL TECH PACK MODAL WITH WATERMARK & DUAL CM / INCH MEASUREMENTS */}
+      {/* INDUSTRIAL MULTILINGUAL TECH PACK MODAL */}
       {isTechPackModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
-          <div className="relative bg-white text-slate-900 rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-            {/* Elegant Background Watermark */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] rotate-[-25deg] select-none z-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+          <div className="relative bg-white text-slate-900 rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            {/* Subtle Confidential Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] rotate-[-28deg] select-none z-0">
               <div className="text-center font-tech font-extrabold text-7xl text-slate-900 tracking-widest leading-none">
                 AETHER SYNERGY <br />
-                CONFIDENTIAL TECH PACK <br />
-                B2B OFFICIAL SPECIFICATION
+                CONFIDENTIAL PRODUCTION TECH PACK <br />
+                OFFICIAL B2B MANUFACTURING SPECIFICATION
               </div>
             </div>
 
-            {/* Modal Header */}
-            <div className="relative z-10 p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
+            {/* Modal Header & Language Switcher */}
+            <div className="relative z-10 p-5 bg-slate-950 text-white flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded-2xl bg-amber-500/20 border border-amber-500 text-amber-400">
                   <FileText className="w-6 h-6" />
@@ -383,40 +401,64 @@ export const GlobalSuppliers: React.FC = () => {
                     <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
                       DOC: TP-2026-X49
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400">REV 3.2</span>
+                    <span className="text-[10px] font-mono text-slate-400">REV 3.4 • AUDITABLE</span>
                   </div>
-                  <h3 className="font-tech font-bold text-xl mt-0.5">
-                    FICHA TÉCNICA DE PRODUCCIÓN INDUSTRIAL (TECH PACK)
+                  <h3 className="font-tech font-bold text-lg sm:text-xl mt-0.5">
+                    {techPackLang === 'en'
+                      ? 'OFFICIAL PRODUCTION TECH PACK & SPECIFICATION'
+                      : techPackLang === 'pt'
+                      ? 'FICHA TÉCNICA OFICIAL DE PRODUÇÃO INDUSTRIAL'
+                      : techPackLang === 'tr'
+                      ? 'RESMİ ÜRETİM VE KALIP TEKNİK ŞARTNAMESİ'
+                      : techPackLang === 'it'
+                      ? 'SCHEDA TECNICA DI PRODUZIONE INDUSTRIALE'
+                      : 'FICHA TÉCNICA OFICIAL DE PRODUCCIÓN INDUSTRIAL'}
                   </h3>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Unit Switcher */}
-                <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-mono">
+              {/* Multilingual Selector for Factories */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-[11px] font-mono">
                   <button
-                    onClick={() => setUnitSystem('both')}
+                    onClick={() => setTechPackLang('en')}
                     className={`px-2.5 py-1 rounded-lg transition-all ${
-                      unitSystem === 'both' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                      techPackLang === 'en' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Dual (CM & IN)
+                    🇺🇸 English (Global)
                   </button>
                   <button
-                    onClick={() => setUnitSystem('cm')}
+                    onClick={() => setTechPackLang('pt')}
                     className={`px-2.5 py-1 rounded-lg transition-all ${
-                      unitSystem === 'cm' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                      techPackLang === 'pt' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Métrico (CM)
+                    🇵🇹 Português
                   </button>
                   <button
-                    onClick={() => setUnitSystem('in')}
+                    onClick={() => setTechPackLang('tr')}
                     className={`px-2.5 py-1 rounded-lg transition-all ${
-                      unitSystem === 'in' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                      techPackLang === 'tr' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Imperial (IN)
+                    🇹🇷 Türkçe
+                  </button>
+                  <button
+                    onClick={() => setTechPackLang('it')}
+                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                      techPackLang === 'it' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    🇮🇹 Italiano
+                  </button>
+                  <button
+                    onClick={() => setTechPackLang('es')}
+                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                      techPackLang === 'es' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    🇨🇴 Español
                   </button>
                 </div>
 
@@ -431,37 +473,52 @@ export const GlobalSuppliers: React.FC = () => {
 
             {/* Modal Body */}
             <div className="relative z-10 p-6 overflow-y-auto space-y-6 text-xs font-sans">
-              {/* Product & Factory Header Info */}
+              {/* Product Header & Commercial Summary */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
                 <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Estilo / Prenda:</span>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
+                    {techPackLang === 'en' ? 'Style / Garment:' : 'Estilo / Prenda:'}
+                  </span>
                   <span className="font-bold text-slate-900 text-sm">Chaqueta Techwear Modular X-1</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Fábrica Asignada:</span>
-                  <span className="font-bold text-slate-900 text-sm">{activeSupplier.name}</span>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
+                    {techPackLang === 'en' ? 'Contracted Factory:' : 'Fábrica Asignada:'}
+                  </span>
+                  <span className="font-bold text-slate-900 text-sm">{activeSupplier.name} ({activeSupplier.country})</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Volumen / Cantidad:</span>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
+                    {techPackLang === 'en' ? 'PO Volume:' : 'Volumen de Orden:'}
+                  </span>
                   <span className="font-bold text-slate-900 text-sm">{orderQuantity} unidades</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Colores Pantone:</span>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
+                    {techPackLang === 'en' ? 'Pantone TCX Colors:' : 'Colores Pantone TCX:'}
+                  </span>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#1E293B] border border-slate-400" title="19-4007 TCX" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#E5A93C] border border-slate-400" title="14-0848 TCX" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#1E293B] border border-slate-400" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#E5A93C] border border-slate-400" />
                     <span className="text-[11px] font-mono font-bold text-slate-700">19-4007 / 14-0848</span>
                   </div>
                 </div>
               </div>
 
-              {/* 1. Complete Sizing Table with Dual Units (cm and inches) */}
+              {/* 1. Sizing Table with Dual Units (cm and inches) */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                    <Ruler className="w-4 h-4 text-amber-600" /> 1. TABLA DE MEDIDAS & GRADACIÓN INDUSTRIAL
+                    <Ruler className="w-4 h-4 text-amber-600" /> 1. TABLA DE MEDIDAS & GRADACIÓN (GRADING CHART)
                   </h4>
-                  <span className="text-[10px] font-mono text-slate-500">Tolerancia: +/- 0.5 cm (0.2 in)</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-slate-500">Tolerancia: +/- 0.5 cm (0.2 in)</span>
+                    <div className="flex bg-slate-200 p-0.5 rounded-lg text-[10px] font-mono font-bold">
+                      <button onClick={() => setUnitSystem('both')} className={`px-2 py-0.5 rounded ${unitSystem === 'both' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}>Dual</button>
+                      <button onClick={() => setUnitSystem('cm')} className={`px-2 py-0.5 rounded ${unitSystem === 'cm' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}>CM</button>
+                      <button onClick={() => setUnitSystem('in')} className={`px-2 py-0.5 rounded ${unitSystem === 'in' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}>IN</button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="overflow-x-auto border border-slate-300 rounded-2xl shadow-sm">
@@ -470,7 +527,7 @@ export const GlobalSuppliers: React.FC = () => {
                       <tr>
                         <th className="p-3">Punto de Medida (POM)</th>
                         <th className="p-3 text-center">S</th>
-                        <th className="p-3 text-center">M (Muestra)</th>
+                        <th className="p-3 text-center">M (Muestra Base)</th>
                         <th className="p-3 text-center">L</th>
                         <th className="p-3 text-center">XL</th>
                         <th className="p-3 text-center">XXL</th>
@@ -514,53 +571,85 @@ export const GlobalSuppliers: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2. Bill of Materials (BOM) & Stitching */}
+              {/* 2. Commercial FAQ, Incoterms & Payment Terms */}
               <div className="space-y-2">
                 <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Tag className="w-4 h-4 text-amber-600" /> 2. LISTA DETALLADA DE MATERIALES, HILOS Y AVÍOS (BOM)
+                  <HelpCircle className="w-4 h-4 text-amber-600" /> 2. TÉRMINOS COMERCIALES, INCOTERMS & PROTOCOLO DE CALIDAD
                 </h4>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                   <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">Tejido Exterior Principal:</span>
-                    <p className="text-slate-600">100% Nylon Ripstop 240 GSM con recubrimiento DWR hidrófugo y acabado mate anti-abrasión.</p>
+                    <span className="font-bold text-slate-900 block">Término Comercial (Incoterm):</span>
+                    <p className="text-slate-600"><strong>FOB (Free On Board)</strong> Puerto de Origen o <strong>DDP</strong> (Puesto en Almacén Destino con aranceles pagados).</p>
                   </div>
 
                   <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">Forro Interno y Bolsillos:</span>
-                    <p className="text-slate-600">Malla técnica CoolMax 120 GSM transpirable y micro-polar en bolsillos calientamanos.</p>
+                    <span className="font-bold text-slate-900 block">Condición de Pago (Payment):</span>
+                    <p className="text-slate-600"><strong>30% Anticipo</strong> al aprobar Orden de Compra + <strong>70% Saldo</strong> contra inspección final AQL 2.5 previa al despacho.</p>
                   </div>
 
                   <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">Cremalleras y Herrajes:</span>
-                    <p className="text-slate-600">YKK Aquaguard #5 impermeables con costuras termoselladas y tiradores de cordón reflectivo.</p>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">Hilos y Costuras (Stitching SPI):</span>
-                    <p className="text-slate-600">Hilo de nylon 60/2 reforzado con 12 puntadas por pulgada (12 SPI) y presillas Bar-Tack en bolsillos.</p>
+                    <span className="font-bold text-slate-900 block">Muestra Pre-Producción (PPS):</span>
+                    <p className="text-slate-600">1 Prototipo físico (PPS) debe enviarse en <strong>7 días hábiles</strong> para aprobación de calce antes del corte en serie.</p>
                   </div>
                 </div>
               </div>
 
-              {/* 3. Packaging & Labeling Specifications */}
-              <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-tech font-bold text-amber-400 uppercase">3. Instrucciones de Empaque y Etiquetado:</span>
-                  <span className="font-mono text-[10px] text-slate-400 flex items-center gap-1">
-                    <Barcode className="w-3.5 h-3.5" /> SKU: AET-JKT-2026-01
-                  </span>
+              {/* 3. Detailed BOM & Stitching */}
+              <div className="space-y-2">
+                <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Tag className="w-4 h-4 text-amber-600" /> 3. LISTA DE MATERIALES (BOM) & NORMAS DE COSTURA
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Tejido Exterior:</span>
+                    <p className="text-slate-600">100% Nylon Ripstop 240 GSM con recubrimiento DWR repelente al agua y acabado mate anti-desgarro.</p>
+                  </div>
+
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Cremalleras & Herrajes:</span>
+                    <p className="text-slate-600">YKK Aquaguard #5 impermeables con tiradores de silicona negra grabados con logo Aether.</p>
+                  </div>
+
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Densidad de Costura (SPI):</span>
+                    <p className="text-slate-600">Hilo bondeado 60/2 con <strong>12 puntadas por pulgada (12 SPI)</strong> y remates Bar-Tack en zonas de carga.</p>
+                  </div>
+
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Instrucciones de Lavado:</span>
+                    <p className="text-slate-600">Lavado a máquina 30°C ciclo suave, no usar cloro, planchar a temperatura baja (máx 110°C).</p>
+                  </div>
                 </div>
-                <p className="text-slate-300 leading-relaxed">
-                  Cada prenda debe doblarse individualmente en bolsa biodegradable compostable de 40 micras con orificios de ventilación, sobre desecante de gel de sílice y etiqueta de código de barras exterior visible. Cajas maestras de 25 unidades debidamente zunchadas.
-                </p>
+              </div>
+
+              {/* 4. Formal Signatures & Approvals */}
+              <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-4 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-tech font-bold text-amber-400 uppercase flex items-center gap-1.5">
+                    <PenTool className="w-4 h-4" /> 4. FIRMAS DE APROBACIÓN Y CONFORMIDAD TÉCNICA
+                  </span>
+                  <span className="font-mono text-[10px] text-slate-400">SKU: AET-JKT-2026-X49</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-8 pt-2">
+                  <div className="border-t border-slate-700 pt-2 text-left">
+                    <span className="font-bold block text-slate-200">Director Creativo / Marca:</span>
+                    <span className="text-[11px] text-slate-400 font-mono">Firma & Fecha: ____________________</span>
+                  </div>
+                  <div className="border-t border-slate-700 pt-2 text-left">
+                    <span className="font-bold block text-slate-200">Gerente de Planta / Fábrica:</span>
+                    <span className="text-[11px] text-slate-400 font-mono">Firma & Fecha: ____________________</span>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Modal Footer */}
             <div className="relative z-10 p-4 bg-slate-100 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
               <span className="text-slate-500 text-[11px] font-mono">
-                Documento generado por Aether Synergy B2B Engine • Válido para producción en {activeSupplier.country}
+                Documento oficial generado por Aether Synergy • Válido para producción en {activeSupplier.country}
               </span>
 
               <div className="flex items-center gap-2">
