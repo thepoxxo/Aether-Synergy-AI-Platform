@@ -45,11 +45,6 @@ export const Aurora3DStudio: React.FC = () => {
   const [primaryHexInput, setPrimaryHexInput] = useState('#1E293B');
   const [accentHexInput, setAccentHexInput] = useState('#E5A93C');
 
-  // 🧠 Universal AI Text/File-to-3D State
-  const [aiPromptInput, setAiPromptInput] = useState('');
-  const [isGenerating3D, setIsGenerating3D] = useState(false);
-  const [activeCustomModelName, setActiveCustomModelName] = useState<string | null>(null);
-
   // 💨 Cloth Physics & Wind State
   const [isClothWindActive, setIsClothWindActive] = useState(false);
   const [windIntensity, setWindIntensity] = useState<'gentle' | 'breeze' | 'gale'>('breeze');
@@ -254,77 +249,8 @@ export const Aurora3DStudio: React.FC = () => {
 
       {/* Main Studio Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Color Wheel & Universal AI Generator & Versions */}
+        {/* Left Column: Color Wheel & AI Product Versions */}
         <div className="lg:col-span-4 space-y-4">
-          {/* 🧠 1. Universal AI 3D Generator (Files & Text-to-3D) */}
-          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/50 shadow-cyber-card space-y-3">
-            <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
-              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
-                <Cpu className="w-4 h-4 text-cyber-gold animate-spin" style={{ animationDuration: '10s' }} />
-                CONVERSOR UNIVERSAL IA A 3D
-              </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-800 text-cyan-400 border border-cyan-500/30">
-                Cualquier Archivo
-              </span>
-            </div>
-
-            <p className="text-[11px] text-slate-400 leading-snug">
-              Escribe una descripción o sube cualquier archivo (<strong className="text-white">Imágenes, SVG, PDF o Planos</strong>) para sintetizarlo en 3D interactivo:
-            </p>
-
-            {/* Prompt Input Box */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={aiPromptInput}
-                  onChange={(e) => setAiPromptInput(e.target.value)}
-                  placeholder="Ej: Chaqueta bomber acolchada cyberpunk..."
-                  className="flex-1 bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
-                />
-                <button
-                  onClick={() => {
-                    if (!aiPromptInput.trim()) return;
-                    if (consumeCredit()) {
-                      setIsGenerating3D(true);
-                      setTimeout(() => {
-                        setIsGenerating3D(false);
-                        setProductType('jacket');
-                        setActiveCustomModelName(aiPromptInput);
-                      }, 1200);
-                    }
-                  }}
-                  disabled={isGenerating3D}
-                  className="px-3 py-2 rounded-xl bg-cyber-gold hover:bg-amber-400 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow transition-all flex items-center gap-1 shrink-0"
-                >
-                  <Wand2 className="w-3.5 h-3.5" />
-                  <span>{isGenerating3D ? 'Creando...' : 'Generar'}</span>
-                </button>
-              </div>
-
-              {/* Quick AI Prompt Pills */}
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {[
-                  { label: '🧥 Puffer Cyberpunk', type: 'jacket' },
-                  { label: '👟 Chunky Sneaker', type: 'sneaker' },
-                  { label: '🪑 Silla Nórdica', type: 'chair' },
-                  { label: '🎛️ Synth Modular', type: 'synth' }
-                ].map((pill, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setProductType(pill.type as ModelType);
-                      setAiPromptInput(pill.label);
-                    }}
-                    className="px-2 py-0.5 rounded-lg bg-cyber-950 border border-cyber-800 hover:border-cyber-gold text-[10px] text-slate-300 transition-all font-mono"
-                  >
-                    {pill.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
           {/* Total Color Freedom: Color Wheel & Hex Input */}
           <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/50 shadow-cyber-card space-y-4">
             <div className="flex items-center justify-between border-b border-cyber-800 pb-2">

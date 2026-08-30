@@ -141,10 +141,10 @@ const CHECKLIST_DATA: ChecklistItem[] = [
   // ==========================================
   {
     id: '3d_universal_file_converter',
-    module: 'Motor 3D & Shaders',
+    module: '3D IA Scanner & Recon',
     category: 'intermediate',
-    title: 'Conversor Universal IA de Cualquier Archivo a 3D',
-    desc: 'Conversión automática de Imágenes (.PNG, .JPG), Vector (.SVG), Planos (.PDF, .TXT) y Modelos (.GLB, .OBJ) en 3D interactivo.',
+    title: 'Escáner 3D IA & Conversor Universal (Video 360°, Archivos y APIs)',
+    desc: 'Conversión automática de Video 360°, Imágenes (.PNG, .JPG), Vector (.SVG), Planos (.PDF) y conexión con APIs 3D (Tripo3D, Meshy).',
     isInitialDone: true
   },
   {
