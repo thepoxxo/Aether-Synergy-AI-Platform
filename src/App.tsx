@@ -23,6 +23,7 @@ import { AutomoCalendar } from './components/modules/AutomoCalendar';
 import { GlobalSuppliers } from './components/modules/GlobalSuppliers';
 import { SynthetixMascot } from './components/modules/SynthetixMascot';
 import { AdminConsole } from './components/modules/AdminConsole';
+import { ProjectRoadmapChecklist } from './components/modules/ProjectRoadmapChecklist';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -105,6 +106,8 @@ const MainLayout: React.FC = () => {
         return <SynthetixMascot />;
       case 'admin':
         return <AdminConsole />;
+      case 'roadmap':
+        return <ProjectRoadmapChecklist />;
       default:
         return <Aurora3DStudio />;
     }

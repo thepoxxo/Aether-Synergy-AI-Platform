@@ -18,7 +18,8 @@ import {
   Maximize2,
   Scan,
   Compass,
-  Box
+  Box,
+  CheckSquare
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -34,6 +35,7 @@ interface NavItem {
   icon: React.ElementType;
   requiredRole: UserRole;
   badge?: string;
+  isLiteralLabel?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -55,6 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'suppliers', nameKey: 'sidebar.suppliers', icon: Globe2, requiredRole: 'agency', badge: 'AGENCY' },
     { id: 'mascot', nameKey: 'sidebar.mascot', icon: Smile, requiredRole: 'free', badge: 'HUB' },
     { id: 'admin', nameKey: 'sidebar.admin', icon: ShieldAlert, requiredRole: 'admin', badge: 'ADMIN' },
+    { id: 'roadmap', nameKey: 'Roadmap & Checklist', icon: CheckSquare, requiredRole: 'free', badge: 'PLAN', isLiteralLabel: true },
   ];
 
   const handleNavClick = (item: NavItem) => {
@@ -131,7 +134,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       : 'text-slate-600'
                   }`}
                 />
-                {!isCollapsed && <span className="truncate">{t(item.nameKey)}</span>}
+                {!isCollapsed && (
+                  <span className="truncate">
+                    {item.isLiteralLabel ? item.nameKey : t(item.nameKey)}
+                  </span>
+                )}
               </div>
 
               {!isCollapsed && (
