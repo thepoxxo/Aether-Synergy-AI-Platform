@@ -5,12 +5,33 @@
 @layer base {
   body {
     @apply bg-cyber-950 text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   h1, h2, h3, .font-tech {
-    font-family: 'Rajdhani', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Syne', 'Rajdhani', 'Outfit', sans-serif;
   }
+
+  .font-mono {
+    font-family: 'Space Grotesk', monospace;
+  }
+}
+
+/* =========================================================================
+   👑 3D PERSPECTIVE & CYBERPUNK INTERACTIVE DEPTH
+   ========================================================================= */
+.perspective-container {
+  perspective: 1200px;
+}
+
+.hover-3d-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow;
+}
+
+.hover-3d-card:hover {
+  transform: perspective(1000px) translateZ(25px) translateY(-8px) scale(1.02);
 }
 
 /* =========================================================================
