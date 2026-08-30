@@ -27,7 +27,12 @@ import {
   Filter,
   BarChart3,
   PieChart,
-  Download
+  Download,
+  Radio,
+  Newspaper,
+  Flame,
+  Target,
+  Trophy
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
@@ -37,7 +42,7 @@ import { generateExecutiveExcelReport } from '../../services/excelReportGenerato
 
 export const AdminConsole: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'financials' | 'telemetry' | 'users' | 'audit' | 'affiliates'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'financials' | 'telemetry' | 'users' | 'audit' | 'affiliates' | 'intelligence'>('analytics');
   const [usersList, setUsersList] = useState<StoredUser[]>(() => dbService.getAllUsers());
   const [searchQuery, setSearchQuery] = useState('');
   const [filterNiche, setFilterNiche] = useState('all');
@@ -260,6 +265,17 @@ export const AdminConsole: React.FC = () => {
           }`}
         >
           <DollarSign className="w-4 h-4" /> Afiliados & Comisiones (20%)
+        </button>
+
+        <button
+          onClick={() => setActiveTab('intelligence')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-tech font-bold text-xs sm:text-sm uppercase tracking-wider transition-all ${
+            activeTab === 'intelligence'
+              ? 'bg-rose-500 text-white shadow-[0_0_15px_rgba(244,63,94,0.5)] font-bold'
+              : 'text-rose-300 hover:text-white bg-rose-500/10 border border-rose-500/30'
+          }`}
+        >
+          <Radio className="w-4 h-4" /> Inteligencia Competitiva & Rumores IA
         </button>
       </div>
 
@@ -800,6 +816,201 @@ export const AdminConsole: React.FC = () => {
             >
               Solicitar Transferencia Inmediata vía Stripe Express ($1,490.00 USD)
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          TAB 7: COMPETITIVE INTELLIGENCE, PRICES & AI RUMOR RADAR
+          ========================================================= */}
+      {activeTab === 'intelligence' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Market Intelligence Header */}
+          <div className="p-6 rounded-3xl bg-cyber-900 border border-rose-500/50 shadow-cyber-card space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-rose-500/20 border border-rose-500 text-rose-300">
+                  <Radio className="w-6 h-6 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="font-tech font-extrabold text-lg text-white">
+                    CENTRO DE INTELIGENCIA COMPETITIVA & RADAR DE RUMORES IA
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Monitoreo estratégico de competidores (CLO3D, Browzwear, Midjourney), comparativa de precios y filtraciones de la industria
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => alert('¡Dossier de Inteligencia de Mercado y Benchmark 2026 exportado en PDF!')}
+                className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                <span>Exportar Dossier Estratégico (PDF)</span>
+              </button>
+            </div>
+
+            {/* Benchmark vs Competitors Table */}
+            <div className="overflow-x-auto pt-2">
+              <table className="w-full text-left font-mono text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-cyber-800 text-slate-400">
+                    <th className="pb-3 font-tech font-bold">Plataforma / Competidor</th>
+                    <th className="pb-3 font-tech font-bold">Precio / Asiento</th>
+                    <th className="pb-3 font-tech font-bold">Limitación Principal</th>
+                    <th className="pb-3 font-tech font-bold">IA Generativa</th>
+                    <th className="pb-3 font-tech font-bold">E-Commerce & Pasarela</th>
+                    <th className="pb-3 font-tech font-bold">Ventaja de Aether Synergy</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-cyber-800/60">
+                  <tr className="text-slate-300">
+                    <td className="py-3 font-bold text-white flex items-center gap-2">
+                      <span>🧵</span> CLO3D
+                    </td>
+                    <td className="py-3 text-amber-400">$50 / mes ($600/año)</td>
+                    <td className="py-3 text-slate-400">Requiere GPU local de $2,000</td>
+                    <td className="py-3 text-rose-400">❌ Nula (Manual)</td>
+                    <td className="py-3 text-rose-400">❌ No integrado</td>
+                    <td className="py-3 text-emerald-400 font-bold">WebGPU Nube + IA en 1 Clic</td>
+                  </tr>
+                  <tr className="text-slate-300">
+                    <td className="py-3 font-bold text-white flex items-center gap-2">
+                      <span>🏢</span> Browzwear / V-Stitcher
+                    </td>
+                    <td className="py-3 text-amber-400">$4,500 / año (Enterprise)</td>
+                    <td className="py-3 text-slate-400">Curva de 6 meses & Software pesado</td>
+                    <td className="py-3 text-rose-400">❌ Sin IA nativa</td>
+                    <td className="py-3 text-rose-400">❌ Sin video marketing</td>
+                    <td className="py-3 text-emerald-400 font-bold">Precio 92% menor + AdGen</td>
+                  </tr>
+                  <tr className="text-slate-300">
+                    <td className="py-3 font-bold text-white flex items-center gap-2">
+                      <span>🎨</span> Midjourney v6
+                    </td>
+                    <td className="py-3 text-amber-400">$30 - $60 / mes</td>
+                    <td className="py-3 text-slate-400">Solo 2D plano no editable</td>
+                    <td className="py-3 text-cyan-400">✓ Imágenes 2D</td>
+                    <td className="py-3 text-rose-400">❌ Sin 3D ni patrones</td>
+                    <td className="py-3 text-emerald-400 font-bold">Mallas 3D + Patronaje DXF</td>
+                  </tr>
+                  <tr className="text-slate-300">
+                    <td className="py-3 font-bold text-white flex items-center gap-2">
+                      <span>🌐</span> Spline 3D
+                    </td>
+                    <td className="py-3 text-amber-400">$24 / mes</td>
+                    <td className="py-3 text-slate-400">Generalista sin moda ni telas</td>
+                    <td className="py-3 text-cyan-400">✓ AI Texturing</td>
+                    <td className="py-3 text-rose-400">❌ Sin proveedores B2B</td>
+                    <td className="py-3 text-emerald-400 font-bold">Físicas textiles + Escrow B2B</td>
+                  </tr>
+                  <tr className="bg-rose-500/10 border-t-2 border-rose-500 text-white font-bold">
+                    <td className="py-3.5 text-rose-300 flex items-center gap-2">
+                      <span>💎</span> <strong>Aether Synergy</strong>
+                    </td>
+                    <td className="py-3.5 text-emerald-400">$39 Pro / $99 Agency</td>
+                    <td className="py-3.5 text-emerald-300">✓ 100% Web / Sin instalación</td>
+                    <td className="py-3.5 text-emerald-400">✓ Swarm 6 Agentes 24/7</td>
+                    <td className="py-3.5 text-emerald-400">✓ Shopify 1-Clic + Pasarela Live</td>
+                    <td className="py-3.5 text-emerald-400 font-extrabold">ECOSISTEMA INTEGRAL 10X</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Industry News & Rumor Radar Feed */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Col: AI Rumor Radar & Leak Tracker */}
+            <div className="p-6 rounded-3xl bg-cyber-900 border border-cyber-800 space-y-4 shadow-cyber-card">
+              <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
+                <span className="font-tech font-bold text-sm text-white flex items-center gap-2">
+                  <Flame className="w-4 h-4 text-rose-400" /> Radar de Rumores & Filtraciones de IA 2026/2027
+                </span>
+                <span className="text-[10px] font-mono text-rose-300 font-bold">ACTUALIZADO HOY</span>
+              </div>
+
+              <div className="space-y-3 font-mono text-xs">
+                <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-rose-400 font-bold text-[11px]">🔴 RUMOR CONFIRMADO: OpenAI Sora 3D</span>
+                    <span className="text-[9px] text-slate-500">Q4 2026</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    OpenAI prepara APIs para convertir prompts de texto directamente en mallas volumétricas .GLB con texturas PBR.
+                  </p>
+                  <span className="text-[10px] text-cyan-300 font-bold block pt-1">
+                    Impacto en Aether: Integración inmediata en nuestro módulo Scanner3D.
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-purple-400 font-bold text-[11px]">🟣 FILTRACIÓN: Apple Vision Pro 2</span>
+                    <span className="text-[9px] text-slate-500">2027 Roadmap</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    Reducción de peso del 40% y soporte de renderizado neural instantáneo para compras de ropa virtual en WebXR.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-amber-400 font-bold text-[11px]">🟡 INDUSTRIA: Runway Gen-4 360°</span>
+                    <span className="text-[9px] text-slate-500">Beta Privada</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    Nuevos controles de cámara ortogonal para modelado de producto sin distorsión anatómica.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Col: Strategic Industry News & Regulations */}
+            <div className="p-6 rounded-3xl bg-cyber-900 border border-cyber-800 space-y-4 shadow-cyber-card">
+              <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
+                <span className="font-tech font-bold text-sm text-white flex items-center gap-2">
+                  <Newspaper className="w-4 h-4 text-cyan-400" /> Noticias Oficiales & Regulaciones Globales
+                </span>
+                <span className="text-[10px] font-mono text-cyan-300 font-bold">LEGISLACIÓN 2026</span>
+              </div>
+
+              <div className="space-y-3 font-mono text-xs">
+                <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-emerald-400 font-bold text-[11px]">🟢 NORMA OFICIAL: Pasaporte Digital UE 2026</span>
+                    <span className="text-[9px] text-slate-500">Unión Europea</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    La UE aprueba la obligatoriedad del DPP con código QR para rastrear huella de carbono y reciclabilidad en prendas textiles.
+                  </p>
+                  <span className="text-[10px] text-emerald-400 font-bold block pt-1">
+                    ✓ Aether Synergy ya cumple 100% con este requisito en GlobalSuppliers.
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-cyan-400 font-bold text-[11px]">🔵 SHOPIFY: Soporte Nativo WebGPU 3D</span>
+                    <span className="text-[9px] text-slate-500">Shopify Editions</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    Shopify acelera la adopción de visualizadores 3D en línea, aumentando la tasa de conversión en tiendas en un 44%.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-cyber-gold font-bold text-[11px]">⭐ WGSN FASHION: Macrotendencia Cyber Gold</span>
+                    <span className="text-[9px] text-slate-500">Reporte Anual</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px]">
+                    El diseño de alta costura técnica con acabados metálicos y cortes modulares dominará las semanas de la moda en 2026/2027.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

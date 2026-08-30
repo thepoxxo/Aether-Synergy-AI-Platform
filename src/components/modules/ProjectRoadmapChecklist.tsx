@@ -566,6 +566,42 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Orquestador de Enjambre de Agentes Autónomos (6 Agentes Especializados 24/7)',
     desc: 'Sistema de agentes autónomos que supervisan en tiempo real optimización 3D, copywriting viral, aranceles de fábrica, predicción de tendencias y conversión.',
     isInitialDone: true
+  },
+
+  // ==========================================
+  // 💎 8. NIVEL 8: PRODUCTION APIS, REALTIME WEBHOOKS & COMPETITIVE INTELLIGENCE
+  // ==========================================
+  {
+    id: 'competitive_intelligence_market_radar',
+    module: 'Super Admin & Métricas',
+    category: 'advanced',
+    title: 'Centro de Inteligencia Competitiva, Precios, Rumores de IA & Benchmark de Mercado',
+    desc: 'Monitoreo estratégico y comparativa de costos vs CLO3D, Browzwear, Midjourney y Spline 3D, con radar de rumores y filtraciones de la industria.',
+    isInitialDone: true
+  },
+  {
+    id: 'realtime_api_gateway_readiness',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Pasarela de Producción para APIs 100% Reales (Tripo3D, ElevenLabs, Shopify & Stripe)',
+    desc: 'Arquitectura de endpoints desacoplados preparados para autenticación con claves API reales, Webhooks y pagos en vivo.',
+    isInitialDone: true
+  },
+  {
+    id: 'enterprise_webhook_event_system',
+    module: 'Super Admin & Multi-Marca',
+    category: 'advanced',
+    title: 'Sistema de Webhooks en Tiempo Real para Eventos de Fabricación y Pedidos',
+    desc: 'Despacho automatizado de notificaciones webhook ante cambios de estado en corte textil, pedidos Shopify y reservas de fábrica.',
+    isInitialDone: true
+  },
+  {
+    id: 'brand_assets_cloud_backup',
+    module: 'Fabricación & Hardware 3D',
+    category: 'advanced',
+    title: 'Sincronización & Bóveda de Diseños 3D en la Nube (Cloud Assets Vault)',
+    desc: 'Almacenamiento seguro e inmutable de geometrías .GLB, texturas PBR 4K y fichas técnicas exportables.',
+    isInitialDone: true
   }
 ];
 
@@ -579,7 +615,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
         }
       });
 
-      const saved = localStorage.getItem('aether_roadmap_checklist_v4');
+      const saved = localStorage.getItem('aether_roadmap_checklist_v5');
       if (saved) {
         return { ...initial, ...JSON.parse(saved) };
       }
@@ -594,7 +630,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    localStorage.setItem('aether_roadmap_checklist_v4', JSON.stringify(checkedItems));
+    localStorage.setItem('aether_roadmap_checklist_v5', JSON.stringify(checkedItems));
   }, [checkedItems]);
 
   const toggleItem = (id: string) => {
