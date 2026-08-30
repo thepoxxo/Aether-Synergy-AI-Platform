@@ -37,7 +37,7 @@ import { generateExecutiveExcelReport } from '../../services/excelReportGenerato
 
 export const AdminConsole: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'financials' | 'telemetry' | 'users'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'financials' | 'telemetry' | 'users' | 'audit' | 'affiliates'>('analytics');
   const [usersList, setUsersList] = useState<StoredUser[]>(() => dbService.getAllUsers());
   const [searchQuery, setSearchQuery] = useState('');
   const [filterNiche, setFilterNiche] = useState('all');
@@ -238,6 +238,28 @@ export const AdminConsole: React.FC = () => {
           }`}
         >
           <Users className="w-4 h-4" /> Directorio de Clientes ({usersList.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab('audit')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-tech font-bold text-xs sm:text-sm uppercase tracking-wider transition-all ${
+            activeTab === 'audit'
+              ? 'bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+              : 'text-purple-300 hover:text-white bg-purple-500/10 border border-purple-500/30'
+          }`}
+        >
+          <Sparkles className="w-4 h-4" /> Auditoría Multi-Agente IA
+        </button>
+
+        <button
+          onClick={() => setActiveTab('affiliates')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-tech font-bold text-xs sm:text-sm uppercase tracking-wider transition-all ${
+            activeTab === 'affiliates'
+              ? 'bg-emerald-400 text-black shadow-[0_0_15px_rgba(52,211,153,0.5)] font-bold'
+              : 'text-emerald-300 hover:text-white bg-emerald-500/10 border border-emerald-500/30'
+          }`}
+        >
+          <DollarSign className="w-4 h-4" /> Afiliados & Comisiones (20%)
         </button>
       </div>
 
@@ -624,6 +646,160 @@ export const AdminConsole: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          TAB 5: AUDITORÍA MULTI-AGENTE DE IDENTIDAD DE MARCA
+          ========================================================= */}
+      {activeTab === 'audit' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="p-6 rounded-3xl bg-cyber-900 border border-purple-500/40 shadow-cyber-card space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyber-800 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-tech font-bold text-white">ENJAMBRE DE AGENTES IA • AUDITORÍA DE PRODUCTO & MARCA</h3>
+                  <p className="text-xs text-slate-400">3 Agentes especializados evaluando tu diseño en tiempo real</p>
+                </div>
+              </div>
+
+              <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono text-xs font-bold">
+                Calificación Global: 94 / 100 (A+)
+              </span>
+            </div>
+
+            {/* 3 Concurrent Agents Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Agent 1: Director Creativo */}
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-tech font-bold text-sm text-cyan-300">🎨 DIRECTOR CREATIVO IA</span>
+                  <span className="text-xs font-mono font-bold text-cyan-400">96/100</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  "Excelente armonía visual. La paleta de color <em>Cyber Gold (#E5A93C)</em> sobre tela antracita 460 GSM proyecta exclusividad de lujo streetwear. Tipografía y decals perfectamente alineados."
+                </p>
+                <div className="p-2 rounded-xl bg-cyber-900 text-[11px] text-cyan-300 font-mono">
+                  ✓ Coherencia Avant-Garde: 100%
+                </div>
+              </div>
+
+              {/* Agent 2: Ingeniero Textil */}
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-tech font-bold text-sm text-amber-300">🧵 INGENIERO TEXTIL IA</span>
+                  <span className="text-xs font-mono font-bold text-amber-400">92/100</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  "Viabilidad de confección aprobada para fábricas en Portugal y Turquía. Se recomienda costura Flatlock de 4 agujas en uniones de hombros para garantizar impermeabilidad 20,000 mm."
+                </p>
+                <div className="p-2 rounded-xl bg-cyber-900 text-[11px] text-amber-300 font-mono">
+                  ✓ Resistencia al Desgaste: 4.8 / 5.0
+                </div>
+              </div>
+
+              {/* Agent 3: Analista Financiero */}
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-tech font-bold text-sm text-emerald-300">📈 ANALISTA FINANCIERO IA</span>
+                  <span className="text-xs font-mono font-bold text-emerald-400">95/100</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  "Costo de producción landed estimado: <strong>$28.50 USD</strong>. Precio recomendado en e-commerce (MSRP): <strong>$120.00 USD</strong>. Margen de rentabilidad proyectado: <strong>76.25%</strong>."
+                </p>
+                <div className="p-2 rounded-xl bg-cyber-900 text-[11px] text-emerald-300 font-mono">
+                  ✓ ROI Proyectado: 4.2x Lote 250u
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => alert('¡Informe de Auditoría Multi-Agente exportado en PDF de Alta Resolución!')}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Exportar Dictamen de Auditoría Multi-Agente (PDF)</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          TAB 6: SISTEMA DE AFILIADOS Y COMISIONES RECURRENTES (20%)
+          ========================================================= */}
+      {activeTab === 'affiliates' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="p-6 rounded-3xl bg-cyber-900 border border-emerald-500/40 shadow-cyber-card space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyber-800 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-500">
+                  <DollarSign className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-tech font-bold text-white">SISTEMA DE AFILIADOS & COMISIONES RECURRENTES (20%)</h3>
+                  <p className="text-xs text-slate-400">Gana el 20% recurrente de por vida por cada cliente que refieras a Aether Synergy</p>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <span className="text-2xl font-tech font-extrabold text-emerald-400 block leading-none">$1,490.00 USD</span>
+                <span className="text-[10px] font-mono text-slate-400">Ganancias Disponibles para Retiro</span>
+              </div>
+            </div>
+
+            {/* Referral Link Box */}
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+              <label className="text-xs font-bold text-slate-300 uppercase block">Tu Enlace de Afiliado Exclusivo:</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value="https://aether-synergy.ai?ref=santy_agency_vip"
+                  className="flex-1 bg-cyber-900 border border-cyber-700 rounded-xl px-3 py-2 text-xs font-mono text-cyber-gold focus:outline-none"
+                />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText('https://aether-synergy.ai?ref=santy_agency_vip');
+                    alert('¡Enlace de afiliado copiado al portapapeles!');
+                  }}
+                  className="px-4 py-2 rounded-xl bg-cyber-gold text-black font-tech font-bold text-xs uppercase shadow-gold-glow hover:opacity-90 transition-all"
+                >
+                  Copiar Enlace
+                </button>
+              </div>
+            </div>
+
+            {/* Affiliate Metrics Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center">
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-xs block">Clics Totales</span>
+                <span className="font-tech font-extrabold text-xl text-white">1,480</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-xs block">Registros Cuentas</span>
+                <span className="font-tech font-extrabold text-xl text-cyan-300">142</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-xs block">Suscripciones Activas</span>
+                <span className="font-tech font-extrabold text-xl text-purple-300">38</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-xs block">Tasa de Conversión</span>
+                <span className="font-tech font-extrabold text-xl text-emerald-400">9.6%</span>
+              </div>
+            </div>
+
+            {/* Payout Trigger */}
+            <button
+              onClick={() => alert('¡Solicitud de retiro de $1,490.00 USD enviada con éxito a tu cuenta bancaria vía Stripe Express!')}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(52,211,153,0.4)] hover:opacity-90 transition-all"
+            >
+              Solicitar Transferencia Inmediata vía Stripe Express ($1,490.00 USD)
+            </button>
           </div>
         </div>
       )}

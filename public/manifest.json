@@ -1,0 +1,18 @@
+﻿{
+  "short_name": "AetherSynergy",
+  "name": "Aether Synergy • AI 3D Fashion & Industrial Design Platform",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E5A93C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='12 2 2 7 12 12 22 7 12 2'></polygon><polyline points='2 17 12 22 22 17'></polyline><polyline points='2 12 12 17 22 12'></polyline></svg>",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#050508",
+  "theme_color": "#050508",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "categories": ["design", "productivity", "utilities"]
+}

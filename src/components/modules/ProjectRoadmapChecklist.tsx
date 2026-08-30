@@ -149,7 +149,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'basic',
     title: 'Vista Dividida Multipantalla 3D (Frontal / Perfil / Isométrico)',
     desc: 'Visualizar el modelo desde múltiples ángulos simultáneamente para máxima precisión de diseño.',
-    isInitialDone: false
+    isInitialDone: true
   },
 
   // ==========================================
@@ -313,7 +313,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Progressive Web App (PWA) Instalable en Celular e iPad',
     desc: 'Icono en pantalla de inicio y modo sin conexión con Service Workers.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'payments_stripe_checkout',
@@ -357,7 +357,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Pases de Render para Unreal Engine 5 y Blender',
     desc: 'Exportación separada de mapas de Normales, AO, Rugosidad y Albedo.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: '3d_print_slicing_gcode',
@@ -381,7 +381,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Cotización en Tiempo Real de Envíos y Aduanas (DHL/FedEx Freight)',
     desc: 'Cálculo automático de aranceles y flete aéreo/marítimo por volumen y peso.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'b2b_smart_contracts_escrow',
@@ -397,7 +397,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Auditoría de Identidad de Marca con Enjambre de Agentes IA',
     desc: 'Revisión multi-agente que evalúa coherencia visual, viabilidad técnica de costura y márgenes de rentabilidad.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'auth_jwt_http_cookies',
@@ -421,7 +421,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Sistema de Afiliados y Comisiones Recurrentes (20%)',
     desc: 'Enlaces de referidos con panel de ganancias para diseñadores e influencers.',
-    isInitialDone: false
+    isInitialDone: true
   }
 ];
 

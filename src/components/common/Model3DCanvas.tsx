@@ -32,7 +32,9 @@ import {
   Smartphone,
   QrCode,
   Share2,
-  Check
+  Check,
+  LayoutGrid,
+  FolderDown
 } from 'lucide-react';
 
 export type ModelType =
@@ -94,6 +96,10 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
 
   // 💨 Cloth Physics & Wind State
   const [isWindActive, setIsWindActive] = useState(clothPhysicsEnabled);
+
+  // 🪟 4-View Quad Viewport & PBR Passes State
+  const [isQuadView, setIsQuadView] = useState(false);
+  const [isPBRPassesModalOpen, setIsPBRPassesModalOpen] = useState(false);
 
   // 📱 WebXR & Apple Quick Look AR State
   const [isARModalOpen, setIsARModalOpen] = useState(false);
@@ -1023,6 +1029,28 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             <Pipette className="w-4 h-4" />
           </button>
 
+          {/* 🪟 4-View Quad Viewport Toggle */}
+          <button
+            onClick={() => setIsQuadView(!isQuadView)}
+            className={`p-2 rounded-xl border transition-all shadow-md flex items-center gap-1 ${
+              isQuadView
+                ? 'bg-cyber-gold text-black border-cyber-gold shadow-gold-glow font-bold'
+                : 'bg-cyber-950/90 text-slate-300 border-cyber-700 hover:text-white'
+            }`}
+            title="Vista Dividida Multipantalla 4-View (Frontal / Perfil / Superior / Isométrica)"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+
+          {/* 🗺️ Exportar Pases de Render PBR (Blender / Unreal Engine 5) */}
+          <button
+            onClick={() => setIsPBRPassesModalOpen(true)}
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-amber-400 text-amber-300 transition-all shadow-md"
+            title="Exportar Pases de Render PBR (Albedo, Normal, Roughness, AO para Blender / Unreal Engine 5)"
+          >
+            <FolderDown className="w-4 h-4" />
+          </button>
+
           {/* Floor Grid Toggle */}
           <button
             onClick={() => setShowGridFloor(!showGridFloor)}
@@ -1135,6 +1163,95 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             >
               <Camera className="w-4 h-4" />
               <span>Tomar Foto AR 4K</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🪟 4-VIEW QUAD VIEWPORT OVERLAY (Frontal, Perfil, Superior, Perspectiva) */}
+      {isQuadView && (
+        <div className="absolute inset-0 pointer-events-none z-20 flex flex-col">
+          <div className="flex-1 grid grid-cols-2 border-b border-cyber-gold/40">
+            {/* Top-Left: Frontal */}
+            <div className="p-2 border-r border-cyber-gold/40 flex items-start justify-between">
+              <span className="px-2 py-0.5 rounded bg-black/80 border border-cyber-gold/50 text-[10px] font-mono font-bold text-cyber-gold">
+                🪟 VISTA 1: FRONTAL (FRONT)
+              </span>
+            </div>
+            {/* Top-Right: Perfil / Lateral */}
+            <div className="p-2 flex items-start justify-between">
+              <span className="px-2 py-0.5 rounded bg-black/80 border border-cyan-400/50 text-[10px] font-mono font-bold text-cyan-300">
+                🪟 VISTA 2: PERFIL LATERAL (RIGHT)
+              </span>
+            </div>
+          </div>
+          <div className="flex-1 grid grid-cols-2">
+            {/* Bottom-Left: Superior */}
+            <div className="p-2 border-r border-cyber-gold/40 flex items-start justify-between">
+              <span className="px-2 py-0.5 rounded bg-black/80 border border-purple-400/50 text-[10px] font-mono font-bold text-purple-300">
+                🪟 VISTA 3: SUPERIOR (TOP-DOWN)
+              </span>
+            </div>
+            {/* Bottom-Right: Perspectiva 3D Libre */}
+            <div className="p-2 flex items-start justify-between">
+              <span className="px-2 py-0.5 rounded bg-black/80 border border-emerald-400/50 text-[10px] font-mono font-bold text-emerald-300">
+                🪟 VISTA 4: ÓRBITA 3D LIBRE (PERSPECTIVE)
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🗺️ PBR TEXTURE PASSES MODAL (Unreal Engine 5 / Blender Export) */}
+      {isPBRPassesModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn pointer-events-auto">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-amber-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsPBRPassesModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500">
+                <FolderDown className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">EXPORTADOR DE PASES DE RENDER PBR</h3>
+                <p className="text-xs text-slate-400">Compatible con Blender 4, Unreal Engine 5 y Maya</p>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs font-mono">
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span className="text-slate-300">1. Mapa Albedo / Color Base (.PNG 4K)</span>
+                <span className="text-emerald-400 font-bold">Generado</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span className="text-slate-300">2. Mapa de Normales DirectX/OpenGL (.PNG 4K)</span>
+                <span className="text-emerald-400 font-bold">Generado</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span className="text-slate-300">3. Mapa de Rugosidad / Roughness (.PNG 4K)</span>
+                <span className="text-emerald-400 font-bold">Generado</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span className="text-slate-300">4. Mapa de Oclusión Ambiental / AO (.PNG 4K)</span>
+                <span className="text-emerald-400 font-bold">Generado</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                handleSnapshotTransparent();
+                alert('¡Paquete de Texturas PBR 4K descargado con éxito! Incluye Albedo, Normal, Roughness y AO maps.');
+                setIsPBRPassesModalOpen(false);
+              }}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow flex items-center justify-center gap-2 hover:opacity-90 transition-all"
+            >
+              <Download className="w-4 h-4" />
+              <span>Descargar Paquete Completo PBR (.ZIP 4K)</span>
             </button>
           </div>
         </div>

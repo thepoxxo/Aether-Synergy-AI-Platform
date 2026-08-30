@@ -31,7 +31,9 @@ import {
   Mail,
   Send,
   ShieldAlert,
-  FileCode
+  FileCode,
+  Truck,
+  Plane
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -268,6 +270,9 @@ export const GlobalSuppliers: React.FC = () => {
   const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
   const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
   const [isGCodeModalOpen, setIsGCodeModalOpen] = useState(false);
+  const [isFreightModalOpen, setIsFreightModalOpen] = useState(false);
+  const [destinationCountry, setDestinationCountry] = useState('Estados Unidos (US)');
+  const [shippingMethod, setShippingMethod] = useState<'air' | 'sea'>('air');
   const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
   const [techPackLang, setTechPackLang] = useState<TechPackLanguage>('en');
 
@@ -586,6 +591,14 @@ export const GlobalSuppliers: React.FC = () => {
                 <span>⚡ Enviar Solicitud RFQ (WhatsApp / Email)</span>
               </button>
 
+              <button
+                onClick={() => setIsFreightModalOpen(true)}
+                className="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Truck className="w-4 h-4" />
+                <span>🚚 Cotizador de Envíos Internacionales & Aduanas (DHL)</span>
+              </button>
+
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setIsEscrowModalOpen(true)}
@@ -791,6 +804,111 @@ export const GlobalSuppliers: React.FC = () => {
             >
               <Download className="w-4 h-4" />
               <span>Descargar Archivo .GCODE Rebanado</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🚚 4. MODAL COTIZADOR DE ENVÍOS INTERNACIONALES & ADUANAS (DHL / FEDEX) */}
+      {isFreightModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-amber-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsFreightModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500">
+                <Truck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">COTIZADOR LOGÍSTICO & ADUANAS (DHL / FEDEX)</h3>
+                <p className="text-xs text-slate-400">Origen: {activeSupplier.name} ({activeSupplier.country})</p>
+              </div>
+            </div>
+
+            {/* Country Selector & Mode */}
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">País de Destino / Aduana:</label>
+                <select
+                  value={destinationCountry}
+                  onChange={(e) => setDestinationCountry(e.target.value)}
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-amber-400"
+                >
+                  <option value="Estados Unidos (US)">🇺🇸 Estados Unidos (US) • Arancel HTS 6201: 6.2%</option>
+                  <option value="México (MX)">🇲🇽 México (MX) • T-MEC Arancel Preferencial: 0.0%</option>
+                  <option value="España / Unión Europea (EU)">🇪🇺 España / Unión Europea • TARIC: 12.0%</option>
+                  <option value="Colombia (CO)">🇨🇴 Colombia (CO) • Arancel Dian: 15.0%</option>
+                  <option value="Reino Unido (UK)">🇬🇧 Reino Unido (UK) • UK Global Tariff: 12.0%</option>
+                </select>
+              </div>
+
+              {/* Shipping Method */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShippingMethod('air')}
+                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                    shippingMethod === 'air'
+                      ? 'bg-amber-400 text-black border-amber-400 shadow-gold-glow'
+                      : 'bg-cyber-950 border-cyber-800 text-slate-400'
+                  }`}
+                >
+                  <Plane className="w-4 h-4" />
+                  <span>DHL Express Aéreo (3-5 Días)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShippingMethod('sea')}
+                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                    shippingMethod === 'sea'
+                      ? 'bg-amber-400 text-black border-amber-400 shadow-gold-glow'
+                      : 'bg-cyber-950 border-cyber-800 text-slate-400'
+                  }`}
+                >
+                  <Truck className="w-4 h-4" />
+                  <span>Flete Marítimo FCL (22-28 Días)</span>
+                </button>
+              </div>
+
+              {/* Calculations Grid */}
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 font-mono text-xs text-slate-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Peso Volumétrico ({orderQuantity}u):</span>
+                  <span className="text-white font-bold">{(orderQuantity * 0.45).toFixed(1)} kg</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Flete Internacional Estimado:</span>
+                  <span className="text-amber-400 font-bold">
+                    ${shippingMethod === 'air' ? (orderQuantity * 4.2).toFixed(2) : (orderQuantity * 1.6).toFixed(2)} USD
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Estimación Impuestos & DUA Aduana:</span>
+                  <span className="text-emerald-400 font-bold">${(grandTotalCost * 0.085).toFixed(2)} USD</span>
+                </div>
+                <div className="pt-2 border-t border-cyber-800 flex justify-between font-bold text-white text-sm">
+                  <span>Costo Landed Total con Envío:</span>
+                  <span className="text-amber-400">
+                    ${(grandTotalCost + (shippingMethod === 'air' ? orderQuantity * 4.2 : orderQuantity * 1.6) + grandTotalCost * 0.085).toFixed(2)} USD
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                alert(`¡Cotización logística formal para ${destinationCountry} vinculada a tu cuenta con tarifa garantizada por 14 días!`);
+                setIsFreightModalOpen(false);
+              }}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
+            >
+              Bloquear Tarifa Logística & Reservar Flete
             </button>
           </div>
         </div>
