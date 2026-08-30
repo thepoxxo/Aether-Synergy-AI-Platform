@@ -19,7 +19,9 @@ import {
   Scan,
   Compass,
   Box,
-  CheckSquare
+  CheckSquare,
+  Menu,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -46,6 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { role, hasAccess, promptUpgrade } = useAuth();
   const { t } = useLanguage();
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   const navItems: NavItem[] = [
     { id: 'aurora3d', nameKey: 'sidebar.aurora3d', icon: Layers, requiredRole: 'free', badge: '3D' },
@@ -63,142 +66,192 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const handleNavClick = (item: NavItem) => {
     if (hasAccess(item.requiredRole)) {
       setCurrentView(item.id);
+      setIsMobileDrawerOpen(false);
     } else {
       promptUpgrade(item.requiredRole);
     }
   };
 
+  const getBadgeClass = (badge?: string) => {
+    if (badge === 'ADMIN') return 'bg-rose-500/20 text-rose-400 border-rose-500/40';
+    if (badge === 'AGENCY') return 'bg-purple-500/20 text-purple-400 border-purple-500/40';
+    if (badge === 'PRO') return 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold/40';
+    return 'bg-cyber-800 text-slate-400 border-cyber-700';
+  };
+
   return (
-    <aside
-      className={`hidden md:flex flex-col bg-cyber-950/80 border-r border-cyber-800/80 p-3 shrink-0 backdrop-blur-xl min-h-[calc(100vh-65px)] transition-all duration-300 ${
-        isCollapsed ? 'w-18 items-center' : 'w-64'
-      }`}
-    >
-      {/* Top Header with Collapse Button */}
-      <div className="w-full flex items-center justify-between px-2 mb-3">
-        {!isCollapsed && (
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            {t('sidebar.title')}
-          </span>
-        )}
-
-        {onToggleCollapse && (
-          <button
-            onClick={onToggleCollapse}
-            className="p-1.5 rounded-xl bg-cyber-900 hover:bg-cyber-800 border border-cyber-700 text-slate-300 hover:text-cyber-gold transition-colors mx-auto"
-            title={isCollapsed ? 'Expandir Menú' : 'Minimizar a Barra Delgada (Modo Focus)'}
-          >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
-        )}
+    <>
+      {/* Mobile Floating Drawer Trigger Button (Only visible on screens < md) */}
+      <div className="md:hidden fixed top-16 left-3 z-30">
+        <button
+          onClick={() => setIsMobileDrawerOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyber-900/90 border border-cyber-gold/60 text-cyber-gold font-tech font-bold text-xs shadow-gold-glow backdrop-blur-md"
+        >
+          <Menu className="w-4 h-4" />
+          <span>Módulos</span>
+        </button>
       </div>
 
-      {/* Navigation Item Stack */}
-      <div className="space-y-1.5 flex-1 w-full">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const allowed = hasAccess(item.requiredRole);
-          const active = currentView === item.id;
+      {/* Mobile Drawer Modal */}
+      {isMobileDrawerOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setIsMobileDrawerOpen(false)}
+          />
+          <div className="relative w-72 max-w-[80vw] bg-cyber-950 border-r border-cyber-gold/40 p-4 flex flex-col h-full z-10 shadow-2xl animate-fadeIn">
+            <div className="flex items-center justify-between pb-3 border-b border-cyber-800 mb-3">
+              <span className="font-tech font-bold text-sm text-white uppercase tracking-wider">
+                {t('sidebar.title')}
+              </span>
+              <button
+                onClick={() => setIsMobileDrawerOpen(false)}
+                className="p-1.5 rounded-xl bg-cyber-900 text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
-          const getBadgeClass = () => {
-            if (item.badge === 'ADMIN') return 'bg-rose-500/20 text-rose-400 border-rose-500/40';
-            if (item.badge === 'AGENCY') return 'bg-purple-500/20 text-purple-400 border-purple-500/40';
-            if (item.badge === 'PRO') return 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold/40';
-            return 'bg-cyber-800 text-slate-400 border-cyber-700';
-          };
+            <div className="space-y-1.5 overflow-y-auto flex-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = currentView === item.id;
+                const allowed = hasAccess(item.requiredRole);
 
-          return (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item)}
-              title={isCollapsed ? t(item.nameKey) : undefined}
-              className={`w-full flex items-center rounded-xl transition-all group ${
-                isCollapsed
-                  ? 'justify-center p-3'
-                  : 'justify-between px-3 py-2.5 text-xs font-semibold'
-              } ${
-                active
-                  ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
-                  : allowed
-                  ? 'text-slate-300 hover:bg-cyber-900 hover:text-white'
-                  : 'text-slate-500 hover:bg-cyber-900/40'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Icon
-                  className={`w-4 h-4 shrink-0 transition-colors ${
-                    active
-                      ? 'text-black'
-                      : allowed
-                      ? 'text-cyber-gold group-hover:text-amber-300'
-                      : 'text-slate-600'
-                  }`}
-                />
-                {!isCollapsed && (
-                  <span className="truncate">
-                    {item.isLiteralLabel ? item.nameKey : t(item.nameKey)}
-                  </span>
-                )}
-              </div>
-
-              {!isCollapsed && (
-                <div className="flex items-center gap-1.5">
-                  {!allowed && <Lock className="w-3.5 h-3.5 text-amber-500/80" />}
-                  {item.badge && (
-                    <span
-                      className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded border uppercase ${
-                        active ? 'bg-black text-cyber-gold border-black' : getBadgeClass()
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Plan Status Widget in Sidebar Footer (Only when expanded) */}
-      {!isCollapsed ? (
-        <div className="mt-4 p-3 rounded-2xl bg-cyber-900/90 border border-cyber-gold/20 w-full">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] uppercase font-bold text-slate-400">{t('sidebar.accessLevel')}</span>
-            <span className="text-[10px] font-mono text-cyber-gold font-extrabold uppercase">
-              {role}
-            </span>
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item)}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                      active
+                        ? 'bg-cyber-gold text-black shadow-gold-glow'
+                        : 'text-slate-300 hover:text-white hover:bg-cyber-900'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon className="w-4 h-4" />
+                      <span>{item.isLiteralLabel ? item.nameKey : t(item.nameKey)}</span>
+                    </div>
+                    {item.badge && (
+                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <p className="text-[11px] text-slate-400 mb-2.5 line-clamp-2">
-            {role === 'admin'
-              ? 'Super Admin con acceso total a métricas.'
-              : role === 'agency'
-              ? 'Plan Agencia: B2B Sourcing y Red Social.'
-              : role === 'pro'
-              ? 'Plan Pro: Motor 3D y Video Ads.'
-              : 'Plan Gratuito básico.'}
-          </p>
+        </div>
+      )}
 
-          {role !== 'admin' && role !== 'agency' && (
+      {/* Desktop Persistent / Collapsible Sidebar */}
+      <aside
+        className={`hidden md:flex flex-col bg-cyber-950/80 border-r border-cyber-800/80 p-3 shrink-0 backdrop-blur-xl min-h-[calc(100vh-65px)] transition-all duration-300 ${
+          isCollapsed ? 'w-20 items-center' : 'w-64'
+        }`}
+      >
+        {/* Top Header with Collapse Button */}
+        <div className="w-full flex items-center justify-between px-2 mb-3">
+          {!isCollapsed && (
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              {t('sidebar.title')}
+            </span>
+          )}
+
+          {onToggleCollapse && (
             <button
-              onClick={() => promptUpgrade(role === 'free' ? 'pro' : 'agency')}
-              className="w-full py-1.5 rounded-lg bg-cyber-gold/15 hover:bg-cyber-gold hover:text-black border border-cyber-gold/40 text-cyber-gold font-tech font-bold text-xs uppercase tracking-wider transition-all"
+              onClick={onToggleCollapse}
+              className="p-1.5 rounded-xl bg-cyber-900 hover:bg-cyber-800 border border-cyber-700 text-slate-300 hover:text-cyber-gold transition-colors ml-auto"
+              title={isCollapsed ? 'Expandir Menú Completo' : 'Ocultar Módulos (Modo Pantalla Completa)'}
             >
-              {t('sidebar.upgradeBtn')}
+              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
             </button>
           )}
         </div>
-      ) : (
-        <div className="mt-auto py-2">
-          <button
-            onClick={() => promptUpgrade(role === 'free' ? 'pro' : 'agency')}
-            className="w-10 h-10 rounded-xl bg-cyber-gold/20 border border-cyber-gold text-cyber-gold flex items-center justify-center font-tech font-bold text-xs hover:bg-cyber-gold hover:text-black transition-all"
-            title="Mejorar Plan"
-          >
-            ★
-          </button>
+
+        {/* Navigation Item Stack */}
+        <div className="space-y-1.5 flex-1 w-full overflow-y-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const allowed = hasAccess(item.requiredRole);
+            const active = currentView === item.id;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item)}
+                title={isCollapsed ? (item.isLiteralLabel ? item.nameKey : t(item.nameKey)) : undefined}
+                className={`w-full flex items-center rounded-xl transition-all group ${
+                  isCollapsed
+                    ? 'justify-center p-3'
+                    : 'justify-between px-3 py-2.5 text-xs font-semibold'
+                } ${
+                  active
+                    ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
+                    : allowed
+                    ? 'text-slate-300 hover:text-white hover:bg-cyber-900/90 border border-transparent hover:border-cyber-750'
+                    : 'text-slate-500 hover:text-slate-300 hover:bg-cyber-950/60 opacity-60 border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon
+                    className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
+                      active ? 'text-black' : allowed ? 'text-cyber-gold' : 'text-slate-500'
+                    }`}
+                  />
+                  {!isCollapsed && (
+                    <span className="truncate">
+                      {item.isLiteralLabel ? item.nameKey : t(item.nameKey)}
+                    </span>
+                  )}
+                </div>
+
+                {!isCollapsed && (
+                  <div className="flex items-center gap-1">
+                    {!allowed && <Lock className="w-3 h-3 text-slate-500" />}
+                    {item.badge && (
+                      <span
+                        className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
+                          active
+                            ? 'bg-black text-cyber-gold border-black'
+                            : getBadgeClass(item.badge)
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
-      )}
-    </aside>
+
+        {/* Footer Tier Info in Sidebar */}
+        {!isCollapsed && (
+          <div className="pt-3 border-t border-cyber-850 mt-auto w-full">
+            <div className="p-2.5 rounded-xl bg-cyber-900/60 border border-cyber-800 flex items-center justify-between">
+              <div>
+                <span className="text-[9px] font-mono text-slate-400 block uppercase">
+                  {t('sidebar.accessLevel')}
+                </span>
+                <span className="text-xs font-tech font-extrabold text-cyber-gold uppercase">
+                  {role.toUpperCase()}
+                </span>
+              </div>
+              {role !== 'agency' && role !== 'admin' && (
+                <button
+                  onClick={() => promptUpgrade('pro')}
+                  className="text-[10px] font-tech font-bold uppercase px-2 py-1 rounded-lg bg-cyber-gold/20 text-cyber-gold border border-cyber-gold/50 hover:bg-cyber-gold hover:text-black transition-all"
+                >
+                  UPGRADE
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </aside>
+    </>
   );
 };

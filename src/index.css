@@ -14,95 +14,117 @@
 }
 
 /* =========================================================
-   LIGHT MODE (LUXURY STUDIO) - HIGH CONTRAST & ELEGANT
+   LIGHT & LUXURY STUDIO MODE - HIGH CONTRAST & WCAG AAA
    ========================================================= */
-html.light body {
+html.light body,
+html.theme-luxury body {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
 }
 
-html.light .bg-cyber-950 {
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
-}
-
-html.light .bg-cyber-900 {
+html.light .bg-cyber-950,
+html.theme-luxury .bg-cyber-950 {
   background-color: #FFFFFF !important;
   border-color: #E2E8F0 !important;
   color: #0F172A !important;
 }
 
-html.light .bg-cyber-850 {
+html.light .bg-cyber-900,
+html.theme-luxury .bg-cyber-900 {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .bg-cyber-850,
+html.theme-luxury .bg-cyber-850 {
   background-color: #F1F5F9 !important;
   border-color: #CBD5E1 !important;
   color: #1E293B !important;
 }
 
-html.light .bg-cyber-800 {
+html.light .bg-cyber-800,
+html.theme-luxury .bg-cyber-800 {
   background-color: #E2E8F0 !important;
   border-color: #CBD5E1 !important;
   color: #0F172A !important;
 }
 
-html.light header {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+html.light header,
+html.theme-luxury header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
   border-color: #E2E8F0 !important;
 }
 
-html.light aside {
+html.light aside,
+html.theme-luxury aside {
   background-color: #FFFFFF !important;
   border-color: #E2E8F0 !important;
 }
 
-html.light .text-white {
+html.light .text-white,
+html.theme-luxury .text-white {
   color: #0F172A !important;
 }
 
 html.light .text-slate-100,
-html.light .text-slate-200 {
+html.light .text-slate-200,
+html.theme-luxury .text-slate-100,
+html.theme-luxury .text-slate-200 {
   color: #1E293B !important;
 }
 
 html.light .text-slate-300,
-html.light .text-slate-400 {
+html.light .text-slate-400,
+html.theme-luxury .text-slate-300,
+html.theme-luxury .text-slate-400 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-500,
+html.theme-luxury .text-slate-500 {
   color: #475569 !important;
 }
 
-html.light .text-slate-500 {
-  color: #64748B !important;
-}
-
 html.light .border-cyber-800,
-html.light .border-cyber-700 {
-  border-color: #E2E8F0 !important;
+html.light .border-cyber-700,
+html.theme-luxury .border-cyber-800,
+html.theme-luxury .border-cyber-700 {
+  border-color: #CBD5E1 !important;
 }
 
-html.light .gold-gradient-text {
+html.light .gold-gradient-text,
+html.theme-luxury .gold-gradient-text {
   background: linear-gradient(135deg, #B45309 0%, #D97706 40%, #92400E 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
-html.light .cyan-gradient-text {
+html.light .cyan-gradient-text,
+html.theme-luxury .cyan-gradient-text {
   background: linear-gradient(135deg, #0369A1 0%, #0284C7 50%, #075985 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
-html.light .glass-panel {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border: 1px solid #E2E8F0 !important;
+html.light .glass-panel,
+html.theme-luxury .glass-panel {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid #CBD5E1 !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
   color: #0F172A !important;
 }
 
-html.light .glass-panel-hover:hover {
+html.light .glass-panel-hover:hover,
+html.theme-luxury .glass-panel-hover:hover {
   background: #FFFFFF !important;
   border-color: #D97706 !important;
   box-shadow: 0 15px 30px -5px rgba(217, 119, 6, 0.15) !important;
 }
 
-html.light .glass-panel-gold {
+html.light .glass-panel-gold,
+html.theme-luxury .glass-panel-gold {
   background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, #FFFFFF 85%) !important;
   border: 1px solid rgba(217, 119, 6, 0.4) !important;
   box-shadow: 0 10px 30px rgba(217, 119, 6, 0.1) !important;
@@ -111,7 +133,10 @@ html.light .glass-panel-gold {
 
 html.light input,
 html.light textarea,
-html.light select {
+html.light select,
+html.theme-luxury input,
+html.theme-luxury textarea,
+html.theme-luxury select {
   background-color: #FFFFFF !important;
   border-color: #CBD5E1 !important;
   color: #0F172A !important;
@@ -119,12 +144,16 @@ html.light select {
 
 html.light input:focus,
 html.light textarea:focus,
-html.light select:focus {
+html.light select:focus,
+html.theme-luxury input:focus,
+html.theme-luxury textarea:focus,
+html.theme-luxury select:focus {
   border-color: #D97706 !important;
   box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
 }
 
-html.light .cyber-grid {
+html.light .cyber-grid,
+html.theme-luxury .cyber-grid {
   background-size: 40px 40px;
   background-image: 
     linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
@@ -205,7 +234,8 @@ html.theme-neon .glass-panel-gold {
   background: #07090E;
 }
 
-html.light ::-webkit-scrollbar-track {
+html.light ::-webkit-scrollbar-track,
+html.theme-luxury ::-webkit-scrollbar-track {
   background: #F1F5F9;
 }
 
@@ -214,7 +244,8 @@ html.light ::-webkit-scrollbar-track {
   border-radius: 4px;
 }
 
-html.light ::-webkit-scrollbar-thumb {
+html.light ::-webkit-scrollbar-thumb,
+html.theme-luxury ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
 }
 

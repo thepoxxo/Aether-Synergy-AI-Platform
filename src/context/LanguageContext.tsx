@@ -43,6 +43,16 @@ export const ALL_WORLD_LANGUAGES: LanguageOption[] = [
 
 const TRANSLATIONS: Record<string, Record<string, string>> = {
   es: {
+    // Top Navbar
+    'nav.home': 'Portada',
+    'nav.engine3d': 'Estudio 3D',
+    'nav.videoAds': 'Video Ads',
+    'nav.techPack': 'Sourcing B2B',
+    'nav.mascot': 'Copiloto IA',
+    'nav.tagline': 'AI + 3D DESIGN SUITE',
+    'nav.testRole': 'Rol Activo:',
+
+    // Landing General
     'landing.badge': 'PLATAFORMA SAAS • IA + 3D DESIGN SUITE',
     'landing.title': 'DISEÑO Y MODA CON IA DE ÚLTIMA GENERACIÓN',
     'landing.subtitle': 'Crea mallas 3D hiperrealistas, videos virales para redes sociales, interactúa con avatares de voz y cotiza en tiempo real con fabricantes globales.',
@@ -53,6 +63,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'landing.pricing': 'Precios & Planes',
     'landing.about': 'Manifiesto & Misión',
 
+    // Hero Screen 1
     'hero.titleTop': 'EL MOTOR DEFINITIVO',
     'hero.titleBottom': 'DE MARKETING CON IA',
     'hero.subtitle': 'Transformando Mundos 3D en Campañas Cautivadoras',
@@ -65,11 +76,13 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'hero.launchBtn': 'INGRESAR AL ESPACIO DE TRABAJO',
     'hero.integrated': 'MOTORES DE IA Y 3D INTEGRADOS',
 
+    // Avantgarde Screen 2
     'avantgarde.badge': 'ESTÉTICA CEL-SHADED • DISEÑO DE VANGUARDIA',
     'avantgarde.title': 'EL FUTURO DEL STREETWEAR & HARDWARE',
     'avantgarde.desc': 'Fusionamos la precisión del modelado paramétrico con la estética cel-shaded anime, texturas PBR físicas y simulación en tiempo real.',
     'avantgarde.btn': 'Explorar Shaders 3D',
 
+    // Pricing Screen 3
     'pricing.badge': 'PLANES & PRECIOS TRANSPARENTES',
     'pricing.title': 'ESCALA TU ESTUDIO DE DISEÑO',
     'pricing.subtitle': 'Desde creadores independientes hasta agencias globales de moda y producto.',
@@ -84,6 +97,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'pricing.agencyDesc': 'Para agencias con equipo, conexión B2B con fábricas y Tech Packs.',
     'pricing.popular': 'MÁS POPULAR',
 
+    // About Screen 4
     'about.badge': 'NUESTRA MISIÓN • ECOSISTEMA AETHER',
     'about.title': 'REDEFINIENDO EL CICLO DE CREACIÓN DE PRODUCTO',
     'about.desc': 'De la idea al render 3D, del video publicitario viral a la cotización con fábricas en minutos.',
@@ -91,6 +105,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.pillar2': '2. Video Marketing con IA (Sora & Gen-3)',
     'about.pillar3': '3. Sourcing Global con Fábricas Auditadas',
 
+    // Workspace & Sidebar
     'sidebar.title': 'Módulos del Ecosistema',
     'sidebar.aurora3d': 'Motor 3D & Shaders',
     'sidebar.scanner3d': 'Escáner 3D IA (Luma)',
@@ -117,6 +132,16 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'aurora.decalGraphic': 'GRÁFICO / CALCOMANÍA'
   },
   en: {
+    // Top Navbar
+    'nav.home': 'Home',
+    'nav.engine3d': '3D Studio',
+    'nav.videoAds': 'Video Ads',
+    'nav.techPack': 'B2B Sourcing',
+    'nav.mascot': 'AI Copilot',
+    'nav.tagline': 'AI + 3D DESIGN SUITE',
+    'nav.testRole': 'Active Role:',
+
+    // Landing General
     'landing.badge': 'SAAS PLATFORM • NEXT-GEN AI + 3D DESIGN SUITE',
     'landing.title': 'AI DESIGN & FASHION FOR THE NEXT GENERATION',
     'landing.subtitle': 'Create hyper-realistic 3D meshes, viral video ads for social media, interact with voice avatars, and quote in real-time with global factories.',
@@ -127,6 +152,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'landing.pricing': 'Pricing & Plans',
     'landing.about': 'Manifesto & Mission',
 
+    // Hero Screen 1
     'hero.titleTop': 'THE ULTIMATE',
     'hero.titleBottom': 'AI MARKETING ENGINE',
     'hero.subtitle': 'Transforming 3D Worlds into Captivating Campaigns',
@@ -139,11 +165,13 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'hero.launchBtn': 'LAUNCH WORKSPACE',
     'hero.integrated': 'INTEGRATED AI & 3D ENGINES',
 
+    // Avantgarde Screen 2
     'avantgarde.badge': 'CEL-SHADED AESTHETICS • AVANT-GARDE DESIGN',
     'avantgarde.title': 'THE FUTURE OF STREETWEAR & HARDWARE',
     'avantgarde.desc': 'We fuse the precision of parametric 3D modeling with cel-shaded anime aesthetics, physical PBR textures, and real-time cloth simulation.',
     'avantgarde.btn': 'Explore 3D Shaders',
 
+    // Pricing Screen 3
     'pricing.badge': 'TRANSPARENT PRICING & PLANS',
     'pricing.title': 'SCALE YOUR DESIGN STUDIO',
     'pricing.subtitle': 'From independent creators to global fashion & product design agencies.',
@@ -158,6 +186,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'pricing.agencyDesc': 'For teams requiring B2B factory connections and Tech Pack PDF generation.',
     'pricing.popular': 'MOST POPULAR',
 
+    // About Screen 4
     'about.badge': 'OUR MISSION • AETHER ECOSYSTEM',
     'about.title': 'REDEFINING THE PRODUCT CREATION LIFECYCLE',
     'about.desc': 'From concept to 3D render, from viral video ads to factory sourcing in minutes.',
@@ -165,6 +194,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.pillar2': '2. Video Marketing with AI (Sora & Gen-3)',
     'about.pillar3': '3. Global Sourcing with Audited Factories',
 
+    // Workspace & Sidebar
     'sidebar.title': 'Ecosystem Modules',
     'sidebar.aurora3d': '3D Engine & Shaders',
     'sidebar.scanner3d': '3D AI Scanner (Luma)',
@@ -191,6 +221,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'aurora.decalGraphic': 'GRAPHIC / UV DECAL'
   },
   ja: {
+    'nav.home': 'ホーム',
+    'nav.engine3d': '3Dスタジオ',
+    'nav.videoAds': '動画広告',
+    'nav.techPack': 'B2B調達',
+    'nav.mascot': 'AIコパイロット',
+    'nav.tagline': '次世代AIデザインスイート',
+    'nav.testRole': 'テスト権限:',
+
     'landing.badge': '次世代AIと3Dデザインスイート',
     'landing.title': '次世代AIファッション＆3Dデザイン',
     'landing.subtitle': '超リアルな3Dメッシュの作成、ソーシャルメディア向けバイラル動画の生成、音声アバターとの対話、グローバル工場との即時見積もり。',
@@ -253,6 +291,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sidebar.upgradeBtn': 'プランをアップグレード'
   },
   pt: {
+    'nav.home': 'Início',
+    'nav.engine3d': 'Estúdio 3D',
+    'nav.videoAds': 'Anúncios Vídeo',
+    'nav.techPack': 'Sourcing B2B',
+    'nav.mascot': 'Copiloto IA',
+    'nav.tagline': 'SUÍTE IA + DESIGN 3D',
+    'nav.testRole': 'Função Teste:',
+
     'landing.badge': 'PLATAFORMA SAAS • SUÍTE DE DESIGN 3D E IA',
     'landing.title': 'DESIGN E MODA COM IA DE PRÓXIMA GERAÇÃO',
     'landing.subtitle': 'Crie malhas 3D hiper-realistas, anúncios em vídeo virais e faça cotações com fábricas globais em tempo real.',
@@ -315,6 +361,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sidebar.upgradeBtn': 'ATUALIZAR MEU PLANO'
   },
   fr: {
+    'nav.home': 'Accueil',
+    'nav.engine3d': 'Studio 3D',
+    'nav.videoAds': 'Vidéos Ads',
+    'nav.techPack': 'Sourcing B2B',
+    'nav.mascot': 'Copilote IA',
+    'nav.tagline': 'SUITE DESIGN IA + 3D',
+    'nav.testRole': 'Rôle Test:',
+
     'landing.badge': 'SUITE SAAS • DESIGN 3D & IA DE POINTE',
     'landing.title': 'DESIGN ET MODE AVEC IA NOUVELLE GÉNÉRATION',
     'landing.subtitle': 'Créez des modèles 3D ultra-réalistes, des publicités vidéo virales et connectez-vous avec des usines mondiales.',
@@ -377,6 +431,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sidebar.upgradeBtn': 'AMÉLIORER MON PLAN'
   },
   it: {
+    'nav.home': 'Home',
+    'nav.engine3d': 'Studio 3D',
+    'nav.videoAds': 'Video Ads',
+    'nav.techPack': 'Sourcing B2B',
+    'nav.mascot': 'Copilota IA',
+    'nav.tagline': 'SUITE DESIGN IA + 3D',
+    'nav.testRole': 'Ruolo Test:',
+
     'landing.badge': 'SUITE SAAS • DESIGN 3D + AI AVANZATA',
     'landing.title': 'DESIGN E MODA CON IA DI NUOVA GENERAZIONE',
     'landing.subtitle': 'Crea modelli 3D iperrealistici, video virali e quota con fornitori globali in tempo reale.',
@@ -439,6 +501,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sidebar.upgradeBtn': 'AGGIORNA PIANO'
   },
   de: {
+    'nav.home': 'Startseite',
+    'nav.engine3d': '3D-Studio',
+    'nav.videoAds': 'Video-Ads',
+    'nav.techPack': 'B2B-Sourcing',
+    'nav.mascot': 'KI-Copilot',
+    'nav.tagline': 'KI + 3D DESIGN-SUITE',
+    'nav.testRole': 'Test-Rolle:',
+
     'landing.badge': 'SAAS-PLATTFORM • KI + 3D-DESIGN-SUITE',
     'landing.title': 'KI-DESIGN & MODE DER NÄCHSTEN GENERATION',
     'landing.subtitle': 'Erstellen Sie ultra-realistische 3D-Modelle, virale Videoanzeigen und kalkulieren Sie in Echtzeit mit globalen Fabriken.',
@@ -501,6 +571,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sidebar.upgradeBtn': 'PLAN UPGRADEN'
   },
   zh: {
+    'nav.home': '首页',
+    'nav.engine3d': '3D 工作室',
+    'nav.videoAds': '视频广告',
+    'nav.techPack': 'B2B 采购',
+    'nav.mascot': 'AI 伴侣',
+    'nav.tagline': 'AI + 3D 设计套件',
+    'nav.testRole': '测试权限:',
+
     'landing.badge': 'SaaS 平台 • 下一代 AI + 3D 设计套件',
     'landing.title': '下一代人工智能时尚与三维设计',
     'landing.subtitle': '创建超写实3D网格模型、社交媒体爆款视频、与语音助手互动并实时对接全球制造商。',

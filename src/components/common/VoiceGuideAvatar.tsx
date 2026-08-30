@@ -42,6 +42,7 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
   const [isListening, setIsListening] = useState(false);
   const [textInput, setTextInput] = useState('');
   const [mood, setMood] = useState<AvatarMood>('creative');
+  const [micStatusText, setMicStatusText] = useState<string | null>(null);
 
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     {
@@ -93,76 +94,99 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
   const speakText = (text: string) => {
     if (!isVoiceEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang =
-      language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'fr' ? 'fr-FR' : language === 'it' ? 'it-IT' : language === 'pt' ? 'pt-BR' : 'es-ES';
-    utterance.rate = 1.05;
-    utterance.pitch = 1.0;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang =
+        language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'fr' ? 'fr-FR' : language === 'it' ? 'it-IT' : language === 'pt' ? 'pt-BR' : 'es-ES';
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
 
-    window.speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn(e);
+      setIsSpeaking(false);
+    }
   };
 
-  // Safe Speech Recognition Implementation
+  // Safe & Robust Speech Recognition
   const startListening = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    setMicStatusText('Iniciando micrófono...');
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      alert('Tu navegador no soporta Speech Recognition nativo. Puedes escribir tu mensaje en la casilla de texto inferior.');
+    // Silence any speech synthesis first
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+
+    if (!SpeechRec) {
+      setMicStatusText('Navegador sin Web Speech. Usa la casilla de texto.');
       return;
     }
 
-    // Always stop TTS before opening mic to avoid feedback
-    window.speechSynthesis?.cancel();
-    setIsSpeaking(false);
-
     try {
       if (recognitionRef.current) {
-        recognitionRef.current.abort();
+        try {
+          recognitionRef.current.abort();
+        } catch (_) {}
       }
 
-      const recognition = new SpeechRecognition();
-      recognitionRef.current = recognition;
+      const rec = new SpeechRec();
+      recognitionRef.current = rec;
 
-      recognition.lang = language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'pt' ? 'pt-BR' : 'es-ES';
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      rec.lang = language === 'en' ? 'en-US' : language === 'ja' ? 'ja-JP' : language === 'pt' ? 'pt-BR' : 'es-ES';
+      rec.continuous = false;
+      rec.interimResults = false;
 
-      recognition.onstart = () => {
+      rec.onstart = () => {
         setIsListening(true);
+        setMicStatusText('🎙️ Escuchando tu voz... Habla ahora');
       };
 
-      recognition.onresult = (event: any) => {
+      rec.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         setIsListening(false);
+        setMicStatusText(null);
         handleUserMessage(transcript);
       };
 
-      recognition.onerror = (e: any) => {
-        console.warn('SpeechRecognition error:', e.error);
+      rec.onerror = (e: any) => {
+        console.warn('SpeechRecognition status:', e.error);
+        setIsListening(false);
+        if (e.error === 'not-allowed') {
+          setMicStatusText('⚠️ Permiso de micrófono denegado. Permítelo en tu navegador o escribe abajo.');
+        } else if (e.error === 'no-speech') {
+          setMicStatusText('No se detectó audio. Pulsa el micro para reintentar.');
+        } else {
+          setMicStatusText(null);
+        }
+      };
+
+      rec.onend = () => {
         setIsListening(false);
       };
 
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognition.start();
+      rec.start();
     } catch (err) {
       console.error('Error starting SpeechRecognition:', err);
       setIsListening(false);
+      setMicStatusText('Usa la casilla de texto abajo.');
     }
   };
 
   const stopListening = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (_) {}
     }
     setIsListening(false);
+    setMicStatusText(null);
   };
 
   const handleUserMessage = (msg: string) => {
@@ -175,7 +199,7 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
     setChatHistory(updatedHistory);
     setTextInput('');
 
-    // 2. Generate intelligent response based on keywords
+    // 2. Generate intelligent response
     let responseText = '';
     const lower = msg.toLowerCase();
 
@@ -233,7 +257,9 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
       {!isOpen && (
         <div className="fixed bottom-6 left-6 z-40 flex items-center gap-2">
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               setIsOpen(true);
               speakText(currentStep.speechText);
             }}
@@ -256,11 +282,14 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
 
       {/* Expanded Interactive Voice Guide & Chat Modal */}
       {isOpen && (
-        <div className="fixed bottom-6 left-6 z-50 w-full max-w-sm sm:max-w-md bg-cyber-900/95 border-2 border-cyber-gold/60 rounded-3xl p-4 sm:p-5 shadow-gold-glow-lg backdrop-blur-2xl animate-fadeIn space-y-3 flex flex-col max-h-[85vh]">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="fixed bottom-6 left-4 sm:left-6 z-50 w-[92vw] sm:w-full max-w-sm sm:max-w-md bg-cyber-900/95 border-2 border-cyber-gold/60 rounded-3xl p-4 sm:p-5 shadow-gold-glow-lg backdrop-blur-2xl animate-fadeIn space-y-3 flex flex-col max-h-[85vh]"
+        >
           {/* Header */}
           <div className="flex items-center justify-between pb-2 border-b border-cyber-800">
             <div className="flex items-center gap-2.5">
-              <div className="relative w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-cyber-gold flex items-center justify-center text-xl shadow-gold-glow">
+              <div className="relative w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-cyber-gold flex items-center justify-center text-xl shadow-gold-glow shrink-0">
                 🦊
                 {isSpeaking && (
                   <span className="absolute -bottom-1 -right-1 text-xs animate-bounce">💬</span>
@@ -274,13 +303,15 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
                     <span className="text-[9px] font-mono text-slate-300 capitalize">{mood}</span>
                   </div>
                 </div>
-                <div className="text-[10px] text-slate-400">Guía de Diseño • Paso {currentStepIndex + 1} de {guideSteps.length}</div>
+                <div className="text-[10px] text-slate-400">Guía Interactiva • Paso {currentStepIndex + 1} de {guideSteps.length}</div>
               </div>
             </div>
 
             <div className="flex items-center gap-1">
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
                   if (isVoiceEnabled) {
                     window.speechSynthesis?.cancel();
                     setIsSpeaking(false);
@@ -299,9 +330,13 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
               </button>
 
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
                   window.speechSynthesis?.cancel();
-                  if (recognitionRef.current) recognitionRef.current.abort();
+                  if (recognitionRef.current) {
+                    try { recognitionRef.current.abort(); } catch (_) {}
+                  }
                   setIsOpen(false);
                 }}
                 className="p-2 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 text-slate-400 hover:text-white transition-colors"
@@ -316,7 +351,11 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             <div className="flex items-center justify-between text-xs">
               <span className="font-tech font-bold text-cyber-gold">{currentStep.title}</span>
               <button
-                onClick={() => speakText(currentStep.speechText)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  speakText(currentStep.speechText);
+                }}
                 className="p-1 text-slate-400 hover:text-cyber-gold"
                 title="Repetir audio del paso"
               >
@@ -329,7 +368,11 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
           {/* Step Navigation Bar */}
           <div className="flex items-center justify-between gap-2 pt-1 border-t border-cyber-800 text-xs">
             <button
-              onClick={handlePrevStep}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevStep();
+              }}
               disabled={currentStepIndex === 0}
               className={`px-3 py-1.5 rounded-xl flex items-center gap-1 border transition-all ${
                 currentStepIndex === 0 ? 'opacity-40 cursor-not-allowed border-cyber-800 text-slate-600' : 'bg-cyber-950 border-cyber-700 text-slate-300 hover:text-white'
@@ -350,7 +393,11 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             </div>
 
             <button
-              onClick={handleNextStep}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNextStep();
+              }}
               disabled={currentStepIndex === guideSteps.length - 1}
               className={`px-3 py-1.5 rounded-xl font-tech font-bold uppercase tracking-wider flex items-center gap-1 transition-all ${
                 currentStepIndex === guideSteps.length - 1
@@ -392,17 +439,33 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             <div ref={chatBottomRef} />
           </div>
 
+          {/* Mic Status Banner if any */}
+          {micStatusText && (
+            <div className="text-[10px] font-mono px-3 py-1 rounded-xl bg-cyber-950 text-amber-400 border border-amber-500/30 animate-pulse">
+              {micStatusText}
+            </div>
+          )}
+
           {/* Microphone & Chat Input Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               handleUserMessage(textInput);
             }}
             className="flex items-center gap-2 pt-1"
           >
             <button
               type="button"
-              onClick={isListening ? stopListening : startListening}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (isListening) {
+                  stopListening();
+                } else {
+                  startListening();
+                }
+              }}
               className={`p-2.5 rounded-2xl border transition-all shrink-0 ${
                 isListening
                   ? 'bg-rose-500 text-white border-rose-400 animate-pulse shadow-lg ring-4 ring-rose-500/30'
@@ -417,7 +480,7 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder={isListening ? '🎙️ Escuchando tu voz...' : 'Escribe o háblale a Kai...'}
+              placeholder={isListening ? '🎙️ Escuchando... habla' : 'Escribe o háblale a Kai...'}
               className="flex-1 bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-2xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
             />
 
