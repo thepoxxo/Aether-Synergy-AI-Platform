@@ -157,10 +157,11 @@ interface SpaceShip {
   scared: boolean;
   scareVelocity: number;
   stolenDigit: string | null;
-  state: 'flying' | 'hover_sucking' | 'departing';
+  state: 'flying' | 'targeting' | 'hover_sucking' | 'departing';
   hoverTimer: number;
   targetCardX: number;
   targetCardY: number;
+  beamParticles: { y: number; xOffset: number; size: number; alpha: number }[];
 }
 
 interface FloatingHeart {
@@ -205,6 +206,7 @@ interface WhiteGuardian {
   peekTimer: number;
   targetElement: HTMLElement | null;
   originalHTML: string;
+  magicSparkles: { x: number; y: number; vx: number; vy: number; alpha: number; size: number; color: string }[];
 }
 
 export const ShootingStarsBackground: React.FC = () => {
@@ -340,10 +342,10 @@ export const ShootingStarsBackground: React.FC = () => {
       const pulseType = pRand < 0.35 ? 'breathe' : pRand < 0.75 ? 'sparkle' : 'steady';
       const twinkleSpeed =
         pulseType === 'breathe'
-          ? Math.random() * 0.006 + 0.002 // Deep, peaceful breathing
+          ? Math.random() * 0.005 + 0.002
           : pulseType === 'sparkle'
-          ? Math.random() * 0.025 + 0.012 // Staccato diamond sparkle
-          : Math.random() * 0.01 + 0.005;
+          ? Math.random() * 0.02 + 0.01
+          : Math.random() * 0.008 + 0.004;
 
       return {
         x: Math.random() * width,
@@ -358,18 +360,18 @@ export const ShootingStarsBackground: React.FC = () => {
       };
     });
 
-    // 3. SLOW MAJESTIC COMETS WITH GRADIENT AURAS
+    // 3. EXTRA-SLOW MAJESTIC COMETS WITH GRADIENT AURAS (0.12 - 0.18 px/frame)
     const comets: MajesticComet[] = [
       {
         id: 'comet-halley',
         x: width * 0.05,
         y: height * 0.15,
-        vx: 0.45,
-        vy: 0.22,
+        vx: 0.14,
+        vy: 0.07,
         radius: 4.5,
         comaRadius: 28,
-        tailLength: isUltra ? 220 : 140,
-        angle: Math.atan2(0.22, 0.45),
+        tailLength: isUltra ? 230 : 150,
+        angle: Math.atan2(0.07, 0.14),
         nucleusColor: '#FFFFFF',
         auraColor: 'rgba(56, 189, 248, 0.65)',
         tailColor: 'rgba(6, 182, 212, 0.75)',
@@ -380,12 +382,12 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'comet-neowise',
         x: width * 0.85,
         y: height * 0.75,
-        vx: -0.38,
-        vy: -0.18,
+        vx: -0.12,
+        vy: -0.06,
         radius: 3.5,
         comaRadius: 22,
-        tailLength: isUltra ? 180 : 110,
-        angle: Math.atan2(-0.18, -0.38),
+        tailLength: isUltra ? 190 : 120,
+        angle: Math.atan2(-0.06, -0.12),
         nucleusColor: '#FDE68A',
         auraColor: 'rgba(245, 158, 11, 0.6)',
         tailColor: 'rgba(234, 88, 12, 0.7)',
@@ -417,13 +419,13 @@ export const ShootingStarsBackground: React.FC = () => {
       emissionParticles: Array.from({ length: 45 }, () => ({
         angle: Math.random() * Math.PI * 2,
         dist: Math.random() * 50 + 5,
-        speed: Math.random() * 0.8 + 0.4,
+        speed: Math.random() * 0.6 + 0.3,
         color: activeColors[Math.floor(Math.random() * activeColors.length)],
         size: Math.random() * 2 + 1
       }))
     };
 
-    // 6. ULTRA-SLOW, MAJESTIC GALAXY ENGINE (ALMOST IMPERCEPTIBLE, CALMING ROTATION)
+    // 6. ULTRA-SLOW GALAXY ENGINE (3X SLOWER + WIDER EXPANSION RANGE TO 3.8X)
     let galaxyState: 'expanding' | 'exploding' | 'reforming' = 'expanding';
     let galaxyScale = 1.0;
     let galaxyRotation = 0;
@@ -441,7 +443,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: 0,
         baseRadius: radius,
         angle: angle,
-        speed: Math.random() * 0.00015 + 0.00008, // Extra slow, serene, meditative
+        speed: Math.random() * 0.00004 + 0.000015, // 3X slower, whisper-quiet celestial rotation
         color: activeColors[i % activeColors.length],
         size: Math.random() * 2.4 + 0.8,
         sparklePhase: Math.random() * Math.PI * 2,
@@ -462,10 +464,10 @@ export const ShootingStarsBackground: React.FC = () => {
 
       const orbitSpeed =
         lane === 'inner'
-          ? (Math.random() * 0.0005 + 0.0003) * (Math.random() > 0.5 ? 1 : -1)
+          ? (Math.random() * 0.0003 + 0.0002) * (Math.random() > 0.5 ? 1 : -1)
           : lane === 'mid'
-          ? (Math.random() * 0.00025 + 0.00015) * (Math.random() > 0.5 ? 1 : -1)
-          : (Math.random() * 0.0001 + 0.00006) * (Math.random() > 0.5 ? 1 : -1);
+          ? (Math.random() * 0.00018 + 0.0001) * (Math.random() > 0.5 ? 1 : -1)
+          : (Math.random() * 0.00008 + 0.00004) * (Math.random() > 0.5 ? 1 : -1);
 
       const numVerts = Math.floor(Math.random() * 3) + 5;
       const baseR = Math.random() * 5 + 3;
@@ -483,7 +485,7 @@ export const ShootingStarsBackground: React.FC = () => {
         orbitRadius: orbitRadius,
         orbitSpeed: orbitSpeed,
         rotation: Math.random() * Math.PI * 2,
-        rotSpeed: Math.random() * 0.01 - 0.005,
+        rotSpeed: Math.random() * 0.008 - 0.004,
         vertices: vertices,
         color: isLight ? '#94A3B8' : '#64748B',
         lane: lane
@@ -492,9 +494,9 @@ export const ShootingStarsBackground: React.FC = () => {
 
     // 8. Dwarf Galaxies
     const dwarfGalaxies: DistantDwarfGalaxy[] = [
-      { x: width * 0.08, y: height * 0.14, radius: 28, rotation: 0, rotSpeed: 0.0002, color: '#06B6D4', opacity: 0.55 },
-      { x: width * 0.92, y: height * 0.38, radius: 35, rotation: 0, rotSpeed: -0.00025, color: '#EC4899', opacity: 0.5 },
-      { x: width * 0.45, y: height * 0.92, radius: 24, rotation: 0, rotSpeed: 0.0003, color: '#F59E0B', opacity: 0.45 }
+      { x: width * 0.08, y: height * 0.14, radius: 28, rotation: 0, rotSpeed: 0.0001, color: '#06B6D4', opacity: 0.55 },
+      { x: width * 0.92, y: height * 0.38, radius: 35, rotation: 0, rotSpeed: -0.00012, color: '#EC4899', opacity: 0.5 },
+      { x: width * 0.45, y: height * 0.92, radius: 24, rotation: 0, rotSpeed: 0.00015, color: '#F59E0B', opacity: 0.45 }
     ];
 
     // 9. Deep Space Planets
@@ -503,14 +505,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-saturn',
         x: width * 0.86,
         y: height * 0.8,
-        vx: -0.01,
-        vy: 0.004,
+        vx: -0.008,
+        vy: 0.003,
         radius: 24,
         type: 'gas_giant',
         rotation: 0,
-        rotationSpeed: 0.002,
+        rotationSpeed: 0.0015,
         lightAngle: 0.8,
-        lightPhaseSpeed: 0.0008,
+        lightPhaseSpeed: 0.0006,
         primaryColor: '#F59E0B',
         secondaryColor: '#FDE68A',
         shadowColor: '#451A03',
@@ -530,14 +532,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-cyber',
         x: width * 0.16,
         y: height * 0.24,
-        vx: 0.01,
-        vy: -0.005,
+        vx: 0.008,
+        vy: -0.004,
         radius: 17,
         type: 'cyber_neon',
         rotation: 0,
-        rotationSpeed: 0.003,
+        rotationSpeed: 0.002,
         lightAngle: -0.6,
-        lightPhaseSpeed: 0.001,
+        lightPhaseSpeed: 0.0008,
         primaryColor: '#06B6D4',
         secondaryColor: '#E0F2FE',
         shadowColor: '#082F49',
@@ -556,14 +558,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-volcanic',
         x: width * 0.78,
         y: height * 0.22,
-        vx: -0.008,
-        vy: 0.003,
+        vx: -0.006,
+        vy: 0.002,
         radius: 14,
         type: 'volcanic',
         rotation: 0,
-        rotationSpeed: 0.0035,
+        rotationSpeed: 0.0025,
         lightAngle: 1.2,
-        lightPhaseSpeed: 0.0012,
+        lightPhaseSpeed: 0.001,
         primaryColor: '#DC2626',
         secondaryColor: '#F97316',
         shadowColor: '#450A0A',
@@ -581,14 +583,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-cryo',
         x: width * 0.3,
         y: height * 0.88,
-        vx: 0.006,
-        vy: -0.003,
+        vx: 0.005,
+        vy: -0.002,
         radius: 12,
         type: 'cryo_moon',
         rotation: 0,
-        rotationSpeed: 0.002,
+        rotationSpeed: 0.0015,
         lightAngle: -1.0,
-        lightPhaseSpeed: 0.0008,
+        lightPhaseSpeed: 0.0006,
         primaryColor: '#38BDF8',
         secondaryColor: '#E0F2FE',
         shadowColor: '#0C4A6E',
@@ -629,7 +631,7 @@ export const ShootingStarsBackground: React.FC = () => {
       warpDest: { x: width * 0.5, y: height * 0.45 }
     };
 
-    // 11. White Guardian Runner
+    // 11. White Guardian Runner (Reliable & Kinematic)
     const guardian: WhiteGuardian = {
       active: false,
       x: -60,
@@ -645,7 +647,8 @@ export const ShootingStarsBackground: React.FC = () => {
       wallOpacity: 0,
       peekTimer: 0,
       targetElement: null,
-      originalHTML: ''
+      originalHTML: '',
+      magicSparkles: []
     };
 
     const scheduleWatcher = () => {
@@ -670,13 +673,13 @@ export const ShootingStarsBackground: React.FC = () => {
       setTimeout(() => {
         if (spaceShips.length < 2) {
           const fromLeft = Math.random() > 0.5;
-          spaceShips.push({
+          const newShip: SpaceShip = {
             id: 'ship-' + Date.now(),
             x: fromLeft ? -70 : width + 70,
-            y: Math.random() * (height * 0.4) + 60,
-            speed: (Math.random() * 1.8 + 1.2) * (fromLeft ? 1 : -1),
-            type: Math.random() > 0.3 ? 'ufo' : 'cruiser',
-            size: isUltra ? (Math.random() * 6 + 14) : 12,
+            y: Math.random() * (height * 0.5) + 60,
+            speed: (Math.random() * 1.5 + 1.2) * (fromLeft ? 1 : -1),
+            type: 'ufo',
+            size: isUltra ? (Math.random() * 5 + 16) : 14,
             color: isLight ? '#0284C7' : '#38BDF8',
             beamActive: true,
             lightPhase: 0,
@@ -686,11 +689,18 @@ export const ShootingStarsBackground: React.FC = () => {
             state: 'flying',
             hoverTimer: 0,
             targetCardX: 0,
-            targetCardY: 0
-          });
+            targetCardY: 0,
+            beamParticles: Array.from({ length: 16 }, () => ({
+              y: Math.random() * 160,
+              xOffset: (Math.random() - 0.5) * 30,
+              size: Math.random() * 2 + 1,
+              alpha: Math.random()
+            }))
+          };
+          spaceShips.push(newShip);
         }
         scheduleShip();
-      }, Math.random() * 7000 + 6000);
+      }, Math.random() * 6000 + 5000);
     };
     scheduleShip();
 
@@ -741,11 +751,11 @@ export const ShootingStarsBackground: React.FC = () => {
         lastShootingStarSpawn = now;
       }
 
-      galaxyRotation += 0.00004; // EXTRA SLOW, HYPNOTIC & RELAXING
-      blackHolePulse += 0.015;
-      radiantSun.pulsePhase += 0.012;
-      radiantSun.flarePhase += 0.02;
-      whiteHole.pulsePhase += 0.02;
+      galaxyRotation += 0.000012; // 3X SLOWER - DEEP PEACEFUL COSMIC DRIFT
+      blackHolePulse += 0.01;
+      radiantSun.pulsePhase += 0.01;
+      radiantSun.flarePhase += 0.015;
+      whiteHole.pulsePhase += 0.015;
 
       // ===========================================================
       // 1. DRAW FAMOUS REAL CONSTELLATIONS
@@ -799,27 +809,26 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 2. DRAW SLOW MAJESTIC COMETS WITH GRADIENT AURAS
+      // 2. DRAW EXTRA-SLOW MAJESTIC COMETS WITH GRADIENT AURAS
       // ===========================================================
       comets.forEach((cmt) => {
         cmt.x += cmt.vx;
         cmt.y += cmt.vy;
-        cmt.pulsePhase += 0.03;
+        cmt.pulsePhase += 0.02;
 
-        // Wrap around screen softly
-        if (cmt.x > width + 180) cmt.x = -180;
-        if (cmt.x < -180) cmt.x = width + 180;
-        if (cmt.y > height + 180) cmt.y = -180;
-        if (cmt.y < -180) cmt.y = height + 180;
+        if (cmt.x > width + 220) cmt.x = -220;
+        if (cmt.x < -220) cmt.x = width + 220;
+        if (cmt.y > height + 220) cmt.y = -220;
+        if (cmt.y < -220) cmt.y = height + 220;
 
         ctx.save();
         ctx.translate(cmt.x, cmt.y);
 
-        const tailAngle = Math.atan2(cmt.vy, cmt.vx) + Math.PI; // Tail points away from movement
+        const tailAngle = Math.atan2(cmt.vy, cmt.vx) + Math.PI;
         const tailX = Math.cos(tailAngle) * cmt.tailLength;
         const tailY = Math.sin(tailAngle) * cmt.tailLength;
 
-        // 1. Long Dual Ion/Dust Tail
+        // Long Dual Tail with Gradient
         const tailGrad = ctx.createLinearGradient(0, 0, tailX, tailY);
         tailGrad.addColorStop(0, cmt.auraColor);
         tailGrad.addColorStop(0.4, cmt.tailColor);
@@ -834,7 +843,7 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.globalAlpha = cmt.opacity * (isLight ? 0.75 : 0.9);
         ctx.fill();
 
-        // 2. Volumetric Glowing Coma Aura (Degradado Esférico)
+        // Volumetric Coma
         const comaGrad = ctx.createRadialGradient(0, 0, cmt.radius * 0.5, 0, 0, cmt.comaRadius);
         comaGrad.addColorStop(0, cmt.nucleusColor);
         comaGrad.addColorStop(0.35, cmt.auraColor);
@@ -845,7 +854,7 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.fillStyle = comaGrad;
         ctx.fill();
 
-        // 3. Dense Brilliant Nucleus
+        // Nucleus
         ctx.beginPath();
         ctx.arc(0, 0, cmt.radius + Math.sin(cmt.pulsePhase) * 0.6, 0, Math.PI * 2);
         ctx.fillStyle = cmt.nucleusColor;
@@ -975,31 +984,31 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 7. ULTRA-SLOW, MAJESTIC CENTRAL GALAXY
+      // 7. ULTRA-SLOW GALAXY WITH WIDE EXPANSION (UP TO 3.8X)
       // ===========================================================
       const centerX = width * 0.5;
       const centerY = height * 0.45;
 
       if (galaxyState === 'expanding') {
-        galaxyScale += 0.000045; // Ultra-slow, peaceful expansion
-        if (galaxyScale > 2.4) {
+        galaxyScale += 0.000025; // Meditative, wide continuous expansion
+        if (galaxyScale > 3.8) {
           galaxyState = 'exploding';
           supernovaProgress = 0;
-          shockwaveRadius = 15;
+          shockwaveRadius = 20;
           shockwaveAlpha = 1.0;
           const patterns: ExplosionPattern[] = ['omni_burst', 'polar_jets', 'pinwheel_spiral', 'quad_cross'];
           currentExplosionPattern = patterns[Math.floor(Math.random() * patterns.length)];
         }
       } else if (galaxyState === 'exploding') {
-        supernovaProgress += 0.008;
-        shockwaveRadius += 6;
-        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.4);
+        supernovaProgress += 0.007;
+        shockwaveRadius += 7;
+        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.35);
 
-        if (supernovaProgress > 2.8) {
+        if (supernovaProgress > 3.0) {
           galaxyState = 'reforming';
         }
       } else if (galaxyState === 'reforming') {
-        galaxyScale -= 0.006;
+        galaxyScale -= 0.005;
         if (galaxyScale <= 1.0) {
           galaxyScale = 1.0;
           galaxyState = 'expanding';
@@ -1019,20 +1028,20 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(245, 158, 11, ${shockwaveAlpha})`;
-        ctx.lineWidth = 5;
-        ctx.shadowBlur = 30;
+        ctx.lineWidth = 6;
+        ctx.shadowBlur = 35;
         ctx.shadowColor = '#F59E0B';
         ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius * 0.85, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(6, 182, 212, ${shockwaveAlpha * 0.85})`;
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 3.5;
         ctx.stroke();
         ctx.restore();
       }
 
-      const centerFog = ctx.createRadialGradient(0, 0, 10, 0, 0, (isUltra ? 230 : 140) * galaxyScale);
+      const centerFog = ctx.createRadialGradient(0, 0, 10, 0, 0, (isUltra ? 260 : 160) * galaxyScale);
       centerFog.addColorStop(0, isLight ? 'rgba(217, 119, 6, 0.35)' : 'rgba(245, 158, 11, 0.45)');
       centerFog.addColorStop(0.35, isLight ? 'rgba(168, 85, 247, 0.2)' : 'rgba(168, 85, 247, 0.28)');
       centerFog.addColorStop(0.7, isLight ? 'rgba(6, 182, 212, 0.12)' : 'rgba(6, 182, 212, 0.2)');
@@ -1040,18 +1049,18 @@ export const ShootingStarsBackground: React.FC = () => {
 
       ctx.fillStyle = centerFog;
       ctx.beginPath();
-      ctx.arc(0, 0, (isUltra ? 230 : 140) * galaxyScale, 0, Math.PI * 2);
+      ctx.arc(0, 0, (isUltra ? 260 : 160) * galaxyScale, 0, Math.PI * 2);
       ctx.fill();
 
       galaxyParticles.forEach((p, idx) => {
         p.angle += p.speed;
-        p.sparklePhase += 0.015;
+        p.sparklePhase += 0.01;
 
         let px = 0;
         let py = 0;
 
         if (galaxyState === 'exploding') {
-          p.distFromCenter += 3.5;
+          p.distFromCenter += 3.2;
 
           if (currentExplosionPattern === 'polar_jets') {
             const jetDir = idx % 2 === 0 ? 1 : -1;
@@ -1071,7 +1080,7 @@ export const ShootingStarsBackground: React.FC = () => {
           }
         } else {
           const currentR = p.baseRadius * galaxyScale;
-          const theta = p.angle + (currentR / 32);
+          const theta = p.angle + (currentR / 36);
           px = Math.cos(theta) * currentR;
           py = Math.sin(theta) * currentR * 0.65;
         }
@@ -1084,11 +1093,11 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.fill();
       });
 
-      const singularityGlow = galaxyScale > 2.0 ? (galaxyScale - 2.0) * 35 : 12;
+      const singularityGlow = galaxyScale > 3.0 ? (galaxyScale - 3.0) * 45 : 12;
       ctx.beginPath();
       ctx.arc(0, 0, singularityGlow, 0, Math.PI * 2);
       ctx.fillStyle = '#FFFFFF';
-      ctx.shadowBlur = singularityGlow * 2;
+      ctx.shadowBlur = singularityGlow * 2.2;
       ctx.shadowColor = '#F59E0B';
       ctx.fill();
       ctx.restore();
@@ -1139,7 +1148,7 @@ export const ShootingStarsBackground: React.FC = () => {
       planets.forEach((p) => {
         p.rotation += p.rotationSpeed;
         p.lightAngle += p.lightPhaseSpeed;
-        p.ringWobble += 0.01;
+        p.ringWobble += 0.008;
         p.x += p.vx;
         p.y += p.vy;
 
@@ -1282,32 +1291,65 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 12. UFO NUMBER ABDUCTION
+      // 12. UFO REAL NUMBER ABDUCTION & SUCKING BEAM
       // ===========================================================
+      const numberElements = Array.from(
+        document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"], [class*="font-mono"]')
+      ).filter((el) => {
+        const text = el.textContent || '';
+        const rect = el.getBoundingClientRect();
+        return (
+          /[0-9]/.test(text) &&
+          rect.width > 0 &&
+          rect.height > 0 &&
+          rect.top >= -50 &&
+          rect.bottom <= window.innerHeight + 100
+        );
+      });
+
       for (let i = spaceShips.length - 1; i >= 0; i--) {
         const ship = spaceShips[i];
 
         if (ship.scared) {
           ship.x += ship.scareVelocity;
-          ship.y -= 3.5;
-        } else if (ship.state === 'hover_sucking') {
-          ship.hoverTimer += 0.02;
-          ship.y = ship.targetCardY - 140 + Math.sin(ship.hoverTimer * 4) * 2.5;
+          ship.y -= 4.5;
+        } else if (ship.state === 'targeting') {
+          const dx = ship.targetCardX - ship.x;
+          const dy = (ship.targetCardY - 120) - ship.y;
+          ship.x += dx * 0.08;
+          ship.y += dy * 0.08;
 
-          if (ship.hoverTimer > 3.5) {
+          if (Math.hypot(dx, dy) < 15) {
+            ship.state = 'hover_sucking';
+            ship.hoverTimer = 0;
+          }
+        } else if (ship.state === 'hover_sucking') {
+          ship.hoverTimer += 0.025;
+          ship.y = ship.targetCardY - 120 + Math.sin(ship.hoverTimer * 4) * 3;
+
+          if (ship.hoverTimer > 3.2) {
             ship.state = 'departing';
           }
         } else if (ship.state === 'departing') {
-          ship.x += ship.speed * 1.8;
-          ship.y -= 1.5;
+          ship.x += ship.speed * 2.2;
+          ship.y -= 2.0;
         } else {
+          // Flying State: Search for numbers on screen to target
           ship.x += ship.speed;
-          ship.y += Math.sin(ship.x * 0.015) * 0.7;
+          ship.y += Math.sin(ship.x * 0.015) * 0.6;
+
+          if (numberElements.length > 0 && !ship.stolenDigit && Math.random() < 0.03) {
+            const targetEl = numberElements[Math.floor(Math.random() * numberElements.length)] as HTMLElement;
+            const rect = targetEl.getBoundingClientRect();
+            ship.state = 'targeting';
+            ship.targetCardX = rect.left + rect.width / 2;
+            ship.targetCardY = rect.top;
+          }
         }
 
         ship.lightPhase += 0.08;
 
-        if (ship.x > width + 140 || ship.x < -140) {
+        if (ship.x > width + 180 || ship.x < -180 || ship.y < -150) {
           spaceShips.splice(i, 1);
           continue;
         }
@@ -1316,111 +1358,149 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.translate(ship.x, ship.y);
 
         if (ship.type === 'ufo') {
-          const beamGrad = ctx.createLinearGradient(0, 4, 0, 180);
-          beamGrad.addColorStop(0, isLight ? 'rgba(6, 182, 212, 0.45)' : 'rgba(56, 189, 248, 0.55)');
-          beamGrad.addColorStop(0.5, isLight ? 'rgba(245, 158, 11, 0.25)' : 'rgba(245, 158, 11, 0.35)');
+          // Sucking tractor beam
+          const beamLen = ship.state === 'hover_sucking' ? 160 : 120;
+          const beamGrad = ctx.createRadialGradient(0, 4, 2, 0, beamLen * 0.6, beamLen);
+          beamGrad.addColorStop(0, isLight ? 'rgba(6, 182, 212, 0.65)' : 'rgba(56, 189, 248, 0.75)');
+          beamGrad.addColorStop(0.5, isLight ? 'rgba(245, 158, 11, 0.35)' : 'rgba(245, 158, 11, 0.45)');
           beamGrad.addColorStop(1, 'transparent');
 
           ctx.beginPath();
           ctx.moveTo(-ship.size * 0.4, 4);
-          ctx.lineTo(-ship.size * 1.9, 180);
-          ctx.lineTo(ship.size * 1.9, 180);
+          ctx.lineTo(-ship.size * 2.2, beamLen);
+          ctx.lineTo(ship.size * 2.2, beamLen);
           ctx.lineTo(ship.size * 0.4, 4);
           ctx.fillStyle = beamGrad;
           ctx.fill();
 
+          // Sucking particles drifting up to the saucer
+          ship.beamParticles.forEach((bp) => {
+            bp.y -= 2.2;
+            if (bp.y < 4) bp.y = beamLen;
+            const bWidth = (bp.y / beamLen) * (ship.size * 1.8);
+            ctx.beginPath();
+            ctx.arc((bp.xOffset / 30) * bWidth, bp.y, bp.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#F59E0B';
+            ctx.globalAlpha = bp.alpha * (1 - bp.y / beamLen + 0.3);
+            ctx.fill();
+          });
+          ctx.globalAlpha = 1.0;
+
+          // Saucer Dome
           ctx.beginPath();
-          ctx.arc(0, -4, ship.size * 0.45, Math.PI, 0);
+          ctx.arc(0, -5, ship.size * 0.48, Math.PI, 0);
           ctx.fillStyle = isLight ? '#38BDF8' : '#67E8F9';
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 15;
           ctx.shadowColor = '#06B6D4';
           ctx.fill();
 
+          // Saucer Hull
           ctx.beginPath();
-          ctx.ellipse(0, 0, ship.size, ship.size * 0.35, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, ship.size, ship.size * 0.38, 0, 0, Math.PI * 2);
           ctx.fillStyle = isLight ? '#0F172A' : '#1E293B';
           ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 2.0;
           ctx.fill();
           ctx.stroke();
 
+          // Display abducted stolen digit on the UFO hull
           if (ship.stolenDigit) {
             ctx.fillStyle = '#F59E0B';
-            ctx.font = 'bold 10px monospace';
-            ctx.fillText(ship.stolenDigit, -8, -1);
+            ctx.font = 'bold 11px monospace';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#F59E0B';
+            ctx.fillText(ship.stolenDigit, -10, 2);
           }
 
-          const numberElements = document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"]');
-          numberElements.forEach((el) => {
-            const rect = el.getBoundingClientRect();
-            const rawText = el.getAttribute('data-original-val') || el.textContent || '$49';
-            if (!el.getAttribute('data-original-val')) {
-              el.setAttribute('data-original-val', rawText);
-            }
+          // Abduct number when directly hovering over it
+          if (ship.state === 'hover_sucking') {
+            numberElements.forEach((el) => {
+              const htmlEl = el as HTMLElement;
+              const rect = htmlEl.getBoundingClientRect();
+              const elCenterX = rect.left + rect.width / 2;
 
-            if (Math.abs(ship.x - (rect.left + rect.width / 2)) < 110 && Math.abs(ship.y - rect.top) < 180) {
-              if (ship.state === 'flying' && Math.random() < 0.8) {
-                ship.state = 'hover_sucking';
-                ship.hoverTimer = 0;
-                ship.targetCardX = rect.left + rect.width / 2;
-                ship.targetCardY = rect.top;
+              if (Math.abs(ship.x - elCenterX) < 65 && Math.abs(ship.y - (rect.top - 120)) < 45) {
+                const rawText = htmlEl.getAttribute('data-original-val') || htmlEl.textContent || '$49';
+                if (!htmlEl.getAttribute('data-original-val')) {
+                  htmlEl.setAttribute('data-original-val', rawText);
+                }
+
+                ship.stolenDigit = rawText.substring(0, 4);
+
+                // MAKE NUMBER COMPLETELY DISAPPEAR FROM DOM
+                htmlEl.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                htmlEl.style.opacity = '0';
+                htmlEl.style.transform = 'scale(0) translateY(-40px)';
+
+                // IMMEDIATELY TRIGGER WHITE GUARDIAN SPRINT
+                if (!guardian.active || guardian.state === 'peeking_corner') {
+                  guardian.active = true;
+                  guardian.state = 'sprinting';
+                  guardian.x = ship.x > width / 2 ? -70 : width + 70;
+                  guardian.y = rect.top + 20;
+                  guardian.targetX = elCenterX;
+                  guardian.targetY = rect.top + 20;
+                  guardian.progress = 0;
+                  guardian.legPhase = 0;
+                  guardian.targetElement = htmlEl;
+                  guardian.originalHTML = rawText;
+                  guardian.magicSparkles = [];
+                }
               }
-
-              ship.stolenDigit = rawText.substring(0, 3);
-
-              const numDigits = Math.max(1, rawText.replace(/[^0-9]/g, '').length);
-              const qMarks = Array.from({ length: numDigits }, () => '❓').join('');
-              (el as HTMLElement).innerHTML = `<span class="inline-flex items-center gap-1 text-amber-400 font-mono text-4xl animate-bounce" title="¡Número abducido! Esperando al guardián...">${qMarks}</span>`;
-
-              if (!guardian.active && guardian.state !== 'peeking_corner') {
-                guardian.active = true;
-                guardian.state = 'sprinting';
-                guardian.x = -50;
-                guardian.targetX = rect.left + rect.width / 2;
-                guardian.targetY = rect.top + 30;
-                guardian.progress = 0;
-                guardian.targetElement = el as HTMLElement;
-                guardian.originalHTML = rawText;
-              }
-            }
-          });
+            });
+          }
         }
         ctx.restore();
       }
 
       // ===========================================================
-      // 13. FLUID HUMANOID WHITE GUARDIAN
+      // 13. RELIABLE FLUID HUMANOID WHITE GUARDIAN
       // ===========================================================
       if (guardian.active) {
-        guardian.progress += 0.015;
-        guardian.legPhase += 0.25;
+        guardian.progress += 0.02;
+        guardian.legPhase += 0.28;
 
         if (guardian.state === 'sprinting') {
-          guardian.x += (guardian.targetX - guardian.x) * 0.14;
-          guardian.y += (guardian.targetY - guardian.y) * 0.14;
-          guardian.spineAngle = 0.22;
+          const gDistX = guardian.targetX - guardian.x;
+          guardian.x += gDistX * 0.16;
+          guardian.spineAngle = gDistX > 0 ? 0.25 : -0.25;
 
-          if (Math.abs(guardian.x - guardian.targetX) < 18) {
+          if (Math.abs(gDistX) < 22) {
             guardian.state = 'restoring_numbers';
             guardian.progress = 0;
           }
         } else if (guardian.state === 'restoring_numbers') {
           guardian.spineAngle = -0.1;
 
+          // RESTORE NUMBER BACK TO LIFE WITH VIBRANT GLOW
           if (guardian.targetElement && guardian.originalHTML) {
+            guardian.targetElement.style.opacity = '1';
+            guardian.targetElement.style.transform = 'scale(1) translateY(0px)';
+            guardian.targetElement.style.textShadow = '0 0 30px #F59E0B, 0 0 50px #FFFFFF';
             guardian.targetElement.innerHTML = guardian.originalHTML;
-            guardian.targetElement.style.transform = 'translateY(0px) scale(1)';
-            guardian.targetElement.style.textShadow = '0 0 25px #F59E0B, 0 0 40px #FFFFFF';
           }
 
-          if (guardian.progress > 0.9) {
+          // Emit magic restoration sparkles
+          if (guardian.magicSparkles.length < 24) {
+            guardian.magicSparkles.push({
+              x: guardian.x + 18,
+              y: guardian.y - 15,
+              vx: (Math.random() - 0.5) * 4,
+              vy: -Math.random() * 3 - 1,
+              alpha: 1.0,
+              size: Math.random() * 3 + 2,
+              color: '#F59E0B'
+            });
+          }
+
+          if (guardian.progress > 0.8) {
             guardian.state = 'placing_wall';
             guardian.progress = 0;
           }
         } else if (guardian.state === 'placing_wall') {
-          guardian.wallOpacity = Math.min(1, guardian.progress * 2);
+          guardian.wallOpacity = Math.min(1, guardian.progress * 2.5);
 
-          if (guardian.progress > 1.2) {
+          if (guardian.progress > 1.0) {
             guardian.state = 'patrolling';
             guardian.progress = 0;
           }
@@ -1429,67 +1509,89 @@ export const ShootingStarsBackground: React.FC = () => {
           guardian.lookAngle = Math.sin(guardian.progress * 4) * 0.8;
           guardian.flashlightAngle = Math.sin(guardian.progress * 3) * 0.6;
 
+          // Shoo away any nearby UFO
           spaceShips.forEach((s) => {
-            if (s.type === 'ufo' && Math.hypot(s.x - guardian.x, s.y - guardian.y) < 230) {
+            if (s.type === 'ufo' && Math.hypot(s.x - guardian.x, s.y - guardian.y) < 280) {
               guardian.state = 'shooing';
               s.scared = true;
-              s.scareVelocity = s.speed > 0 ? 14 : -14;
+              s.scareVelocity = s.x > guardian.x ? 18 : -18;
             }
           });
 
-          if (guardian.progress > 3.8) {
+          if (guardian.progress > 3.0) {
             guardian.state = 'stealth_exit';
             guardian.progress = 0;
           }
         } else if (guardian.state === 'shooing') {
-          if (guardian.progress > 1.5) {
+          if (guardian.progress > 1.2) {
             guardian.state = 'stealth_exit';
           }
         } else if (guardian.state === 'stealth_exit') {
-          guardian.x -= 1.8;
+          guardian.x -= 2.5;
           guardian.lookAngle = 0.9;
-          guardian.wallOpacity = Math.max(0, guardian.wallOpacity - 0.02);
+          guardian.wallOpacity = Math.max(0, guardian.wallOpacity - 0.03);
 
-          if (guardian.x < -60) {
+          if (guardian.x < -70) {
             guardian.state = 'peeking_corner';
             guardian.peekTimer = 0;
           }
         } else if (guardian.state === 'peeking_corner') {
-          guardian.x = 24;
-          guardian.y = height - 24;
+          guardian.x = 26;
+          guardian.y = height - 26;
           guardian.peekTimer += 0.01;
           if (guardian.peekTimer > 8.0) {
             guardian.active = false;
           }
         }
 
+        // Draw magic sparkles
+        guardian.magicSparkles.forEach((ms, msIdx) => {
+          ms.x += ms.vx;
+          ms.y += ms.vy;
+          ms.alpha -= 0.03;
+          if (ms.alpha > 0) {
+            ctx.beginPath();
+            ctx.arc(ms.x, ms.y, ms.size, 0, Math.PI * 2);
+            ctx.fillStyle = ms.color;
+            ctx.globalAlpha = ms.alpha;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = ms.color;
+            ctx.fill();
+          } else {
+            guardian.magicSparkles.splice(msIdx, 1);
+          }
+        });
+        ctx.globalAlpha = 1.0;
+
+        // Protective Shield Wall
         if (guardian.wallOpacity > 0.01) {
           ctx.save();
           ctx.beginPath();
-          ctx.roundRect(guardian.targetX - 70, guardian.targetY - 50, 140, 70, 16);
+          ctx.roundRect(guardian.targetX - 75, guardian.targetY - 55, 150, 75, 18);
           ctx.strokeStyle = `rgba(6, 182, 212, ${guardian.wallOpacity})`;
-          ctx.lineWidth = 2.5;
-          ctx.shadowBlur = 15;
+          ctx.lineWidth = 3.0;
+          ctx.shadowBlur = 20;
           ctx.shadowColor = '#06B6D4';
-          ctx.fillStyle = `rgba(6, 182, 212, ${guardian.wallOpacity * 0.15})`;
+          ctx.fillStyle = `rgba(6, 182, 212, ${guardian.wallOpacity * 0.18})`;
           ctx.fill();
           ctx.stroke();
 
           ctx.fillStyle = `rgba(255, 255, 255, ${guardian.wallOpacity})`;
-          ctx.font = '14px sans-serif';
-          ctx.fillText('🛡️', guardian.targetX - 7, guardian.targetY - 20);
+          ctx.font = '16px sans-serif';
+          ctx.fillText('🛡️', guardian.targetX - 8, guardian.targetY - 24);
           ctx.restore();
         }
 
+        // Draw Articulated Humanoid Guardian
         ctx.save();
         ctx.translate(guardian.x, guardian.y);
         ctx.rotate(guardian.spineAngle);
 
         if (guardian.state === 'peeking_corner') {
           ctx.beginPath();
-          ctx.arc(0, 0, 14, 0, Math.PI * 2);
+          ctx.arc(0, 0, 15, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 14;
           ctx.shadowColor = '#06B6D4';
           ctx.fill();
 
@@ -1498,97 +1600,94 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.arc(4, -2, 2.5, 0, Math.PI * 2);
           ctx.fillStyle = '#0F172A';
           ctx.fill();
-
-          ctx.beginPath();
-          ctx.moveTo(-7, -7);
-          ctx.lineTo(-2, -5);
-          ctx.moveTo(7, -7);
-          ctx.lineTo(2, -5);
-          ctx.strokeStyle = '#0F172A';
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
         } else {
+          // Head
           ctx.beginPath();
-          ctx.arc(0, -18, 9, 0, Math.PI * 2);
+          ctx.arc(0, -20, 10, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 12;
           ctx.shadowColor = '#FFFFFF';
           ctx.fill();
 
+          // Cyan Visor
           ctx.beginPath();
-          ctx.arc(3, -18, 4, 0, Math.PI * 2);
+          ctx.arc(3, -20, 4.5, 0, Math.PI * 2);
           ctx.fillStyle = '#06B6D4';
           ctx.fill();
 
+          // Flashlight beam in patrol
           if (guardian.state === 'patrolling') {
             ctx.save();
             ctx.rotate(guardian.flashlightAngle);
-            const flashGrad = ctx.createRadialGradient(10, 0, 2, 80, 0, 70);
-            flashGrad.addColorStop(0, 'rgba(245, 158, 11, 0.6)');
+            const flashGrad = ctx.createRadialGradient(10, 0, 2, 90, 0, 80);
+            flashGrad.addColorStop(0, 'rgba(245, 158, 11, 0.7)');
             flashGrad.addColorStop(1, 'transparent');
             ctx.fillStyle = flashGrad;
             ctx.beginPath();
             ctx.moveTo(10, -5);
-            ctx.lineTo(90, -35);
-            ctx.lineTo(90, 35);
+            ctx.lineTo(100, -40);
+            ctx.lineTo(100, 40);
             ctx.lineTo(10, 5);
             ctx.fill();
             ctx.restore();
           }
 
+          // Spine & Torso
           ctx.beginPath();
-          ctx.moveTo(0, -9);
-          ctx.quadraticCurveTo(2, 0, 0, 8);
+          ctx.moveTo(0, -10);
+          ctx.quadraticCurveTo(2, 0, 0, 10);
           ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 3.5;
+          ctx.lineWidth = 4.0;
           ctx.lineCap = 'round';
           ctx.stroke();
 
-          const leg1Hip = Math.sin(guardian.legPhase) * 11;
-          const leg1Knee = Math.max(0, Math.sin(guardian.legPhase + 0.5) * 8);
+          // Kinematic Running Legs
+          const leg1Hip = Math.sin(guardian.legPhase) * 12;
+          const leg1Knee = Math.max(0, Math.sin(guardian.legPhase + 0.5) * 9);
           const leg2Hip = -leg1Hip;
-          const leg2Knee = Math.max(0, Math.sin(guardian.legPhase + Math.PI + 0.5) * 8);
+          const leg2Knee = Math.max(0, Math.sin(guardian.legPhase + Math.PI + 0.5) * 9);
 
           ctx.beginPath();
-          ctx.moveTo(0, 8);
-          ctx.lineTo(leg1Hip * 0.6, 15 + leg1Knee * 0.3);
-          ctx.lineTo(leg1Hip, 24);
+          ctx.moveTo(0, 10);
+          ctx.lineTo(leg1Hip * 0.6, 17 + leg1Knee * 0.3);
+          ctx.lineTo(leg1Hip, 26);
           ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 3.2;
           ctx.stroke();
 
           ctx.beginPath();
-          ctx.moveTo(0, 8);
-          ctx.lineTo(leg2Hip * 0.6, 15 + leg2Knee * 0.3);
-          ctx.lineTo(leg2Hip, 24);
+          ctx.moveTo(0, 10);
+          ctx.lineTo(leg2Hip * 0.6, 17 + leg2Knee * 0.3);
+          ctx.lineTo(leg2Hip, 26);
           ctx.stroke();
 
+          // Arms & Tools
           ctx.beginPath();
           if (guardian.state === 'restoring_numbers') {
-            ctx.moveTo(0, -4);
-            ctx.quadraticCurveTo(10, -10, 18, -14);
+            ctx.moveTo(0, -5);
+            ctx.quadraticCurveTo(12, -12, 22, -16);
             ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 3.5;
             ctx.stroke();
 
             ctx.fillStyle = '#FFFFFF';
-            ctx.font = '10px sans-serif';
-            ctx.fillText('✨', 18, -18);
+            ctx.font = '12px sans-serif';
+            ctx.fillText('✨', 22, -20);
           } else if (guardian.state === 'shooing') {
-            ctx.moveTo(0, -4);
-            ctx.lineTo(18, -18);
-            ctx.moveTo(18, -18);
-            ctx.lineTo(120, -90);
+            ctx.moveTo(0, -5);
+            ctx.lineTo(20, -20);
+            ctx.moveTo(20, -20);
+            ctx.lineTo(140, -100);
             ctx.strokeStyle = '#F43F5E';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3.0;
             ctx.stroke();
           } else {
-            ctx.moveTo(0, -4);
-            ctx.quadraticCurveTo(leg2Hip * 0.4, 0, leg2Hip * 0.8, 6);
-            ctx.moveTo(0, -4);
-            ctx.quadraticCurveTo(leg1Hip * 0.4, 0, leg1Hip * 0.8, 6);
+            ctx.moveTo(0, -5);
+            ctx.quadraticCurveTo(leg2Hip * 0.4, 0, leg2Hip * 0.8, 8);
+            ctx.moveTo(0, -5);
+            ctx.quadraticCurveTo(leg1Hip * 0.4, 0, leg1Hip * 0.8, 8);
             ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 2.8;
             ctx.stroke();
           }
         }
