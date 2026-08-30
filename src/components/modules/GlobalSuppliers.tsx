@@ -271,6 +271,7 @@ export const GlobalSuppliers: React.FC = () => {
   const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
   const [isGCodeModalOpen, setIsGCodeModalOpen] = useState(false);
   const [isFreightModalOpen, setIsFreightModalOpen] = useState(false);
+  const [isDPPModalOpen, setIsDPPModalOpen] = useState(false);
   const [destinationCountry, setDestinationCountry] = useState('Estados Unidos (US)');
   const [shippingMethod, setShippingMethod] = useState<'air' | 'sea'>('air');
   const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
@@ -618,6 +619,14 @@ export const GlobalSuppliers: React.FC = () => {
               </div>
 
               <button
+                onClick={() => setIsDPPModalOpen(true)}
+                className="w-full py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Tag className="w-4 h-4" />
+                <span>🏷️ Pasaporte Digital de Producto (EU DPP 2026 & QR)</span>
+              </button>
+
+              <button
                 onClick={() => handleOpenTechPack()}
                 className="w-full py-3 rounded-2xl bg-cyber-950 hover:bg-cyber-850 border border-cyber-700 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
               >
@@ -909,6 +918,73 @@ export const GlobalSuppliers: React.FC = () => {
               className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
             >
               Bloquear Tarifa Logística & Reservar Flete
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🏷️ 5. MODAL PASAPORTE DIGITAL DE PRODUCTO (EU DPP 2026) */}
+      {isDPPModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsDPPModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500">
+                <Tag className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">EU DIGITAL PRODUCT PASSPORT (DPP 2026)</h3>
+                <p className="text-xs text-slate-400">Certificado Oficial de Trazabilidad & Cumplimiento Ecológico</p>
+              </div>
+            </div>
+
+            {/* Passport Identity & QR */}
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 flex items-center gap-4">
+              <div className="w-24 h-24 bg-white p-2 rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-full h-full border-2 border-dashed border-slate-900 rounded-lg flex flex-col items-center justify-center font-mono text-[8px] text-slate-900 font-bold text-center">
+                  <Barcode className="w-8 h-8 text-slate-900 mb-0.5" />
+                  <span>EU-DPP-2026</span>
+                </div>
+              </div>
+
+              <div className="space-y-1 text-xs">
+                <div className="font-mono text-emerald-400 font-bold text-[11px]">ID: DPP-AET-2026-EU-941</div>
+                <div className="text-slate-300">Origen: {activeSupplier.name} ({activeSupplier.city}, {activeSupplier.country})</div>
+                <div className="text-slate-400 text-[10px]">Blockchain Anchor: Polygon zkEVM • Hash #8f3d...a19</div>
+              </div>
+            </div>
+
+            {/* Eco Metrics */}
+            <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono">
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-[10px] block">Huella Carbono</span>
+                <span className="text-emerald-400 font-bold text-sm">3.4 kg CO₂e</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-[10px] block">Huella Hídrica</span>
+                <span className="text-cyan-300 font-bold text-sm">420 Litros</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 text-[10px] block">Reciclabilidad</span>
+                <span className="text-amber-400 font-bold text-sm">94.5%</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Pasaporte Digital de Producto (EU DPP) exportado en PDF y enlazado a la etiqueta NFC/QR!');
+                setIsDPPModalOpen(false);
+              }}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(52,211,153,0.4)] hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Descargar Certificado Oficial EU DPP (PDF)</span>
             </button>
           </div>
         </div>

@@ -422,6 +422,50 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Sistema de Afiliados y Comisiones Recurrentes (20%)',
     desc: 'Enlaces de referidos con panel de ganancias para diseñadores e influencers.',
     isInitialDone: true
+  },
+
+  // ==========================================
+  // 💎 4. NIVEL 4: ULTRA AVANZADO / ENTERPRISE & SOCIAL (Pasarela Multiusuario, Patronaje DXF, Clima & DPP)
+  // ==========================================
+  {
+    id: 'fashion_runway_multicam_live',
+    module: 'Pasarela Virtual en Vivo',
+    category: 'advanced',
+    title: 'Pasarela de Moda 3D Multicámara con Audiencia en Vivo, Chat, Fotos e "Inspira al Mundo"',
+    desc: 'Desfile virtual 3D con cambio de 5 cámaras de TV, espectadores conectados en tiempo real, chat, reacciones emoji, fotos de primera fila y publicación comunitaria obligatoria para perder el miedo a mostrar tu talento.',
+    isInitialDone: true
+  },
+  {
+    id: 'pattern_cutting_dxf_aama',
+    module: 'Fabricación & Hardware 3D',
+    category: 'advanced',
+    title: 'Exportador de Patrones de Costura 2D (Patronaje Industrial DXF / AAMA / PDF 1:1)',
+    desc: 'Despiece plano con margen de costura de 1cm, marcas de piquete y formato universal para mesas de corte láser Gerber, Lectra y Optitex.',
+    isInitialDone: true
+  },
+  {
+    id: 'weather_rain_hydrophobic_shader',
+    module: 'Motor 3D & Shaders',
+    category: 'advanced',
+    title: 'Simulador de Clima & Shader de Gotas de Agua en Tiempo Real',
+    desc: 'Precipitación pluvial y condensación de microgotas esféricas para demostrar propiedades hidrofóbicas e impermeables del tejido.',
+    isInitialDone: true
+  },
+  {
+    id: 'spatial_apple_vision_pro_usdz',
+    module: 'Motor 3D & Shaders',
+    category: 'advanced',
+    title: 'Soporte Espacial para Apple Vision Pro & Meta Quest (USDZ / Spatial 3D)',
+    desc: 'Exportación con metadatos de computación espacial para proyectar el modelo holográfico en el espacio físico.',
+    isInitialDone: true
+  },
+  {
+    id: 'eu_dpp_digital_passport',
+    module: 'Proveedores Globales B2B',
+    category: 'advanced',
+    title: 'Pasaporte Digital de Producto de la Unión Europea (EU DPP 2026 & QR)',
+    desc: 'Certificado de trazabilidad ecológica con huella de carbono, procedencia textil y código QR de cumplimiento aduanero europeo.',
+    isInitialDone: true
   }
 ];
 

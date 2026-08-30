@@ -26,6 +26,8 @@ import { SynthetixMascot } from './components/modules/SynthetixMascot';
 import { AdminConsole } from './components/modules/AdminConsole';
 import { ProjectRoadmapChecklist } from './components/modules/ProjectRoadmapChecklist';
 import { CommunityExplore } from './components/modules/CommunityExplore';
+import { VirtualRunwayLive } from './components/modules/VirtualRunwayLive';
+import { PatternCutting2D } from './components/modules/PatternCutting2D';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -98,6 +100,10 @@ const MainLayout: React.FC = () => {
         return <AdGenAI />;
       case 'clothify':
         return <ClothifySourcing />;
+      case 'pattern2d':
+        return <PatternCutting2D />;
+      case 'runway':
+        return <VirtualRunwayLive />;
       case 'solesmith':
         return <SolesmithFootwear />;
       case 'automo':

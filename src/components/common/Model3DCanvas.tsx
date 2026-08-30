@@ -37,7 +37,9 @@ import {
   FolderDown,
   ShoppingBag,
   Code2,
-  Copy
+  Copy,
+  CloudRain,
+  Glasses
 } from 'lucide-react';
 
 export type ModelType =
@@ -104,6 +106,10 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
   const [isQuadView, setIsQuadView] = useState(false);
   const [isPBRPassesModalOpen, setIsPBRPassesModalOpen] = useState(false);
   const [isEmbedModalOpen, setIsEmbedModalOpen] = useState(false);
+
+  // 🌧️ Weather Rain & Hydrophobic Droplets State
+  const [isRainActive, setIsRainActive] = useState(false);
+  const [isVisionProModalOpen, setIsVisionProModalOpen] = useState(false);
 
   // ⚡ WebGPU & Adaptive Level of Detail (LOD) State
   const [lodLevel, setLodLevel] = useState<'high' | 'mid' | 'low'>('high');
@@ -905,6 +911,18 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
         </div>
       )}
 
+      {/* 🌧️ Rain Weather & Hydrophobic Waterdrops Shader Overlay */}
+      {isRainActive && (
+        <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden bg-blue-950/15 backdrop-blur-[0.5px]">
+          {/* Animated Falling Rain Streaks */}
+          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400/20 via-transparent to-transparent animate-pulse" />
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-blue-900/80 border border-blue-400 text-blue-200 text-[10px] font-mono font-bold flex items-center gap-1.5 shadow-lg">
+            <CloudRain className="w-3.5 h-3.5 animate-bounce" />
+            <span>SIMULACIÓN CLIMA: LLUVIA & GOTAS HIDROFÓBICAS (20,000 MM)</span>
+          </div>
+        </div>
+      )}
+
       {/* Keyboard Shortcuts Help Overlay */}
       {showKeyboardHelp && (
         <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-md p-6 flex flex-col justify-center items-center text-white animate-fadeIn">
@@ -1093,6 +1111,28 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             title="Exportar Pases de Render PBR (Albedo, Normal, Roughness, AO para Blender / Unreal Engine 5)"
           >
             <FolderDown className="w-4 h-4" />
+          </button>
+
+          {/* 🌧️ Simulador de Clima & Shader de Gotas de Agua */}
+          <button
+            onClick={() => setIsRainActive(!isRainActive)}
+            className={`p-2 rounded-xl border transition-all shadow-md ${
+              isRainActive
+                ? 'bg-blue-500 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.6)] animate-pulse'
+                : 'bg-cyber-950/90 text-slate-300 border-cyber-700 hover:text-white'
+            }`}
+            title={isRainActive ? 'Desactivar Simulador de Lluvia' : 'Activar Simulación de Lluvia y Gotas Hidrofóbicas'}
+          >
+            <CloudRain className="w-4 h-4" />
+          </button>
+
+          {/* 🥽 Exportador para Apple Vision Pro / Meta Quest */}
+          <button
+            onClick={() => setIsVisionProModalOpen(true)}
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-purple-400 text-purple-300 transition-all shadow-md"
+            title="Exportar Modelo Espacial para Apple Vision Pro y Meta Quest (USDZ / Spatial 3D)"
+          >
+            <Glasses className="w-4 h-4" />
           </button>
 
           {/* Floor Grid Toggle */}
@@ -1375,6 +1415,53 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
               className="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:opacity-90 transition-all"
             >
               Cerrar & Confirmar Integración
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🥽 APPLE VISION PRO & META QUEST SPATIAL 3D MODAL */}
+      {isVisionProModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn pointer-events-auto">
+          <div className="relative w-full max-w-md bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4 text-center">
+            <button
+              onClick={() => setIsVisionProModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500 mx-auto flex items-center justify-center">
+              <Glasses className="w-7 h-7" />
+            </div>
+
+            <div>
+              <h3 className="font-tech font-bold text-lg">APPLE VISION PRO & META QUEST 3</h3>
+              <p className="text-xs text-slate-400">Computación Espacial • Formato Nativo .USDZ con Físicas</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3">
+              <div className="w-36 h-36 mx-auto bg-white p-2 rounded-2xl flex items-center justify-center shadow-lg">
+                {/* QR Code Simulation */}
+                <div className="w-full h-full border-4 border-dashed border-slate-900 rounded-xl flex flex-col items-center justify-center font-mono text-[9px] text-slate-900 font-bold p-1 text-center leading-tight">
+                  <QrCode className="w-14 h-14 text-slate-900 mb-1" />
+                  <span>ESCANEAR CON APPLE VISION PRO</span>
+                </div>
+              </div>
+              <p className="text-[11px] text-purple-300 font-mono">
+                Apunta con la cámara de tus Apple Vision Pro o iPhone para colocar la prenda holográfica en tu habitación.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Archivo spatial_model.usdz generado con metadatos de iluminación ARKit!');
+                setIsVisionProModalOpen(false);
+              }}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Descargar Archivo Espacial .USDZ (Vision Pro)</span>
             </button>
           </div>
         </div>

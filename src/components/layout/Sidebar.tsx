@@ -22,7 +22,9 @@ import {
   CheckSquare,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Radio,
+  Scissors
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -56,6 +58,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'scanner3d', nameKey: 'sidebar.scanner3d', icon: Scan, requiredRole: 'pro', badge: 'PRO' },
     { id: 'adgen', nameKey: 'sidebar.adgen', icon: Video, requiredRole: 'pro', badge: 'PRO' },
     { id: 'clothify', nameKey: 'sidebar.clothify', icon: Shirt, requiredRole: 'pro', badge: 'PRO' },
+    { id: 'pattern2d', nameKey: 'Patronaje 2D (DXF)', icon: Scissors, requiredRole: 'pro', badge: 'CAD', isLiteralLabel: true },
+    { id: 'runway', nameKey: 'Pasarela en Vivo 3D', icon: Radio, requiredRole: 'pro', badge: 'LIVE', isLiteralLabel: true },
     { id: 'solesmith', nameKey: 'sidebar.solesmith', icon: Footprints, requiredRole: 'pro', badge: 'PRO' },
     { id: 'automo', nameKey: 'sidebar.automo', icon: Calendar, requiredRole: 'agency', badge: 'AGENCY' },
     { id: 'suppliers', nameKey: 'sidebar.suppliers', icon: Globe2, requiredRole: 'agency', badge: 'AGENCY' },
