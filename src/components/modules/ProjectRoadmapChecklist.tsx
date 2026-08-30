@@ -502,22 +502,67 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Sincronización Automática en 1 Clic con Tiendas Shopify & WooCommerce',
     desc: 'Publicación directa del producto con ficha técnica, tallas, fotos 4K y el visor 3D interactivo listo para vender.',
     isInitialDone: true
+  },
+
+  // ==========================================
+  // ⚡ 6. NIVEL 6: AUTONOMOUS AI & GLOBAL MULTI-TENANT ECOSYSTEM
+  // ==========================================
+  {
+    id: 'cinematic_3d_turntable_video',
+    module: 'Video Marketing IA (AdGen)',
+    category: 'advanced',
+    title: 'Generador de Videos Cinemáticos 360° en 4K (Turntable MP4 a 60 FPS)',
+    desc: 'Renderizado de video cinemático con rotación 360°, profundidad de campo bokeh e iluminación de estudio listo para TikTok y Reels.',
+    isInitialDone: false
+  },
+  {
+    id: 'multi_tenant_agency_workspaces',
+    module: 'Super Admin & Multi-Marca',
+    category: 'advanced',
+    title: 'Espacios de Trabajo Multi-Marca para Agencias y Equipos con Roles',
+    desc: 'Creación de sub-marcas independientes con gestión de roles de equipo (Director Creativo, Patronista, Comprador) y enlaces de revisión con contraseña.',
+    isInitialDone: false
+  },
+  {
+    id: 'ai_capsule_collection_generator',
+    module: 'Aurora 3D Studio',
+    category: 'advanced',
+    title: 'Generador de Colecciones Cápsula Completas de 6 Prendas con 1 Clic',
+    desc: 'Síntesis paralela de conjunto coordinado (Chaqueta, Hoodie, Pantalón Cargo, Sneaker, Camiseta y Beanie) con la misma paleta y estilo visual.',
+    isInitialDone: false
+  },
+  {
+    id: 'live_factory_material_stock_api',
+    module: 'Proveedores Globales B2B',
+    category: 'advanced',
+    title: 'Conexión en Tiempo Real con Stock de Metraje Textil en Fábricas',
+    desc: 'Consulta en vivo de metros lineales de algodón 460 GSM y nylon ripstop disponibles en almacenes de Portugal, Turquía y Colombia.',
+    isInitialDone: false
+  },
+  {
+    id: 'seam_stress_tensile_heatmap',
+    module: 'Fabricación & Hardware 3D',
+    category: 'advanced',
+    title: 'Simulador de Tensión de Hilos & Mapa de Calor de Resistencia Textil',
+    desc: 'Detección de puntos de tensión y riesgo de desgarro en costuras durante el movimiento articular del avatar.',
+    isInitialDone: false
   }
 ];
 
 export const ProjectRoadmapChecklist: React.FC = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(() => {
     try {
-      const saved = localStorage.getItem('aether_roadmap_checklist_v2');
-      if (saved) return JSON.parse(saved);
-
-      // Pre-mark default completed items
       const initial: Record<string, boolean> = {};
       CHECKLIST_DATA.forEach((item) => {
         if (item.isInitialDone) {
           initial[item.id] = true;
         }
       });
+
+      const saved = localStorage.getItem('aether_roadmap_checklist_v3');
+      if (saved) {
+        return { ...initial, ...JSON.parse(saved) };
+      }
       return initial;
     } catch {
       return {};
@@ -529,7 +574,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    localStorage.setItem('aether_roadmap_checklist_v2', JSON.stringify(checkedItems));
+    localStorage.setItem('aether_roadmap_checklist_v3', JSON.stringify(checkedItems));
   }, [checkedItems]);
 
   const toggleItem = (id: string) => {
