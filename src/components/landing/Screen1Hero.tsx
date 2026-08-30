@@ -78,16 +78,16 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
           className={`relative max-w-5xl mx-auto rounded-3xl p-3 sm:p-5 transition-all duration-500 ${
             isTransparentStage
               ? 'bg-transparent border-transparent shadow-none backdrop-blur-none'
-              : 'bg-gradient-to-b from-white/90 to-slate-50/90 dark:from-cyber-900/60 dark:to-cyber-950/90 border border-amber-500/30 shadow-2xl backdrop-blur-2xl'
+              : 'bg-white/95 dark:bg-gradient-to-b dark:from-cyber-900/60 dark:to-cyber-950/90 border-2 border-amber-500/40 shadow-[0_20px_50px_rgba(217,119,6,0.15)] dark:shadow-2xl backdrop-blur-2xl'
           }`}
         >
           {/* Top Stage Control Toolbar: Transparency Eye + 3D Model Swapper + Metrics */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3 text-xs">
             {/* Left: Model Switcher Capsule */}
-            <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/85 dark:bg-cyber-950/85 border border-amber-500/30 shadow-sm backdrop-blur-md">
+            <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-cyber-950/85 border border-slate-200 dark:border-amber-500/30 shadow-sm backdrop-blur-md">
               <button
                 onClick={handlePrevModel}
-                className="p-1.5 rounded-xl hover:bg-amber-500/20 text-slate-400 hover:text-amber-400 transition-colors"
+                className="p-1.5 rounded-xl hover:bg-amber-500/20 text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                 title="Objeto 3D Anterior"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -98,12 +98,12 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
                   <span>{currentModel.emoji}</span>
                   <span>{currentModel.name}</span>
                 </div>
-                <span className="text-[10px] font-mono text-amber-500 block">{currentModel.tag}</span>
+                <span className="text-[10px] font-mono text-amber-600 dark:text-amber-500 block font-bold">{currentModel.tag}</span>
               </div>
 
               <button
                 onClick={handleNextModel}
-                className="p-1.5 rounded-xl hover:bg-amber-500/20 text-slate-400 hover:text-amber-400 transition-colors"
+                className="p-1.5 rounded-xl hover:bg-amber-500/20 text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                 title="Siguiente Objeto 3D"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -111,7 +111,7 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
 
               <button
                 onClick={handleRandomModel}
-                className="p-1.5 rounded-xl bg-amber-500/20 text-amber-400 hover:bg-amber-500 hover:text-black transition-all ml-1"
+                className="p-1.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-black transition-all ml-1"
                 title="Objeto 3D Aleatorio"
               >
                 <Dices className="w-3.5 h-3.5" />
@@ -125,7 +125,7 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border text-xs font-mono font-bold transition-all shadow-sm ${
                   isTransparentStage
                     ? 'bg-amber-500 text-black border-amber-400 shadow-gold-glow animate-pulse'
-                    : 'bg-white/85 dark:bg-cyber-950/85 text-slate-300 border-amber-500/30 hover:border-amber-400 hover:text-white'
+                    : 'bg-white/95 dark:bg-cyber-950/85 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-amber-500/30 hover:border-amber-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
                 title={isTransparentStage ? 'Restaurar Fondo del Cuadro 3D' : 'Hacer Fondo 3D Transparente (Integrar con Galaxias)'}
               >
@@ -135,15 +135,15 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
                 </span>
               </button>
 
-              <div className="hidden md:flex items-center gap-2 p-2 px-3 rounded-2xl bg-white/80 dark:bg-cyber-950/80 border border-amber-500/20 shadow-sm text-right">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">ROI</span>
-                <span className="text-base font-tech font-extrabold text-amber-500">+189%</span>
+              <div className="hidden md:flex items-center gap-2 p-2 px-3 rounded-2xl bg-white/90 dark:bg-cyber-950/80 border border-slate-200 dark:border-amber-500/20 shadow-sm text-right">
+                <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase font-bold">ROI</span>
+                <span className="text-base font-tech font-extrabold text-amber-600 dark:text-amber-500">+189%</span>
               </div>
             </div>
           </div>
 
           {/* Center 3D Interactive Canvas with Dynamic Model Swapping */}
-          <div className="h-[380px] sm:h-[430px] lg:h-[480px] w-full rounded-2xl overflow-hidden">
+          <div className="h-[380px] sm:h-[430px] lg:h-[480px] w-full rounded-2xl overflow-hidden shadow-inner bg-slate-50/70 dark:bg-cyber-950/40 border border-slate-200/80 dark:border-transparent">
             <Model3DCanvas
               key={`${currentModel.id}-${isTransparentStage}`}
               type={currentModel.id}
@@ -157,13 +157,13 @@ export const Screen1Hero: React.FC<Screen1HeroProps> = ({ onLaunch }) => {
           </div>
 
           {/* Bottom Interactive Launch CTA */}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white/90 dark:bg-cyber-950/80 border border-amber-500/20 shadow-sm">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white/95 dark:bg-cyber-950/80 border border-slate-200 dark:border-amber-500/20 shadow-sm">
             <div className="text-left">
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-amber-500" />
-                <span className="font-tech font-bold text-sm text-slate-900 dark:text-white">{t('hero.tagline')}</span>
+                <Award className="w-4 h-4 text-amber-600 dark:text-amber-500" />
+                <span className="font-tech font-extrabold text-sm text-slate-900 dark:text-white">{t('hero.tagline')}</span>
               </div>
-              <span className="text-xs text-slate-500">{t('hero.integrated')}</span>
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">{t('hero.integrated')}</span>
             </div>
 
             <button

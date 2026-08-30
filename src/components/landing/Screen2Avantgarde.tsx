@@ -19,12 +19,12 @@ export const Screen2Avantgarde: React.FC<Screen2AvantgardeProps> = ({ onSelectMo
       emoji: '🧊',
       badge: 'WebGL 3D',
       theme: {
-        border: 'border-2 border-cyan-400/80 hover:border-cyan-300',
-        glow: 'hover:shadow-[0_20px_50px_rgba(6,182,212,0.4)]',
-        bgGradient: 'bg-gradient-to-b from-cyan-500/15 via-white to-cyan-50/40 dark:from-cyan-950/40 dark:via-cyber-900 dark:to-cyber-950',
-        badgeColor: 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-400/50',
-        accentText: 'text-cyan-600 dark:text-cyan-400',
-        btnBg: 'group-hover:bg-cyan-500 group-hover:text-slate-950'
+        border: 'border-2 border-cyan-500/60 dark:border-cyan-400/80 hover:border-cyan-600 dark:hover:border-cyan-300',
+        glow: 'shadow-[0_12px_30px_rgba(6,182,212,0.15)] hover:shadow-[0_20px_45px_rgba(6,182,212,0.3)]',
+        bgGradient: 'bg-white/95 dark:bg-gradient-to-b dark:from-cyan-950/40 dark:via-cyber-900 dark:to-cyber-950',
+        badgeColor: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-400 border-cyan-500/40',
+        accentText: 'text-cyan-700 dark:text-cyan-400',
+        btnBg: 'bg-cyan-500/15 group-hover:bg-cyan-500 text-cyan-700 dark:text-cyan-300 group-hover:text-slate-950'
       }
     },
     {
@@ -36,12 +36,12 @@ export const Screen2Avantgarde: React.FC<Screen2AvantgardeProps> = ({ onSelectMo
       emoji: '🎥',
       badge: 'Sora & Gen-3',
       theme: {
-        border: 'border-2 border-amber-400 hover:border-amber-300',
-        glow: 'hover:shadow-[0_20px_50px_rgba(245,158,11,0.45)]',
-        bgGradient: 'bg-gradient-to-b from-amber-500/15 via-white to-amber-50/40 dark:from-amber-950/40 dark:via-cyber-900 dark:to-cyber-950',
-        badgeColor: 'bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-400/50',
-        accentText: 'text-amber-600 dark:text-amber-400',
-        btnBg: 'group-hover:bg-amber-500 group-hover:text-slate-950'
+        border: 'border-2 border-amber-500/60 dark:border-amber-400 hover:border-amber-600 dark:hover:border-amber-300',
+        glow: 'shadow-[0_12px_30px_rgba(245,158,11,0.15)] hover:shadow-[0_20px_45px_rgba(245,158,11,0.3)]',
+        bgGradient: 'bg-white/95 dark:bg-gradient-to-b dark:from-amber-950/40 dark:via-cyber-900 dark:to-cyber-950',
+        badgeColor: 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/40',
+        accentText: 'text-amber-700 dark:text-amber-400',
+        btnBg: 'bg-amber-500/15 group-hover:bg-amber-500 text-amber-800 dark:text-amber-300 group-hover:text-slate-950'
       }
     },
     {
@@ -53,12 +53,12 @@ export const Screen2Avantgarde: React.FC<Screen2AvantgardeProps> = ({ onSelectMo
       emoji: '⚙️',
       badge: 'Multi-Channel',
       theme: {
-        border: 'border-2 border-emerald-400/80 hover:border-emerald-300',
-        glow: 'hover:shadow-[0_20px_50px_rgba(16,185,129,0.4)]',
-        bgGradient: 'bg-gradient-to-b from-emerald-500/15 via-white to-emerald-50/40 dark:from-emerald-950/40 dark:via-cyber-900 dark:to-cyber-950',
-        badgeColor: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-400/50',
-        accentText: 'text-emerald-600 dark:text-emerald-400',
-        btnBg: 'group-hover:bg-emerald-500 group-hover:text-slate-950'
+        border: 'border-2 border-emerald-500/60 dark:border-emerald-400/80 hover:border-emerald-600 dark:hover:border-emerald-300',
+        glow: 'shadow-[0_12px_30px_rgba(16,185,129,0.15)] hover:shadow-[0_20px_45px_rgba(16,185,129,0.3)]',
+        bgGradient: 'bg-white/95 dark:bg-gradient-to-b dark:from-emerald-950/40 dark:via-cyber-900 dark:to-cyber-950',
+        badgeColor: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40',
+        accentText: 'text-emerald-700 dark:text-emerald-400',
+        btnBg: 'bg-emerald-500/15 group-hover:bg-emerald-500 text-emerald-700 dark:text-emerald-300 group-hover:text-slate-950'
       }
     },
     {
@@ -70,12 +70,12 @@ export const Screen2Avantgarde: React.FC<Screen2AvantgardeProps> = ({ onSelectMo
       emoji: '🌐',
       badge: 'Incoterms 2020',
       theme: {
-        border: 'border-2 border-purple-400/80 hover:border-purple-300',
-        glow: 'hover:shadow-[0_20px_50px_rgba(168,85,247,0.4)]',
-        bgGradient: 'bg-gradient-to-b from-purple-500/15 via-white to-purple-50/40 dark:from-purple-950/40 dark:via-cyber-900 dark:to-cyber-950',
-        badgeColor: 'bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-400/50',
-        accentText: 'text-purple-600 dark:text-purple-400',
-        btnBg: 'group-hover:bg-purple-500 group-hover:text-white'
+        border: 'border-2 border-purple-500/60 dark:border-purple-400/80 hover:border-purple-600 dark:hover:border-purple-300',
+        glow: 'shadow-[0_12px_30px_rgba(168,85,247,0.15)] hover:shadow-[0_20px_45px_rgba(168,85,247,0.3)]',
+        bgGradient: 'bg-white/95 dark:bg-gradient-to-b dark:from-purple-950/40 dark:via-cyber-900 dark:to-cyber-950',
+        badgeColor: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/40',
+        accentText: 'text-purple-700 dark:text-purple-400',
+        btnBg: 'bg-purple-500/15 group-hover:bg-purple-500 text-purple-700 dark:text-purple-300 group-hover:text-white'
       }
     }
   ];
@@ -144,33 +144,33 @@ export const Screen2Avantgarde: React.FC<Screen2AvantgardeProps> = ({ onSelectMo
 
                 <div className="space-y-4">
                   {/* Floating 3D Icon Box */}
-                  <div className="w-16 h-16 rounded-2xl bg-white dark:bg-cyber-950 border border-slate-200 dark:border-cyber-700 flex items-center justify-center text-3xl shadow-md group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-cyber-950 border border-slate-200 dark:border-cyber-700 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-transform">
                     <span>{cap.emoji}</span>
                   </div>
 
                   {/* System Code Tag */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                    <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider">
                       {cap.code}
                     </span>
-                    <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border ${cap.theme.badgeColor}`}>
+                    <span className={`text-[9px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${cap.theme.badgeColor}`}>
                       {cap.badge}
                     </span>
                   </div>
 
                   {/* Title & Description */}
-                  <h3 className={`text-xl font-tech font-bold text-slate-900 dark:text-white transition-colors group-hover:${cap.theme.accentText}`}>
+                  <h3 className={`text-xl font-tech font-extrabold text-slate-900 dark:text-white transition-colors group-hover:${cap.theme.accentText}`}>
                     {cap.title}
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-sans line-clamp-3">
+                  <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed font-sans line-clamp-3 font-medium">
                     {cap.desc}
                   </p>
                 </div>
 
                 {/* Bottom Interactive Trigger */}
-                <div className="mt-8 pt-4 border-t border-slate-200 dark:border-cyber-800 flex items-center justify-between text-xs font-bold font-tech uppercase tracking-wider text-slate-700 dark:text-slate-300 transition-colors">
+                <div className="mt-8 pt-4 border-t border-slate-200 dark:border-cyber-800 flex items-center justify-between text-xs font-bold font-tech uppercase tracking-wider text-slate-800 dark:text-slate-300 transition-colors">
                   <span className={`group-hover:${cap.theme.accentText}`}>ACCEDER AL MÓDULO</span>
-                  <div className={`p-1.5 rounded-xl bg-slate-100 dark:bg-cyber-800 text-slate-700 dark:text-slate-200 transition-all ${cap.theme.btnBg} group-hover:translate-x-1`}>
+                  <div className={`p-1.5 rounded-xl transition-all ${cap.theme.btnBg} group-hover:translate-x-1 shadow-sm`}>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>

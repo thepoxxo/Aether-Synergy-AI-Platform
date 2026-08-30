@@ -20,12 +20,12 @@ export const Screen3Pricing: React.FC<Screen3PricingProps> = ({ onSelectPlan }) 
       period: '/mo',
       icon: Zap,
       tagline: t('pricing.freeDesc'),
-      neonBorder: 'border-2 border-cyan-400/80 hover:border-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.35)]',
-      cardBg: 'bg-gradient-to-b from-cyan-500/15 via-white to-cyan-50/40 dark:from-cyan-950/30 dark:via-cyber-900 dark:to-cyber-950',
-      badgeColor: 'bg-cyan-500/20 text-cyan-500 border-cyan-400/60',
-      priceColor: 'text-cyan-600 dark:text-cyan-400',
-      checkColor: 'text-cyan-500',
-      btnClass: 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shadow-[0_0_20px_rgba(6,182,212,0.4)]',
+      neonBorder: 'border-2 border-cyan-500/60 dark:border-cyan-400/80 hover:border-cyan-600 dark:hover:border-cyan-300 shadow-[0_12px_35px_rgba(6,182,212,0.15)] dark:shadow-[0_0_30px_rgba(6,182,212,0.35)]',
+      cardBg: 'bg-white/98 dark:bg-gradient-to-b dark:from-cyan-950/30 dark:via-cyber-900 dark:to-cyber-950',
+      badgeColor: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-400 border-cyan-500/40',
+      priceColor: 'text-cyan-700 dark:text-cyan-400',
+      checkColor: 'text-cyan-600 dark:text-cyan-400',
+      btnClass: 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shadow-md hover:shadow-cyan-500/30',
       highlighted: false,
       btnText: t('landing.startFree'),
       features: [
@@ -42,11 +42,11 @@ export const Screen3Pricing: React.FC<Screen3PricingProps> = ({ onSelectPlan }) 
       period: '/mo',
       icon: Crown,
       tagline: t('pricing.proDesc'),
-      neonBorder: 'border-2 border-amber-400 hover:border-amber-300 shadow-[0_0_45px_rgba(245,158,11,0.5)]',
-      cardBg: 'bg-gradient-to-b from-amber-500/20 via-white to-amber-50/50 dark:from-amber-950/40 dark:via-cyber-900 dark:to-cyber-950',
-      badgeColor: 'bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-400/60',
-      priceColor: 'text-amber-600 dark:text-amber-400',
-      checkColor: 'text-amber-500',
+      neonBorder: 'border-2 border-amber-500 dark:border-amber-400 hover:border-amber-600 dark:hover:border-amber-300 shadow-[0_15px_40px_rgba(245,158,11,0.2)] dark:shadow-[0_0_45px_rgba(245,158,11,0.5)]',
+      cardBg: 'bg-white/98 dark:bg-gradient-to-b dark:from-amber-950/40 dark:via-cyber-900 dark:to-cyber-950',
+      badgeColor: 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/50',
+      priceColor: 'text-amber-700 dark:text-amber-400',
+      checkColor: 'text-amber-600 dark:text-amber-500',
       btnClass: 'bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 font-extrabold shadow-gold-glow hover:scale-105',
       highlighted: true,
       btnText: 'Comenzar Plan Pro',
@@ -64,12 +64,12 @@ export const Screen3Pricing: React.FC<Screen3PricingProps> = ({ onSelectPlan }) 
       period: '/mo',
       icon: Shield,
       tagline: t('pricing.agencyDesc'),
-      neonBorder: 'border-2 border-purple-400/80 hover:border-purple-300 shadow-[0_0_35px_rgba(168,85,247,0.35)]',
-      cardBg: 'bg-gradient-to-b from-purple-500/15 via-white to-purple-50/40 dark:from-purple-950/30 dark:via-cyber-900 dark:to-cyber-950',
-      badgeColor: 'bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-400/60',
-      priceColor: 'text-purple-600 dark:text-purple-400',
-      checkColor: 'text-purple-500',
-      btnClass: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)]',
+      neonBorder: 'border-2 border-purple-500/60 dark:border-purple-400/80 hover:border-purple-600 dark:hover:border-purple-300 shadow-[0_12px_35px_rgba(168,85,247,0.15)] dark:shadow-[0_0_35px_rgba(168,85,247,0.35)]',
+      cardBg: 'bg-white/98 dark:bg-gradient-to-b dark:from-purple-950/30 dark:via-cyber-900 dark:to-cyber-950',
+      badgeColor: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/40',
+      priceColor: 'text-purple-700 dark:text-purple-400',
+      checkColor: 'text-purple-600 dark:text-purple-500',
+      btnClass: 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold shadow-md hover:shadow-purple-500/30',
       highlighted: false,
       btnText: 'Comenzar Plan Agencia',
       features: [
@@ -145,12 +145,12 @@ export const Screen3Pricing: React.FC<Screen3PricingProps> = ({ onSelectPlan }) 
                     <span className="text-slate-400 text-xs font-mono font-bold">{p.period}</span>
                   </div>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-sans min-h-[32px] max-w-xs mx-auto">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 font-sans min-h-[32px] max-w-xs mx-auto font-medium">
                     {p.tagline}
                   </p>
 
                   {/* Features List */}
-                  <div className="space-y-3 pt-6 border-t border-slate-200 dark:border-cyber-800 text-left text-xs text-slate-700 dark:text-slate-300">
+                  <div className="space-y-3 pt-6 border-t border-slate-200 dark:border-cyber-800 text-left text-xs text-slate-800 dark:text-slate-300 font-medium">
                     {p.features.map((feat, idx) => (
                       <div key={idx} className="flex items-start gap-2.5">
                         <Check className={`w-4 h-4 ${p.checkColor} shrink-0 mt-0.5`} />
