@@ -26,6 +26,25 @@ interface TwinkleStar {
   pulseType: 'breathe' | 'sparkle' | 'steady';
 }
 
+interface ConstellationStar {
+  dx: number;
+  dy: number;
+  name: string;
+  size: number;
+  color: string;
+  hasFlare?: boolean;
+}
+
+interface FamousConstellation {
+  name: string;
+  latinName: string;
+  originX: number;
+  originY: number;
+  scale: number;
+  stars: ConstellationStar[];
+  lines: [number, number][];
+}
+
 interface ProceduralPlanet {
   id: string;
   x: number;
@@ -221,17 +240,97 @@ export const ShootingStarsBackground: React.FC = () => {
     const lightColors = ['#F59E0B', '#0284C7', '#D946EF', '#10B981', '#F43F5E', '#8B5CF6', '#E11D48', '#059669', '#2563EB'];
     const activeColors = isLight ? lightColors : darkColors;
 
-    // 1. Constellations & Multi-Speed Twinkle Stars
-    const starCount = isUltra ? 130 : 65;
+    // 1. FAMOUS BEAUTIFUL REAL CONSTELLATIONS
+    const famousConstellations: FamousConstellation[] = [
+      // ORION (El Cazador)
+      {
+        name: 'Orión',
+        latinName: 'Orion',
+        originX: width * 0.18,
+        originY: height * 0.22,
+        scale: isUltra ? 1.0 : 0.75,
+        stars: [
+          { dx: -45, dy: -55, name: 'Betelgeuse', size: 3.8, color: '#F97316', hasFlare: true }, // 0
+          { dx: 45, dy: -50, name: 'Bellatrix', size: 2.8, color: '#38BDF8', hasFlare: true },  // 1
+          { dx: -18, dy: 0, name: 'Alnitak', size: 2.4, color: '#FDE68A' },                      // 2
+          { dx: 0, dy: 2, name: 'Alnilam', size: 2.6, color: '#FDE68A' },                       // 3
+          { dx: 18, dy: 4, name: 'Mintaka', size: 2.4, color: '#FDE68A' },                      // 4
+          { dx: -40, dy: 58, name: 'Saiph', size: 2.6, color: '#FFFFFF' },                       // 5
+          { dx: 42, dy: 52, name: 'Rigel', size: 3.6, color: '#67E8F9', hasFlare: true }        // 6
+        ],
+        lines: [
+          [0, 1], [0, 2], [1, 4], [2, 3], [3, 4], [2, 5], [4, 6], [5, 6]
+        ]
+      },
+      // URSA MAJOR (La Osa Mayor / El Carro)
+      {
+        name: 'Osa Mayor',
+        latinName: 'Ursa Major',
+        originX: width * 0.76,
+        originY: height * 0.18,
+        scale: isUltra ? 0.95 : 0.7,
+        stars: [
+          { dx: -70, dy: -30, name: 'Alkaid', size: 2.8, color: '#38BDF8', hasFlare: true }, // 0
+          { dx: -45, dy: -22, name: 'Mizar', size: 2.6, color: '#FFFFFF' },                   // 1
+          { dx: -20, dy: -12, name: 'Alioth', size: 2.7, color: '#E0F2FE' },                  // 2
+          { dx: 10, dy: -10, name: 'Megrez', size: 2.2, color: '#FDE68A' },                   // 3
+          { dx: 15, dy: 25, name: 'Phecda', size: 2.5, color: '#FFFFFF' },                    // 4
+          { dx: 55, dy: 28, name: 'Merak', size: 2.8, color: '#67E8F9' },                     // 5
+          { dx: 50, dy: -12, name: 'Dubhe', size: 3.2, color: '#F59E0B', hasFlare: true }     // 6
+        ],
+        lines: [
+          [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 3]
+        ]
+      },
+      // CASSIOPEIA (La Reina Casiopea - Forma W)
+      {
+        name: 'Casiopea',
+        latinName: 'Cassiopeia',
+        originX: width * 0.84,
+        originY: height * 0.68,
+        scale: isUltra ? 0.9 : 0.65,
+        stars: [
+          { dx: -55, dy: 15, name: 'Caph', size: 2.8, color: '#E0F2FE', hasFlare: true },    // 0
+          { dx: -28, dy: -20, name: 'Schedar', size: 3.2, color: '#F59E0B', hasFlare: true },// 1
+          { dx: 0, dy: 5, name: 'Gamma Cas', size: 3.0, color: '#38BDF8' },                  // 2
+          { dx: 28, dy: -18, name: 'Ruchbah', size: 2.6, color: '#FFFFFF' },                 // 3
+          { dx: 52, dy: 12, name: 'Segin', size: 2.4, color: '#C084FC' }                     // 4
+        ],
+        lines: [
+          [0, 1], [1, 2], [2, 3], [3, 4]
+        ]
+      },
+      // CYGNUS (El Cisne / Cruz del Norte)
+      {
+        name: 'Cisne (Cruz del Norte)',
+        latinName: 'Cygnus',
+        originX: width * 0.12,
+        originY: height * 0.72,
+        scale: isUltra ? 0.9 : 0.65,
+        stars: [
+          { dx: 0, dy: -45, name: 'Deneb', size: 3.6, color: '#FFFFFF', hasFlare: true },     // 0
+          { dx: 0, dy: 0, name: 'Sadr', size: 3.0, color: '#FDE68A' },                        // 1
+          { dx: 0, dy: 50, name: 'Albireo', size: 2.8, color: '#38BDF8', hasFlare: true },   // 2
+          { dx: -45, dy: -5, name: 'Gienah', size: 2.5, color: '#C084FC' },                   // 3
+          { dx: 45, dy: -5, name: 'Delta Cyg', size: 2.5, color: '#67E8F9' }                 // 4
+        ],
+        lines: [
+          [0, 1], [1, 2], [3, 1], [1, 4]
+        ]
+      }
+    ];
+
+    // 2. Multi-Speed Twinkle Stars
+    const starCount = isUltra ? 140 : 70;
     const twinkleStars: TwinkleStar[] = Array.from({ length: starCount }, () => {
       const pRand = Math.random();
-      const pulseType = pRand < 0.25 ? 'breathe' : pRand < 0.7 ? 'sparkle' : 'steady';
+      const pulseType = pRand < 0.3 ? 'breathe' : pRand < 0.75 ? 'sparkle' : 'steady';
       const twinkleSpeed =
         pulseType === 'breathe'
-          ? Math.random() * 0.012 + 0.006 // Slow relaxing breath
+          ? Math.random() * 0.008 + 0.004 // Slow relaxing breathing
           : pulseType === 'sparkle'
-          ? Math.random() * 0.04 + 0.02 // Fast staccato twinkle
-          : Math.random() * 0.02 + 0.01;
+          ? Math.random() * 0.035 + 0.018 // Staccato diamond twinkle
+          : Math.random() * 0.015 + 0.008;
 
       return {
         x: Math.random() * width,
@@ -246,19 +345,7 @@ export const ShootingStarsBackground: React.FC = () => {
       };
     });
 
-    const constellationPairs: [number, number][] = [];
-    for (let i = 0; i < twinkleStars.length; i++) {
-      for (let j = i + 1; j < twinkleStars.length; j++) {
-        const dx = twinkleStars[i].x - twinkleStars[j].x;
-        const dy = twinkleStars[i].y - twinkleStars[j].y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < (isUltra ? 110 : 75) && Math.random() < 0.2) {
-          constellationPairs.push([i, j]);
-        }
-      }
-    }
-
-    // 2. Radiant Sun (Solar Flare Generator)
+    // 3. Radiant Sun
     const radiantSun: RadiantSun = {
       x: width * 0.88,
       y: height * 0.16,
@@ -271,7 +358,7 @@ export const ShootingStarsBackground: React.FC = () => {
       opacity: 0.9
     };
 
-    // 3. White Hole (Agujero Blanco - Emitter of pure relativistic light and matter)
+    // 4. White Hole
     const whiteHole: WhiteHole = {
       x: width * 0.85,
       y: height * 0.55,
@@ -281,13 +368,13 @@ export const ShootingStarsBackground: React.FC = () => {
       emissionParticles: Array.from({ length: 45 }, () => ({
         angle: Math.random() * Math.PI * 2,
         dist: Math.random() * 50 + 5,
-        speed: Math.random() * 1.5 + 0.8,
+        speed: Math.random() * 1.2 + 0.6,
         color: activeColors[Math.floor(Math.random() * activeColors.length)],
         size: Math.random() * 2 + 1
       }))
     };
 
-    // 4. Slow, Majestic Multi-Pattern Supernova Galaxy Engine
+    // 5. ULTRA-SLOW, MAJESTIC GALAXY ENGINE (Calming, Hypnotic & Meditative)
     let galaxyState: 'expanding' | 'exploding' | 'reforming' = 'expanding';
     let galaxyScale = 1.0;
     let galaxyRotation = 0;
@@ -296,7 +383,7 @@ export const ShootingStarsBackground: React.FC = () => {
     let shockwaveAlpha = 0;
     let currentExplosionPattern: ExplosionPattern = 'omni_burst';
 
-    const galaxyParticleCount = isUltra ? 350 : 160;
+    const galaxyParticleCount = isUltra ? 360 : 170;
     const galaxyParticles: GalaxyParticle[] = Array.from({ length: galaxyParticleCount }, (_, i) => {
       const radius = Math.random() * (isUltra ? 170 : 110) + 12;
       const angle = (i / galaxyParticleCount) * Math.PI * 6 + Math.random() * 0.4;
@@ -305,7 +392,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: 0,
         baseRadius: radius,
         angle: angle,
-        speed: Math.random() * 0.0008 + 0.0004, // Very slow, graceful, relaxing swirl
+        speed: Math.random() * 0.0004 + 0.0002, // Ultra-slow, relaxing, graceful flow
         color: activeColors[i % activeColors.length],
         size: Math.random() * 2.4 + 0.8,
         sparklePhase: Math.random() * Math.PI * 2,
@@ -313,7 +400,7 @@ export const ShootingStarsBackground: React.FC = () => {
       };
     });
 
-    // 5. Multi-Lane Asteroid Belt (Keplerian physics: inner lanes orbit faster, outer lanes slower)
+    // 6. Multi-Lane Asteroid Belt
     const asteroidCount = isUltra ? 36 : 18;
     const asteroids: Asteroid[] = Array.from({ length: asteroidCount }, (_, idx) => {
       const lane: 'inner' | 'mid' | 'outer' = idx % 3 === 0 ? 'inner' : idx % 3 === 1 ? 'mid' : 'outer';
@@ -326,10 +413,10 @@ export const ShootingStarsBackground: React.FC = () => {
 
       const orbitSpeed =
         lane === 'inner'
-          ? (Math.random() * 0.0012 + 0.0009) * (Math.random() > 0.5 ? 1 : -1) // Fast inner lane
+          ? (Math.random() * 0.0008 + 0.0006) * (Math.random() > 0.5 ? 1 : -1)
           : lane === 'mid'
-          ? (Math.random() * 0.0006 + 0.0004) * (Math.random() > 0.5 ? 1 : -1) // Medium mid lane
-          : (Math.random() * 0.00025 + 0.00015) * (Math.random() > 0.5 ? 1 : -1); // Slow outer lane
+          ? (Math.random() * 0.0004 + 0.00025) * (Math.random() > 0.5 ? 1 : -1)
+          : (Math.random() * 0.00018 + 0.0001) * (Math.random() > 0.5 ? 1 : -1);
 
       const numVerts = Math.floor(Math.random() * 3) + 5;
       const baseR = Math.random() * 5 + 3;
@@ -347,34 +434,34 @@ export const ShootingStarsBackground: React.FC = () => {
         orbitRadius: orbitRadius,
         orbitSpeed: orbitSpeed,
         rotation: Math.random() * Math.PI * 2,
-        rotSpeed: Math.random() * 0.02 - 0.01,
+        rotSpeed: Math.random() * 0.015 - 0.0075,
         vertices: vertices,
         color: isLight ? '#94A3B8' : '#64748B',
         lane: lane
       };
     });
 
-    // 6. Distant Miniature Dwarf Galaxies
+    // 7. Dwarf Galaxies
     const dwarfGalaxies: DistantDwarfGalaxy[] = [
-      { x: width * 0.08, y: height * 0.14, radius: 28, rotation: 0, rotSpeed: 0.0008, color: '#06B6D4', opacity: 0.55 },
-      { x: width * 0.92, y: height * 0.38, radius: 35, rotation: 0, rotSpeed: -0.0009, color: '#EC4899', opacity: 0.5 },
-      { x: width * 0.45, y: height * 0.92, radius: 24, rotation: 0, rotSpeed: 0.001, color: '#F59E0B', opacity: 0.45 }
+      { x: width * 0.08, y: height * 0.14, radius: 28, rotation: 0, rotSpeed: 0.0004, color: '#06B6D4', opacity: 0.55 },
+      { x: width * 0.92, y: height * 0.38, radius: 35, rotation: 0, rotSpeed: -0.0005, color: '#EC4899', opacity: 0.5 },
+      { x: width * 0.45, y: height * 0.92, radius: 24, rotation: 0, rotSpeed: 0.0006, color: '#F59E0B', opacity: 0.45 }
     ];
 
-    // 7. Deep Space Procedural Planets with Real 3D Rotation & Ring Wobble
+    // 8. Deep Space Planets
     const planets: ProceduralPlanet[] = [
       {
         id: 'planet-saturn',
         x: width * 0.86,
         y: height * 0.8,
-        vx: -0.02,
-        vy: 0.008,
+        vx: -0.015,
+        vy: 0.006,
         radius: 24,
         type: 'gas_giant',
         rotation: 0,
-        rotationSpeed: 0.004,
+        rotationSpeed: 0.003,
         lightAngle: 0.8,
-        lightPhaseSpeed: 0.0015,
+        lightPhaseSpeed: 0.001,
         primaryColor: '#F59E0B',
         secondaryColor: '#FDE68A',
         shadowColor: '#451A03',
@@ -394,14 +481,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-cyber',
         x: width * 0.16,
         y: height * 0.24,
-        vx: 0.02,
-        vy: -0.01,
+        vx: 0.015,
+        vy: -0.008,
         radius: 17,
         type: 'cyber_neon',
         rotation: 0,
-        rotationSpeed: 0.006,
+        rotationSpeed: 0.004,
         lightAngle: -0.6,
-        lightPhaseSpeed: 0.002,
+        lightPhaseSpeed: 0.0015,
         primaryColor: '#06B6D4',
         secondaryColor: '#E0F2FE',
         shadowColor: '#082F49',
@@ -420,14 +507,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-volcanic',
         x: width * 0.78,
         y: height * 0.22,
-        vx: -0.015,
-        vy: 0.006,
+        vx: -0.01,
+        vy: 0.004,
         radius: 14,
         type: 'volcanic',
         rotation: 0,
-        rotationSpeed: 0.007,
+        rotationSpeed: 0.005,
         lightAngle: 1.2,
-        lightPhaseSpeed: 0.0025,
+        lightPhaseSpeed: 0.0018,
         primaryColor: '#DC2626',
         secondaryColor: '#F97316',
         shadowColor: '#450A0A',
@@ -445,14 +532,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-cryo',
         x: width * 0.3,
         y: height * 0.88,
-        vx: 0.012,
-        vy: -0.006,
+        vx: 0.008,
+        vy: -0.004,
         radius: 12,
         type: 'cryo_moon',
         rotation: 0,
-        rotationSpeed: 0.005,
+        rotationSpeed: 0.003,
         lightAngle: -1.0,
-        lightPhaseSpeed: 0.0018,
+        lightPhaseSpeed: 0.0012,
         primaryColor: '#38BDF8',
         secondaryColor: '#E0F2FE',
         shadowColor: '#0C4A6E',
@@ -475,7 +562,7 @@ export const ShootingStarsBackground: React.FC = () => {
     const spaceShips: SpaceShip[] = [];
     const shootingStars: ShootingStar[] = [];
 
-    // 8. Celestial Watcher Spirit
+    // 9. Celestial Watcher Spirit
     const watcher: CelestialWatcher = {
       active: false,
       x: -50,
@@ -493,7 +580,7 @@ export const ShootingStarsBackground: React.FC = () => {
       warpDest: { x: width * 0.5, y: height * 0.45 }
     };
 
-    // 9. Fluid Humanoid White Guardian Runner
+    // 10. White Guardian Runner
     const guardian: WhiteGuardian = {
       active: false,
       x: -60,
@@ -568,7 +655,7 @@ export const ShootingStarsBackground: React.FC = () => {
 
       const now = Date.now();
 
-      // Multi-Speed Shooting Stars Spawner (Bolides, Comets, Fireballs)
+      // Multi-Speed Shooting Stars Spawner
       if (now - lastShootingStarSpawn > (isUltra ? 450 : 800)) {
         const starTypeRand = Math.random();
         const starType: 'bolide' | 'comet' | 'fireball' =
@@ -576,10 +663,10 @@ export const ShootingStarsBackground: React.FC = () => {
 
         const speed =
           starType === 'bolide'
-            ? Math.random() * 8 + 12 // Super fast bolide
+            ? Math.random() * 8 + 12
             : starType === 'comet'
-            ? Math.random() * 4 + 6 // Medium graceful comet
-            : Math.random() * 2 + 2.5; // Slow majestic fireball
+            ? Math.random() * 4 + 6
+            : Math.random() * 2 + 2.5;
 
         const length =
           starType === 'bolide'
@@ -606,14 +693,68 @@ export const ShootingStarsBackground: React.FC = () => {
         lastShootingStarSpawn = now;
       }
 
-      galaxyRotation += 0.00045; // Very slow, majestic, calming rotation
-      blackHolePulse += 0.025;
-      radiantSun.pulsePhase += 0.02;
-      radiantSun.flarePhase += 0.035;
-      whiteHole.pulsePhase += 0.035;
+      galaxyRotation += 0.00018; // ULTRA SLOW, HYPNOTIC ROTATION
+      blackHolePulse += 0.02;
+      radiantSun.pulsePhase += 0.015;
+      radiantSun.flarePhase += 0.025;
+      whiteHole.pulsePhase += 0.025;
 
       // ===========================================================
-      // 1. DRAW RADIANT SUN (Solar Flares & Coronal Loops)
+      // 1. DRAW FAMOUS REAL CONSTELLATIONS (Orión, Osa Mayor, Casiopea, Cisne)
+      // ===========================================================
+      famousConstellations.forEach((c) => {
+        ctx.save();
+        ctx.translate(c.originX, c.originY);
+
+        // Constellation Lines
+        ctx.beginPath();
+        c.lines.forEach(([i, j]) => {
+          const s1 = c.stars[i];
+          const s2 = c.stars[j];
+          ctx.moveTo(s1.dx * c.scale, s1.dy * c.scale);
+          ctx.lineTo(s2.dx * c.scale, s2.dy * c.scale);
+        });
+        ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.28)' : 'rgba(56, 189, 248, 0.35)';
+        ctx.lineWidth = 1.0;
+        ctx.setLineDash([3, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Constellation Stars
+        c.stars.forEach((star) => {
+          const sx = star.dx * c.scale;
+          const sy = star.dy * c.scale;
+
+          ctx.beginPath();
+          ctx.arc(sx, sy, star.size, 0, Math.PI * 2);
+          ctx.fillStyle = star.color;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = star.color;
+          ctx.fill();
+
+          if (star.hasFlare) {
+            const fLen = star.size * 3.5;
+            ctx.beginPath();
+            ctx.moveTo(sx - fLen, sy);
+            ctx.lineTo(sx + fLen, sy);
+            ctx.moveTo(sx, sy - fLen);
+            ctx.lineTo(sx, sy + fLen);
+            ctx.strokeStyle = star.color;
+            ctx.lineWidth = 0.9;
+            ctx.stroke();
+          }
+        });
+
+        // Constellation Name Label
+        ctx.fillStyle = isLight ? 'rgba(180, 83, 9, 0.65)' : 'rgba(56, 189, 248, 0.65)';
+        ctx.font = 'bold 9px Rajdhani, monospace';
+        ctx.fillText(`✨ ${c.name.toUpperCase()}`, -20 * c.scale, (c.stars[0].dy - 12) * c.scale);
+
+        ctx.restore();
+      });
+
+      // ===========================================================
+      // 2. DRAW RADIANT SUN
       // ===========================================================
       ctx.save();
       ctx.translate(radiantSun.x, radiantSun.y);
@@ -649,7 +790,7 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.restore();
 
       // ===========================================================
-      // 2. DRAW WHITE HOLE (Agujero Blanco)
+      // 3. DRAW WHITE HOLE
       // ===========================================================
       ctx.save();
       ctx.translate(whiteHole.x, whiteHole.y);
@@ -682,7 +823,7 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.restore();
 
       // ===========================================================
-      // 3. DRAW DISTANT DWARF GALAXIES
+      // 4. DRAW DISTANT DWARF GALAXIES
       // ===========================================================
       dwarfGalaxies.forEach((dg) => {
         dg.rotation += dg.rotSpeed;
@@ -703,7 +844,7 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 4. DRAW MULTI-LANE ASTEROID BELTS (Keplerian Orbital Physics)
+      // 5. DRAW MULTI-LANE ASTEROID BELTS (Keplerian)
       // ===========================================================
       asteroids.forEach((ast) => {
         ast.angle += ast.orbitSpeed;
@@ -731,13 +872,13 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 5. SLOW, MAJESTIC GALAXY EXPANSION & MULTI-PATTERN SUPERNOVA
+      // 6. ULTRA-SLOW, MAJESTIC CENTRAL GALAXY
       // ===========================================================
       const centerX = width * 0.5;
       const centerY = height * 0.45;
 
       if (galaxyState === 'expanding') {
-        galaxyScale += 0.00035; // Slow, hypnotic, majestic pacing
+        galaxyScale += 0.00016; // Ultra-slow, deep breathing expansion
         if (galaxyScale > 2.4) {
           galaxyState = 'exploding';
           supernovaProgress = 0;
@@ -747,15 +888,15 @@ export const ShootingStarsBackground: React.FC = () => {
           currentExplosionPattern = patterns[Math.floor(Math.random() * patterns.length)];
         }
       } else if (galaxyState === 'exploding') {
-        supernovaProgress += 0.015;
-        shockwaveRadius += 10;
-        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.5);
+        supernovaProgress += 0.012;
+        shockwaveRadius += 8;
+        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.45);
 
         if (supernovaProgress > 2.8) {
           galaxyState = 'reforming';
         }
       } else if (galaxyState === 'reforming') {
-        galaxyScale -= 0.015;
+        galaxyScale -= 0.01;
         if (galaxyScale <= 1.0) {
           galaxyScale = 1.0;
           galaxyState = 'expanding';
@@ -801,13 +942,13 @@ export const ShootingStarsBackground: React.FC = () => {
 
       galaxyParticles.forEach((p, idx) => {
         p.angle += p.speed;
-        p.sparklePhase += 0.035;
+        p.sparklePhase += 0.025;
 
         let px = 0;
         let py = 0;
 
         if (galaxyState === 'exploding') {
-          p.distFromCenter += 5.5;
+          p.distFromCenter += 4.5;
 
           if (currentExplosionPattern === 'polar_jets') {
             const jetDir = idx % 2 === 0 ? 1 : -1;
@@ -850,7 +991,7 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.restore();
 
       // ===========================================================
-      // 6. DRAW RELATIVISTIC BLACK HOLE
+      // 7. DRAW RELATIVISTIC BLACK HOLE
       // ===========================================================
       ctx.save();
       ctx.translate(blackHoleX, blackHoleY);
@@ -890,12 +1031,12 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.restore();
 
       // ===========================================================
-      // 7. DRAW DIVERSE PROCEDURAL PLANETS WITH WOBBLING 3D RINGS
+      // 8. DRAW DIVERSE PROCEDURAL PLANETS WITH WOBBLING 3D RINGS
       // ===========================================================
       planets.forEach((p) => {
         p.rotation += p.rotationSpeed;
         p.lightAngle += p.lightPhaseSpeed;
-        p.ringWobble += 0.02;
+        p.ringWobble += 0.015;
         p.x += p.vx;
         p.y += p.vy;
 
@@ -960,21 +1101,8 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 8. DRAW CONSTELLATIONS & VIVID NEON TWINKLE STARS
+      // 9. DRAW TWINKLE STARS & GRAVITATIONAL MOUSE RESONANCE
       // ===========================================================
-      ctx.save();
-      constellationPairs.forEach(([i, j]) => {
-        const starA = twinkleStars[i];
-        const starB = twinkleStars[j];
-        ctx.beginPath();
-        ctx.moveTo(starA.x, starA.y);
-        ctx.lineTo(starB.x, starB.y);
-        ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.16)' : 'rgba(56, 189, 248, 0.2)';
-        ctx.lineWidth = 0.75;
-        ctx.stroke();
-      });
-      ctx.restore();
-
       twinkleStars.forEach((star) => {
         star.phase += star.twinkleSpeed;
         const currentOpacity =
@@ -982,7 +1110,6 @@ export const ShootingStarsBackground: React.FC = () => {
             ? (Math.sin(star.phase) + 1) / 2 * (isLight ? 0.75 : 0.95) + 0.1
             : (Math.sin(star.phase * 2) + 1) / 2 * (isLight ? 0.65 : 0.9) + 0.15;
 
-        // Gravitational Stardust Resonance with Mouse Cursor
         const distToCursor = Math.hypot(mouseX - star.x, mouseY - star.y);
         const cursorBoost = distToCursor < 120 ? (1 - distToCursor / 120) * 0.5 : 0;
 
@@ -1010,7 +1137,7 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 9. DRAW MULTI-SPEED SHOOTING STARS (BOLIDES, COMETS & FIREBALLS)
+      // 10. DRAW MULTI-SPEED SHOOTING STARS
       // ===========================================================
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         const star = shootingStars[i];
@@ -1052,7 +1179,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 10. UFO NUMBER ABDUCTION WITH PRECISION HOVER-LOCK SUCKING
+      // 11. UFO NUMBER ABDUCTION
       // ===========================================================
       for (let i = spaceShips.length - 1; i >= 0; i--) {
         const ship = spaceShips[i];
@@ -1159,7 +1286,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 11. FLUID HUMANOID WHITE GUARDIAN RUNNER & RESTORER
+      // 12. FLUID HUMANOID WHITE GUARDIAN
       // ===========================================================
       if (guardian.active) {
         guardian.progress += 0.015;
@@ -1366,7 +1493,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 12. INTERACTIVE CELESTIAL WATCHER
+      // 13. INTERACTIVE CELESTIAL WATCHER
       // ===========================================================
       if (watcher.active) {
         watcher.progress += 0.012;
