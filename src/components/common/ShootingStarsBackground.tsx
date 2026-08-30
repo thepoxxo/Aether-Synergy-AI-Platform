@@ -69,6 +69,8 @@ interface DistantDwarfGalaxy {
   opacity: number;
 }
 
+type ExplosionPattern = 'omni_burst' | 'polar_jets' | 'pinwheel_spiral' | 'quad_cross';
+
 interface GalaxyParticle {
   x: number;
   y: number;
@@ -133,11 +135,13 @@ interface WhiteGuardian {
   state: 'sprinting' | 'restoring_numbers' | 'placing_wall' | 'patrolling' | 'shooing' | 'stealth_exit' | 'peeking_corner';
   progress: number;
   legPhase: number;
+  spineAngle: number;
   lookAngle: number;
   flashlightAngle: number;
   wallOpacity: number;
   peekTimer: number;
-  repairedText: string;
+  targetElement: HTMLElement | null;
+  originalHTML: string;
 }
 
 export const ShootingStarsBackground: React.FC = () => {
@@ -190,7 +194,7 @@ export const ShootingStarsBackground: React.FC = () => {
     const lightColors = ['#F59E0B', '#0284C7', '#D946EF', '#10B981', '#F43F5E', '#8B5CF6', '#E11D48', '#059669', '#2563EB'];
     const activeColors = isLight ? lightColors : darkColors;
 
-    // 1. Constellations & Vivid Neon Twinkle Stars (with Diamond Cross-Flares)
+    // 1. Constellations & Vivid Neon Twinkle Stars (with Diamond Flares)
     const starCount = isUltra ? 110 : 55;
     const twinkleStars: TwinkleStar[] = Array.from({ length: starCount }, () => ({
       x: Math.random() * width,
@@ -215,15 +219,16 @@ export const ShootingStarsBackground: React.FC = () => {
       }
     }
 
-    // 2. Central Mega-Galaxy with Supernova Explosion & Rebirth Cycle
+    // 2. Multi-Pattern Supernova Galaxy Engine
     let galaxyState: 'expanding' | 'exploding' | 'reforming' = 'expanding';
     let galaxyScale = 1.0;
     let galaxyRotation = 0;
     let supernovaProgress = 0;
     let shockwaveRadius = 0;
     let shockwaveAlpha = 0;
+    let currentExplosionPattern: ExplosionPattern = 'omni_burst';
 
-    const galaxyParticleCount = isUltra ? 320 : 150;
+    const galaxyParticleCount = isUltra ? 340 : 160;
     const galaxyParticles: GalaxyParticle[] = Array.from({ length: galaxyParticleCount }, (_, i) => {
       const radius = Math.random() * (isUltra ? 170 : 110) + 12;
       const angle = (i / galaxyParticleCount) * Math.PI * 6 + Math.random() * 0.4;
@@ -232,7 +237,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: 0,
         baseRadius: radius,
         angle: angle,
-        speed: Math.random() * 0.003 + 0.0012,
+        speed: Math.random() * 0.0025 + 0.001,
         color: activeColors[i % activeColors.length],
         size: Math.random() * 2.4 + 0.8,
         sparklePhase: Math.random() * Math.PI * 2,
@@ -357,16 +362,14 @@ export const ShootingStarsBackground: React.FC = () => {
       }
     ];
 
-    // Relativistic Black Hole coordinates
     let blackHoleX = width * 0.12;
     let blackHoleY = height * 0.72;
     let blackHolePulse = 0;
 
-    // 6. Space Ships & UFOs (with Number Shrinking Abduction Engine)
     const spaceShips: SpaceShip[] = [];
     const shootingStars: ShootingStar[] = [];
 
-    // 7. Celestial Watcher Spirit
+    // 6. Celestial Watcher Spirit
     const watcher: CelestialWatcher = {
       active: false,
       x: -50,
@@ -384,7 +387,7 @@ export const ShootingStarsBackground: React.FC = () => {
       warpDest: { x: width * 0.5, y: height * 0.45 }
     };
 
-    // 8. White Guardian Runner ("El Muñeco Blanco Guardián")
+    // 7. Fluid Humanoid White Guardian Runner
     const guardian: WhiteGuardian = {
       active: false,
       x: -60,
@@ -394,14 +397,15 @@ export const ShootingStarsBackground: React.FC = () => {
       state: 'sprinting',
       progress: 0,
       legPhase: 0,
+      spineAngle: 0,
       lookAngle: 0,
       flashlightAngle: 0,
       wallOpacity: 0,
       peekTimer: 0,
-      repairedText: '$49'
+      targetElement: null,
+      originalHTML: ''
     };
 
-    // Watcher activation loop
     const scheduleWatcher = () => {
       setTimeout(() => {
         watcher.active = true;
@@ -420,7 +424,6 @@ export const ShootingStarsBackground: React.FC = () => {
     };
     scheduleWatcher();
 
-    // Spawn Ships periodically
     const scheduleShip = () => {
       setTimeout(() => {
         if (spaceShips.length < 2) {
@@ -473,7 +476,7 @@ export const ShootingStarsBackground: React.FC = () => {
       blackHolePulse += 0.04;
 
       // ===========================================================
-      // 1. DRAW DISTANT DWARF GALAXIES (Far Deep Space)
+      // 1. DRAW DISTANT DWARF GALAXIES
       // ===========================================================
       dwarfGalaxies.forEach((dg) => {
         dg.rotation += dg.rotSpeed;
@@ -494,7 +497,7 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 2. DRAW ASTEROID BELT (3D Tumbling Space Rocks)
+      // 2. DRAW ASTEROID BELT (3D Space Rocks)
       // ===========================================================
       asteroids.forEach((ast) => {
         ast.angle += ast.orbitSpeed;
@@ -522,34 +525,35 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 3. DRAW CENTRAL GALAXY WITH SUPERNOVA EXPLOSION & REBIRTH CYCLE
+      // 3. CENTRAL GALAXY: EXPANSION & MULTI-PATTERN SUPERNOVA
       // ===========================================================
       const centerX = width * 0.5;
       const centerY = height * 0.45;
 
-      // Galaxy Lifecycle Management
       if (galaxyState === 'expanding') {
-        galaxyScale += 0.0018; // Slowly expands
-        if (galaxyScale > 2.3) {
+        galaxyScale += 0.0008; // Slower, suspenseful buildup
+        if (galaxyScale > 2.4) {
           galaxyState = 'exploding';
           supernovaProgress = 0;
-          shockwaveRadius = 10;
+          shockwaveRadius = 15;
           shockwaveAlpha = 1.0;
+          // Random explosion pattern pick!
+          const patterns: ExplosionPattern[] = ['omni_burst', 'polar_jets', 'pinwheel_spiral', 'quad_cross'];
+          currentExplosionPattern = patterns[Math.floor(Math.random() * patterns.length)];
         }
       } else if (galaxyState === 'exploding') {
         supernovaProgress += 0.02;
-        shockwaveRadius += 12;
-        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.6);
+        shockwaveRadius += 14;
+        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.55);
 
-        if (supernovaProgress > 2.5) {
+        if (supernovaProgress > 2.6) {
           galaxyState = 'reforming';
         }
       } else if (galaxyState === 'reforming') {
-        galaxyScale -= 0.025; // Smooth gravitational collapse
+        galaxyScale -= 0.022;
         if (galaxyScale <= 1.0) {
           galaxyScale = 1.0;
           galaxyState = 'expanding';
-          // Re-seed particle colors and angles for new galaxy
           galaxyParticles.forEach((p) => {
             p.angle = Math.random() * Math.PI * 6;
             p.distFromCenter = p.baseRadius;
@@ -567,33 +571,33 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(245, 158, 11, ${shockwaveAlpha})`;
-        ctx.lineWidth = 4;
-        ctx.shadowBlur = 25;
+        ctx.lineWidth = 5;
+        ctx.shadowBlur = 30;
         ctx.shadowColor = '#F59E0B';
         ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius * 0.85, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(6, 182, 212, ${shockwaveAlpha * 0.8})`;
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = `rgba(6, 182, 212, ${shockwaveAlpha * 0.85})`;
+        ctx.lineWidth = 3;
         ctx.stroke();
         ctx.restore();
       }
 
-      // Galactic Ambient Core Nebula
-      const centerFog = ctx.createRadialGradient(0, 0, 10, 0, 0, (isUltra ? 220 : 130) * galaxyScale);
-      centerFog.addColorStop(0, isLight ? 'rgba(217, 119, 6, 0.3)' : 'rgba(245, 158, 11, 0.4)');
-      centerFog.addColorStop(0.35, isLight ? 'rgba(168, 85, 247, 0.18)' : 'rgba(168, 85, 247, 0.25)');
-      centerFog.addColorStop(0.7, isLight ? 'rgba(6, 182, 212, 0.1)' : 'rgba(6, 182, 212, 0.18)');
+      // Galactic Core Nebula
+      const centerFog = ctx.createRadialGradient(0, 0, 10, 0, 0, (isUltra ? 230 : 140) * galaxyScale);
+      centerFog.addColorStop(0, isLight ? 'rgba(217, 119, 6, 0.35)' : 'rgba(245, 158, 11, 0.45)');
+      centerFog.addColorStop(0.35, isLight ? 'rgba(168, 85, 247, 0.2)' : 'rgba(168, 85, 247, 0.28)');
+      centerFog.addColorStop(0.7, isLight ? 'rgba(6, 182, 212, 0.12)' : 'rgba(6, 182, 212, 0.2)');
       centerFog.addColorStop(1, 'transparent');
 
       ctx.fillStyle = centerFog;
       ctx.beginPath();
-      ctx.arc(0, 0, (isUltra ? 220 : 130) * galaxyScale, 0, Math.PI * 2);
+      ctx.arc(0, 0, (isUltra ? 230 : 140) * galaxyScale, 0, Math.PI * 2);
       ctx.fill();
 
-      // Draw Dense Neon Galaxy Particles
-      galaxyParticles.forEach((p) => {
+      // Draw Dense Neon Galaxy Particles with Different Explosion Topologies
+      galaxyParticles.forEach((p, idx) => {
         p.angle += p.speed;
         p.sparklePhase += 0.05;
 
@@ -601,10 +605,28 @@ export const ShootingStarsBackground: React.FC = () => {
         let py = 0;
 
         if (galaxyState === 'exploding') {
-          // Supernova particle explosion flying outward in all directions
-          p.distFromCenter += 6.5;
-          px = Math.cos(p.angle) * p.distFromCenter;
-          py = Math.sin(p.angle) * p.distFromCenter;
+          p.distFromCenter += 7.0;
+
+          if (currentExplosionPattern === 'polar_jets') {
+            // Dual Relativistic Polar Jets
+            const jetDir = idx % 2 === 0 ? 1 : -1;
+            px = (Math.random() - 0.5) * 40;
+            py = jetDir * p.distFromCenter * 1.8;
+          } else if (currentExplosionPattern === 'pinwheel_spiral') {
+            // Pinwheel Spiral Burst
+            const theta = p.angle + p.distFromCenter * 0.05;
+            px = Math.cos(theta) * p.distFromCenter;
+            py = Math.sin(theta) * p.distFromCenter;
+          } else if (currentExplosionPattern === 'quad_cross') {
+            // Quad Gamma-Ray Cross Burst
+            const armAngle = (Math.floor(idx % 4) * Math.PI) / 2 + (Math.random() * 0.2 - 0.1);
+            px = Math.cos(armAngle) * p.distFromCenter * 1.4;
+            py = Math.sin(armAngle) * p.distFromCenter * 1.4;
+          } else {
+            // Omni 360 Burst
+            px = Math.cos(p.angle) * p.distFromCenter;
+            py = Math.sin(p.angle) * p.distFromCenter;
+          }
         } else {
           // Spiraling galaxy formation
           const currentR = p.baseRadius * galaxyScale;
@@ -615,17 +637,18 @@ export const ShootingStarsBackground: React.FC = () => {
 
         const sparkleAlpha = (Math.sin(p.sparklePhase) + 1) / 2 * 0.6 + 0.4;
         ctx.beginPath();
-        ctx.arc(px, py, p.size * (galaxyState === 'exploding' ? 1.5 : 1), 0, Math.PI * 2);
+        ctx.arc(px, py, p.size * (galaxyState === 'exploding' ? 1.6 : 1), 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = sparkleAlpha * (isLight ? 0.75 : 0.95);
         ctx.fill();
       });
 
-      // Bright Galactic Singularity
+      // Hyper-Luminous Singularity (Flashes bright white-hot before explosion)
+      const singularityGlow = galaxyScale > 2.0 ? (galaxyScale - 2.0) * 35 : 12;
       ctx.beginPath();
-      ctx.arc(0, 0, 11 * (galaxyState === 'exploding' ? 2.5 : 1), 0, Math.PI * 2);
+      ctx.arc(0, 0, singularityGlow, 0, Math.PI * 2);
       ctx.fillStyle = '#FFFFFF';
-      ctx.shadowBlur = 22;
+      ctx.shadowBlur = singularityGlow * 2;
       ctx.shadowColor = '#F59E0B';
       ctx.fill();
       ctx.restore();
@@ -638,7 +661,6 @@ export const ShootingStarsBackground: React.FC = () => {
       const holeRadius = isUltra ? 26 : 18;
       const lensSpread = holeRadius * 2.3 + Math.sin(blackHolePulse) * 2;
 
-      // Upper Warped Einstein Arch
       ctx.beginPath();
       ctx.ellipse(0, -holeRadius * 0.7, lensSpread, holeRadius * 0.9, 0, Math.PI, 0);
       ctx.strokeStyle = isLight ? 'rgba(6, 182, 212, 0.75)' : 'rgba(56, 189, 248, 0.85)';
@@ -647,14 +669,12 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.shadowColor = '#38BDF8';
       ctx.stroke();
 
-      // Lower Warped Einstein Arch
       ctx.beginPath();
       ctx.ellipse(0, holeRadius * 0.7, lensSpread * 0.85, holeRadius * 0.7, 0, 0, Math.PI);
       ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.65)' : 'rgba(245, 158, 11, 0.75)';
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
-      // Doppler Luminous Accretion Disk
       const diskGrad = ctx.createLinearGradient(-lensSpread * 1.2, 0, lensSpread * 1.2, 0);
       diskGrad.addColorStop(0, '#38BDF8');
       diskGrad.addColorStop(0.4, '#FFFFFF');
@@ -667,7 +687,6 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.lineWidth = 4;
       ctx.stroke();
 
-      // Pitch-Black Event Horizon Void
       ctx.beginPath();
       ctx.arc(0, 0, holeRadius, 0, Math.PI * 2);
       ctx.fillStyle = '#020205';
@@ -675,7 +694,7 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.restore();
 
       // ===========================================================
-      // 5. DRAW DIVERSE PROCEDURAL PLANETS WITH WOBBLING 3D RINGS & LIGHT PHASES
+      // 5. DRAW DIVERSE PROCEDURAL PLANETS WITH WOBBLING 3D RINGS
       // ===========================================================
       planets.forEach((p) => {
         p.rotation += p.rotationSpeed;
@@ -745,7 +764,7 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 6. DRAW CONSTELLATIONS & VIVID NEON TWINKLE STARS (WITH 4-POINT FLARES)
+      // 6. DRAW CONSTELLATIONS & VIVID NEON TWINKLE STARS
       // ===========================================================
       ctx.save();
       constellationPairs.forEach(([i, j]) => {
@@ -773,7 +792,6 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.shadowColor = star.color;
         ctx.fill();
 
-        // 4-Point Diamond Flare for bright stars
         if (star.hasFlare && currentOpacity > 0.65) {
           const flareLen = star.size * 3.2;
           ctx.beginPath();
@@ -830,7 +848,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 8. DRAW SPACESIPS / UFOs WITH NUMBER SHRINKING ABDUCTION
+      // 8. UFO NUMBER ABDUCTION & CUTE QUESTION MARKS REPLACEMENT
       // ===========================================================
       for (let i = spaceShips.length - 1; i >= 0; i--) {
         const ship = spaceShips[i];
@@ -884,24 +902,15 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.fill();
           ctx.stroke();
 
-          // Display stolen abducted digit on UFO dashboard!
+          // Display stolen digit on UFO!
           if (ship.stolenDigit) {
             ctx.fillStyle = '#F59E0B';
             ctx.font = 'bold 10px monospace';
             ctx.fillText(ship.stolenDigit, -8, -1);
           }
 
-          // Underlights
-          const lightGlow = Math.sin(ship.lightPhase) * 0.5 + 0.5;
-          ctx.beginPath();
-          ctx.arc(-ship.size * 0.5, 2, 2.2, 0, Math.PI * 2);
-          ctx.arc(0, 3, 2.8, 0, Math.PI * 2);
-          ctx.arc(ship.size * 0.5, 2, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245, 158, 11, ${lightGlow})`;
-          ctx.fill();
-
           // ABDUCTION MECHANICS:
-          // 1. Letters in cards attempt abduction (float up slightly, but stay attached)
+          // Letters: Float up slightly, but stay attached
           const textElements = document.querySelectorAll('p, h3, h2, h1');
           textElements.forEach((el) => {
             const rect = el.getBoundingClientRect();
@@ -913,21 +922,24 @@ export const ShootingStarsBackground: React.FC = () => {
             }
           });
 
-          // 2. Numbers (Prices & Metrics) are abducted and get smaller and smaller as they lift!
-          const numberElements = document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"], [class*="text-2xl"]');
+          // Numbers: Abducted & Replaced with cute Question Marks!
+          const numberElements = document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"]');
           numberElements.forEach((el) => {
             const rect = el.getBoundingClientRect();
+            const rawText = el.getAttribute('data-original-val') || el.textContent || '$49';
+            if (!el.getAttribute('data-original-val')) {
+              el.setAttribute('data-original-val', rawText);
+            }
+
             if (Math.abs(ship.x - (rect.left + rect.width / 2)) < 110 && Math.abs(ship.y - rect.top) < 180) {
-              // Number shrinks as it is drawn into the UFO
-              const distY = Math.abs(ship.y - rect.top);
-              const shrinkScale = Math.max(0.2, distY / 180);
-              (el as HTMLElement).style.transform = `translateY(-28px) scale(${shrinkScale})`;
-              (el as HTMLElement).style.textShadow = '0 0 25px #06B6D4, 0 0 40px #F59E0B';
-              (el as HTMLElement).style.transition = 'transform 0.15s ease, text-shadow 0.15s ease';
+              ship.stolenDigit = rawText.substring(0, 3);
 
-              ship.stolenDigit = (el.textContent || '$49').substring(0, 3);
+              // Replace with Cute Question Marks looking in all directions
+              const numDigits = Math.max(1, rawText.replace(/[^0-9]/g, '').length);
+              const qMarks = Array.from({ length: numDigits }, () => '❓').join('');
+              (el as HTMLElement).innerHTML = `<span class="inline-flex items-center gap-1 text-amber-400 font-mono text-4xl animate-bounce" title="¡Número abducido! Esperando al guardián...">${qMarks}</span>`;
 
-              // Trigger White Guardian Runner immediately!
+              // Trigger White Guardian Runner
               if (!guardian.active && guardian.state !== 'peeking_corner') {
                 guardian.active = true;
                 guardian.state = 'sprinting';
@@ -935,7 +947,8 @@ export const ShootingStarsBackground: React.FC = () => {
                 guardian.targetX = rect.left + rect.width / 2;
                 guardian.targetY = rect.top + 30;
                 guardian.progress = 0;
-                guardian.repairedText = el.textContent || '$49';
+                guardian.targetElement = el as HTMLElement;
+                guardian.originalHTML = rawText;
               }
             }
           });
@@ -944,29 +957,32 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 9. WHITE GUARDIAN RUNNER ("El Muñeco Blanco Guardián & Reparador")
+      // 9. FLUID HUMANOID WHITE GUARDIAN RUNNER & RESTORER
       // ===========================================================
       if (guardian.active) {
         guardian.progress += 0.015;
         guardian.legPhase += 0.25;
 
         if (guardian.state === 'sprinting') {
-          guardian.x += (guardian.targetX - guardian.x) * 0.15;
-          guardian.y += (guardian.targetY - guardian.y) * 0.15;
+          guardian.x += (guardian.targetX - guardian.x) * 0.14;
+          guardian.y += (guardian.targetY - guardian.y) * 0.14;
+          guardian.spineAngle = 0.22; // Lean forward when running
 
-          if (Math.abs(guardian.x - guardian.targetX) < 15) {
+          if (Math.abs(guardian.x - guardian.targetX) < 18) {
             guardian.state = 'restoring_numbers';
             guardian.progress = 0;
           }
         } else if (guardian.state === 'restoring_numbers') {
-          // Guardian paints/restores the missing numbers with cosmic stylus
-          const numberElements = document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"]');
-          numberElements.forEach((el) => {
-            (el as HTMLElement).style.transform = 'translateY(0px) scale(1)';
-            (el as HTMLElement).style.textShadow = '0 0 20px #F59E0B';
-          });
+          guardian.spineAngle = -0.1;
 
-          if (guardian.progress > 0.8) {
+          // Restore original numbers with glowing golden burst
+          if (guardian.targetElement && guardian.originalHTML) {
+            guardian.targetElement.innerHTML = guardian.originalHTML;
+            guardian.targetElement.style.transform = 'translateY(0px) scale(1)';
+            guardian.targetElement.style.textShadow = '0 0 25px #F59E0B, 0 0 40px #FFFFFF';
+          }
+
+          if (guardian.progress > 0.9) {
             guardian.state = 'placing_wall';
             guardian.progress = 0;
           }
@@ -978,15 +994,16 @@ export const ShootingStarsBackground: React.FC = () => {
             guardian.progress = 0;
           }
         } else if (guardian.state === 'patrolling') {
+          guardian.spineAngle = 0;
           guardian.lookAngle = Math.sin(guardian.progress * 4) * 0.8;
           guardian.flashlightAngle = Math.sin(guardian.progress * 3) * 0.6;
 
           // Shoo away nearby UFOs
           spaceShips.forEach((s) => {
-            if (s.type === 'ufo' && Math.hypot(s.x - guardian.x, s.y - guardian.y) < 220) {
+            if (s.type === 'ufo' && Math.hypot(s.x - guardian.x, s.y - guardian.y) < 230) {
               guardian.state = 'shooing';
               s.scared = true;
-              s.scareVelocity = s.speed > 0 ? 12 : -12;
+              s.scareVelocity = s.speed > 0 ? 14 : -14;
             }
           });
 
@@ -1016,7 +1033,7 @@ export const ShootingStarsBackground: React.FC = () => {
           }
         }
 
-        // Draw Protective Shield Wall
+        // Draw Shield Wall
         if (guardian.wallOpacity > 0.01) {
           ctx.save();
           ctx.beginPath();
@@ -1035,9 +1052,10 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.restore();
         }
 
-        // Draw White Guardian Character
+        // Draw Fluid Humanoid Guardian
         ctx.save();
         ctx.translate(guardian.x, guardian.y);
+        ctx.rotate(guardian.spineAngle);
 
         if (guardian.state === 'peeking_corner') {
           ctx.beginPath();
@@ -1062,6 +1080,7 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.lineWidth = 1.2;
           ctx.stroke();
         } else {
+          // Humanoid Head with Visor
           ctx.beginPath();
           ctx.arc(0, -18, 9, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
@@ -1069,6 +1088,13 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.shadowColor = '#FFFFFF';
           ctx.fill();
 
+          // Visor
+          ctx.beginPath();
+          ctx.arc(3, -18, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#06B6D4';
+          ctx.fill();
+
+          // Flashlight scanner
           if (guardian.state === 'patrolling') {
             ctx.save();
             ctx.rotate(guardian.flashlightAngle);
@@ -1085,49 +1111,66 @@ export const ShootingStarsBackground: React.FC = () => {
             ctx.restore();
           }
 
-          // Torso
+          // Curved Fluid Torso
           ctx.beginPath();
           ctx.moveTo(0, -9);
-          ctx.lineTo(0, 8);
+          ctx.quadraticCurveTo(2, 0, 0, 8);
+          ctx.strokeStyle = '#FFFFFF';
+          ctx.lineWidth = 3.5;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+
+          // Fluid Kinematic Legs (Hip -> Knee -> Ankle)
+          const leg1Hip = Math.sin(guardian.legPhase) * 11;
+          const leg1Knee = Math.max(0, Math.sin(guardian.legPhase + 0.5) * 8);
+          const leg2Hip = -leg1Hip;
+          const leg2Knee = Math.max(0, Math.sin(guardian.legPhase + Math.PI + 0.5) * 8);
+
+          // Leg 1
+          ctx.beginPath();
+          ctx.moveTo(0, 8);
+          ctx.lineTo(leg1Hip * 0.6, 15 + leg1Knee * 0.3);
+          ctx.lineTo(leg1Hip, 24);
           ctx.strokeStyle = '#FFFFFF';
           ctx.lineWidth = 3;
           ctx.stroke();
 
-          // Running Legs
-          const leg1 = Math.sin(guardian.legPhase) * 10;
-          const leg2 = -leg1;
+          // Leg 2
           ctx.beginPath();
           ctx.moveTo(0, 8);
-          ctx.lineTo(leg1, 22);
-          ctx.moveTo(0, 8);
-          ctx.lineTo(leg2, 22);
+          ctx.lineTo(leg2Hip * 0.6, 15 + leg2Knee * 0.3);
+          ctx.lineTo(leg2Hip, 24);
           ctx.stroke();
 
           // Arms & Restoration Stylus
           ctx.beginPath();
           if (guardian.state === 'restoring_numbers') {
             ctx.moveTo(0, -4);
-            ctx.lineTo(16, -14);
+            ctx.quadraticCurveTo(10, -10, 18, -14);
             ctx.strokeStyle = '#F59E0B';
             ctx.lineWidth = 3;
-            // Sparkles when painting number
+            ctx.stroke();
+
             ctx.fillStyle = '#FFFFFF';
             ctx.font = '10px sans-serif';
-            ctx.fillText('✨', 16, -18);
+            ctx.fillText('✨', 18, -18);
           } else if (guardian.state === 'shooing') {
             ctx.moveTo(0, -4);
             ctx.lineTo(18, -18);
             ctx.moveTo(18, -18);
             ctx.lineTo(120, -90);
             ctx.strokeStyle = '#F43F5E';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
           } else {
             ctx.moveTo(0, -4);
-            ctx.lineTo(leg2 * 0.8, 4);
+            ctx.quadraticCurveTo(leg2Hip * 0.4, 0, leg2Hip * 0.8, 6);
             ctx.moveTo(0, -4);
-            ctx.lineTo(leg1 * 0.8, 4);
+            ctx.quadraticCurveTo(leg1Hip * 0.4, 0, leg1Hip * 0.8, 6);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
           }
-          ctx.stroke();
         }
         ctx.restore();
       }
