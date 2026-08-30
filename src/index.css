@@ -13,56 +13,71 @@
   }
 }
 
-/* =========================================================
-   LIGHT & LUXURY STUDIO MODE - HIGH CONTRAST & WCAG AAA
-   ========================================================= */
+/* =========================================================================
+   ✨ TITANIUM CHAMPAGNE & VELVET IVORY (LUXURY / LIGHT THEME ENGINE)
+   ========================================================================= */
 html.light body,
 html.theme-luxury body {
   background-color: #F8FAFC !important;
+  background-image: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.05) 0%, #F8FAFC 75%) !important;
   color: #0F172A !important;
 }
 
+/* 1. All Dark Background Containers to Pure Velvet Ivory Glass */
 html.light .bg-cyber-950,
-html.theme-luxury .bg-cyber-950 {
+html.theme-luxury .bg-cyber-950,
+html.light .bg-slate-950,
+html.theme-luxury .bg-slate-950 {
   background-color: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
+  border-color: rgba(217, 119, 6, 0.25) !important;
   color: #0F172A !important;
+  box-shadow: 0 4px 20px -2px rgba(217, 119, 6, 0.05) !important;
 }
 
 html.light .bg-cyber-900,
-html.theme-luxury .bg-cyber-900 {
+html.theme-luxury .bg-cyber-900,
+html.light .bg-slate-900,
+html.theme-luxury .bg-slate-900 {
   background-color: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
+  border-color: rgba(217, 119, 6, 0.22) !important;
   color: #0F172A !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.08) !important;
 }
 
 html.light .bg-cyber-850,
-html.theme-luxury .bg-cyber-850 {
-  background-color: #F1F5F9 !important;
-  border-color: #CBD5E1 !important;
+html.theme-luxury .bg-cyber-850,
+html.light .bg-slate-850,
+html.theme-luxury .bg-slate-850 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
   color: #1E293B !important;
 }
 
 html.light .bg-cyber-800,
-html.theme-luxury .bg-cyber-800 {
-  background-color: #E2E8F0 !important;
+html.theme-luxury .bg-cyber-800,
+html.light .bg-slate-800,
+html.theme-luxury .bg-slate-800 {
+  background-color: #F1F5F9 !important;
   border-color: #CBD5E1 !important;
   color: #0F172A !important;
 }
 
+/* 2. Top Header & Sidebar in Luxury Theme */
 html.light header,
 html.theme-luxury header {
   background-color: rgba(255, 255, 255, 0.95) !important;
-  border-color: #E2E8F0 !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(217, 119, 6, 0.25) !important;
+  box-shadow: 0 4px 25px -4px rgba(217, 119, 6, 0.06) !important;
 }
 
 html.light aside,
 html.theme-luxury aside {
-  background-color: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-right: 1px solid rgba(217, 119, 6, 0.2) !important;
 }
 
+/* 3. Typography & Text Contrast Overrides */
 html.light .text-white,
 html.theme-luxury .text-white {
   color: #0F172A !important;
@@ -87,13 +102,15 @@ html.theme-luxury .text-slate-500 {
   color: #475569 !important;
 }
 
+/* 4. Borders */
 html.light .border-cyber-800,
 html.light .border-cyber-700,
 html.theme-luxury .border-cyber-800,
 html.theme-luxury .border-cyber-700 {
-  border-color: #CBD5E1 !important;
+  border-color: rgba(217, 119, 6, 0.25) !important;
 }
 
+/* 5. Metallic Gold Gradients */
 html.light .gold-gradient-text,
 html.theme-luxury .gold-gradient-text {
   background: linear-gradient(135deg, #B45309 0%, #D97706 40%, #92400E 100%) !important;
@@ -108,11 +125,12 @@ html.theme-luxury .cyan-gradient-text {
   -webkit-text-fill-color: transparent !important;
 }
 
+/* 6. Luxury Glass Panels */
 html.light .glass-panel,
 html.theme-luxury .glass-panel {
   background: rgba(255, 255, 255, 0.95) !important;
-  border: 1px solid #CBD5E1 !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(217, 119, 6, 0.25) !important;
+  box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.08) !important;
   color: #0F172A !important;
 }
 
@@ -120,17 +138,19 @@ html.light .glass-panel-hover:hover,
 html.theme-luxury .glass-panel-hover:hover {
   background: #FFFFFF !important;
   border-color: #D97706 !important;
-  box-shadow: 0 15px 30px -5px rgba(217, 119, 6, 0.15) !important;
+  box-shadow: 0 15px 35px -5px rgba(217, 119, 6, 0.18) !important;
+  transform: translateY(-2px);
 }
 
 html.light .glass-panel-gold,
 html.theme-luxury .glass-panel-gold {
-  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, #FFFFFF 85%) !important;
+  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.1) 0%, #FFFFFF 85%) !important;
   border: 1px solid rgba(217, 119, 6, 0.4) !important;
   box-shadow: 0 10px 30px rgba(217, 119, 6, 0.1) !important;
   color: #0F172A !important;
 }
 
+/* 7. Form Controls (Inputs, Selects, Textareas) */
 html.light input,
 html.light textarea,
 html.light select,
@@ -149,20 +169,21 @@ html.theme-luxury input:focus,
 html.theme-luxury textarea:focus,
 html.theme-luxury select:focus {
   border-color: #D97706 !important;
-  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15) !important;
 }
 
+/* 8. Subtle Golden Cyber Grid for Luxury */
 html.light .cyber-grid,
 html.theme-luxury .cyber-grid {
   background-size: 40px 40px;
   background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(217, 119, 6, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 119, 6, 0.05) 1px, transparent 1px);
 }
 
-/* =========================================================
+/* =========================================================================
    TOKYO SYNTHWAVE NEON MODE (HIGH VOLTAGE)
-   ========================================================= */
+   ========================================================================= */
 html.theme-neon body {
   background-color: #05050D !important;
 }
@@ -177,9 +198,9 @@ html.theme-neon .glass-panel-gold {
   box-shadow: 0 0 35px rgba(217, 70, 239, 0.25), 0 0 20px rgba(6, 182, 212, 0.2) !important;
 }
 
-/* =========================================================
+/* =========================================================================
    DARK CYBER LUXURY DEFAULT
-   ========================================================= */
+   ========================================================================= */
 .glass-panel {
   background: rgba(18, 23, 35, 0.7);
   backdrop-filter: blur(16px);

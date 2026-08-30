@@ -164,11 +164,11 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     desc: 'Personalizar el aspecto y expresiones del avatar en el perfil del usuario.'
   },
   {
-    id: 'avatar_voice_commands',
-    module: 'Copiloto IA & Mascotas',
+    id: 'mascot_voice_control',
+    module: 'Copiloto IA & Mascotas (Kai)',
     category: 'intermediate',
-    title: 'Control por Voz (Speech-to-Text)',
-    desc: 'Dictar instrucciones y cambios de diseño directamente por el micrófono.'
+    title: 'Control por Voz & Transcripción Continua (Speech-to-Text Universal)',
+    desc: 'Compatibilidad total de micrófono con permisos de navegador en Chrome, Safari, Firefox y Edge con streaming de audio seguro.'
   },
 
   // 5. Consola Admin
