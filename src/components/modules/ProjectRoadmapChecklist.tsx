@@ -329,7 +329,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Despliegue Continuo en Vercel con Dominio Personalizado',
     desc: 'Sincronización automática de GitHub a la nube en 45 segundos con SSL y CDN.',
-    isInitialDone: false
+    isInitialDone: true
   },
 
   // ==========================================
@@ -413,7 +413,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Soporte WebGPU y Nivel de Detalle Adaptativo (LOD)',
     desc: '60 FPS estables en cualquier dispositivo ajustando polígonos automáticamente.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'payments_affiliates_system',

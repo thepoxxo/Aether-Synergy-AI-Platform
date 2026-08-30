@@ -25,6 +25,7 @@ import { GlobalSuppliers } from './components/modules/GlobalSuppliers';
 import { SynthetixMascot } from './components/modules/SynthetixMascot';
 import { AdminConsole } from './components/modules/AdminConsole';
 import { ProjectRoadmapChecklist } from './components/modules/ProjectRoadmapChecklist';
+import { CommunityExplore } from './components/modules/CommunityExplore';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -103,6 +104,8 @@ const MainLayout: React.FC = () => {
         return <AutomoCalendar />;
       case 'suppliers':
         return <GlobalSuppliers />;
+      case 'community':
+        return <CommunityExplore onRemixDesign={() => setCurrentView('aurora3d')} />;
       case 'mascot':
         return <SynthetixMascot />;
       case 'admin':

@@ -21,7 +21,8 @@ import {
   Box,
   CheckSquare,
   Menu,
-  X
+  X,
+  Sparkles
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -58,6 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'solesmith', nameKey: 'sidebar.solesmith', icon: Footprints, requiredRole: 'pro', badge: 'PRO' },
     { id: 'automo', nameKey: 'sidebar.automo', icon: Calendar, requiredRole: 'agency', badge: 'AGENCY' },
     { id: 'suppliers', nameKey: 'sidebar.suppliers', icon: Globe2, requiredRole: 'agency', badge: 'AGENCY' },
+    { id: 'community', nameKey: 'Comunidad & Remix', icon: Sparkles, requiredRole: 'free', badge: 'OPEN', isLiteralLabel: true },
     { id: 'mascot', nameKey: 'sidebar.mascot', icon: Smile, requiredRole: 'free', badge: 'HUB' },
     { id: 'admin', nameKey: 'sidebar.admin', icon: ShieldAlert, requiredRole: 'admin', badge: 'ADMIN' },
     { id: 'roadmap', nameKey: 'Roadmap & Checklist', icon: CheckSquare, requiredRole: 'free', badge: 'PLAN', isLiteralLabel: true },
