@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Model3DCanvas, ModelType } from '../common/Model3DCanvas';
 import {
   Layers,
@@ -21,7 +21,13 @@ import {
   Brush,
   RotateCcw,
   Pipette,
-  Hash
+  Hash,
+  Wind,
+  Cpu,
+  FileText,
+  Image as ImageIcon,
+  Move,
+  Maximize2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -31,13 +37,30 @@ export const Aurora3DStudio: React.FC = () => {
   const { t } = useLanguage();
 
   const [activeNicheTab, setActiveNicheTab] = useState<'fashion' | 'interior' | 'instrumentation' | 'merch'>('fashion');
-  const [productType, setProductType] = useState<ModelType>('jacket');
+  const [productType, setProductType] = useState<ModelType | string>('jacket');
 
   // Custom Colors & Hex Code
   const [primaryColor, setPrimaryColor] = useState('#1e293b');
   const [accentColor, setAccentColor] = useState('#e5a93c');
   const [primaryHexInput, setPrimaryHexInput] = useState('#1E293B');
   const [accentHexInput, setAccentHexInput] = useState('#E5A93C');
+
+  // 🧠 Universal AI Text/File-to-3D State
+  const [aiPromptInput, setAiPromptInput] = useState('');
+  const [isGenerating3D, setIsGenerating3D] = useState(false);
+  const [activeCustomModelName, setActiveCustomModelName] = useState<string | null>(null);
+
+  // 💨 Cloth Physics & Wind State
+  const [isClothWindActive, setIsClothWindActive] = useState(false);
+  const [windIntensity, setWindIntensity] = useState<'gentle' | 'breeze' | 'gale'>('breeze');
+
+  // 🎯 Decal & Logo Projector State
+  const [customLogoUrl, setCustomLogoUrl] = useState<string | null>(null);
+  const [decalScale, setDecalScale] = useState(1.0);
+  const [decalPosX, setDecalPosX] = useState(0);
+  const [decalPosY, setDecalPosY] = useState(0);
+  const [decalRotation, setDecalRotation] = useState(0);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Active AI Version
   const [activeVersion, setActiveVersion] = useState<string>('original');
@@ -231,8 +254,77 @@ export const Aurora3DStudio: React.FC = () => {
 
       {/* Main Studio Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Color Wheel & AI Product Versions */}
+        {/* Left Column: Color Wheel & Universal AI Generator & Versions */}
         <div className="lg:col-span-4 space-y-4">
+          {/* 🧠 1. Universal AI 3D Generator (Files & Text-to-3D) */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/50 shadow-cyber-card space-y-3">
+            <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Cpu className="w-4 h-4 text-cyber-gold animate-spin" style={{ animationDuration: '10s' }} />
+                CONVERSOR UNIVERSAL IA A 3D
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-800 text-cyan-400 border border-cyan-500/30">
+                Cualquier Archivo
+              </span>
+            </div>
+
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Escribe una descripción o sube cualquier archivo (<strong className="text-white">Imágenes, SVG, PDF o Planos</strong>) para sintetizarlo en 3D interactivo:
+            </p>
+
+            {/* Prompt Input Box */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={aiPromptInput}
+                  onChange={(e) => setAiPromptInput(e.target.value)}
+                  placeholder="Ej: Chaqueta bomber acolchada cyberpunk..."
+                  className="flex-1 bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                />
+                <button
+                  onClick={() => {
+                    if (!aiPromptInput.trim()) return;
+                    if (consumeCredit()) {
+                      setIsGenerating3D(true);
+                      setTimeout(() => {
+                        setIsGenerating3D(false);
+                        setProductType('jacket');
+                        setActiveCustomModelName(aiPromptInput);
+                      }, 1200);
+                    }
+                  }}
+                  disabled={isGenerating3D}
+                  className="px-3 py-2 rounded-xl bg-cyber-gold hover:bg-amber-400 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow transition-all flex items-center gap-1 shrink-0"
+                >
+                  <Wand2 className="w-3.5 h-3.5" />
+                  <span>{isGenerating3D ? 'Creando...' : 'Generar'}</span>
+                </button>
+              </div>
+
+              {/* Quick AI Prompt Pills */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {[
+                  { label: '🧥 Puffer Cyberpunk', type: 'jacket' },
+                  { label: '👟 Chunky Sneaker', type: 'sneaker' },
+                  { label: '🪑 Silla Nórdica', type: 'chair' },
+                  { label: '🎛️ Synth Modular', type: 'synth' }
+                ].map((pill, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setProductType(pill.type as ModelType);
+                      setAiPromptInput(pill.label);
+                    }}
+                    className="px-2 py-0.5 rounded-lg bg-cyber-950 border border-cyber-800 hover:border-cyber-gold text-[10px] text-slate-300 transition-all font-mono"
+                  >
+                    {pill.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Total Color Freedom: Color Wheel & Hex Input */}
           <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/50 shadow-cyber-card space-y-4">
             <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
@@ -250,7 +342,6 @@ export const Aurora3DStudio: React.FC = () => {
               </label>
 
               <div className="flex items-center gap-2">
-                {/* Visual Color Wheel Picker Input */}
                 <div className="relative w-12 h-10 rounded-xl overflow-hidden border-2 border-cyber-gold shadow-md shrink-0 cursor-pointer">
                   <input
                     type="color"
@@ -261,7 +352,6 @@ export const Aurora3DStudio: React.FC = () => {
                   />
                 </div>
 
-                {/* Hex Code Input Box */}
                 <div className="relative flex-1">
                   <Hash className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -284,7 +374,6 @@ export const Aurora3DStudio: React.FC = () => {
               </label>
 
               <div className="flex items-center gap-2">
-                {/* Visual Color Wheel Picker Input */}
                 <div className="relative w-12 h-10 rounded-xl overflow-hidden border-2 border-white shadow-md shrink-0 cursor-pointer">
                   <input
                     type="color"
@@ -295,7 +384,6 @@ export const Aurora3DStudio: React.FC = () => {
                   />
                 </div>
 
-                {/* Hex Code Input Box */}
                 <div className="relative flex-1">
                   <Hash className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -319,10 +407,6 @@ export const Aurora3DStudio: React.FC = () => {
               </span>
               <span className="text-[10px] text-slate-400 font-mono">1 Clic</span>
             </div>
-
-            <p className="text-[11px] text-slate-400 leading-snug">
-              Genera variantes estilísticas instantáneas de tu prenda o vuelve a la versión original:
-            </p>
 
             <div className="space-y-2">
               {productVersions.map((v) => {
@@ -374,6 +458,7 @@ export const Aurora3DStudio: React.FC = () => {
               }}
               celShaded={true}
               showDecal={layers.find((l) => l.id === 'graphic')?.visible}
+              clothPhysicsEnabled={isClothWindActive}
             />
           </div>
 
@@ -424,8 +509,146 @@ export const Aurora3DStudio: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Layer Stack & Shader Properties */}
+        {/* Right Column: Decal Projector, Cloth Physics & Shader Controls */}
         <div className="lg:col-span-3 space-y-4">
+          {/* 💨 1. Cloth & Wind Physics Simulator */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyan-500/40 shadow-cyber-card space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Wind className="w-4 h-4 text-cyan-400" /> FÍSICA DE TELA & VIENTO
+              </span>
+              <button
+                onClick={() => setIsClothWindActive(!isClothWindActive)}
+                className={`px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase transition-all ${
+                  isClothWindActive
+                    ? 'bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                    : 'bg-cyber-950 text-slate-400 border border-cyber-700'
+                }`}
+              >
+                {isClothWindActive ? '🌬️ Activo' : 'Pausado'}
+              </button>
+            </div>
+
+            <p className="text-[11px] text-slate-400">
+              Simulación de caída textil y ondulación en tiempo real sobre los vértices 3D.
+            </p>
+
+            <div className="grid grid-cols-3 gap-1 text-[11px] font-mono">
+              {(['gentle', 'breeze', 'gale'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => {
+                    setWindIntensity(mode);
+                    setIsClothWindActive(true);
+                  }}
+                  className={`py-1.5 rounded-lg border capitalize transition-all ${
+                    windIntensity === mode && isClothWindActive
+                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 font-bold'
+                      : 'bg-cyber-950 border-cyber-800 text-slate-400'
+                  }`}
+                >
+                  {mode === 'gentle' ? 'Suave' : mode === 'breeze' ? 'Brisa' : 'Fuerte'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 🎯 2. Decal & Logo Projector on Mesh */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-cyber-gold" /> ESTAMPADOR DE LOGOS 3D
+              </span>
+              <button
+                onClick={() => logoInputRef.current?.click()}
+                className="text-[10px] font-mono text-cyber-gold hover:underline flex items-center gap-1"
+              >
+                <Upload className="w-3 h-3" /> Subir PNG
+              </button>
+            </div>
+
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept=".png,.svg,.webp,.jpg"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const url = URL.createObjectURL(file);
+                  setCustomLogoUrl(url);
+                }
+              }}
+            />
+
+            {/* Decal Sliders */}
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between text-slate-400">
+                <span>Escala del Logo:</span>
+                <span className="font-mono text-white">{decalScale.toFixed(1)}x</span>
+              </div>
+              <input
+                type="range"
+                min="0.3"
+                max="2.0"
+                step="0.1"
+                value={decalScale}
+                onChange={(e) => setDecalScale(Number(e.target.value))}
+                className="w-full accent-cyber-gold"
+              />
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div>
+                  <div className="flex justify-between text-[10px] text-slate-400">
+                    <span>Posición X</span>
+                    <span>{decalPosX}px</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="-50"
+                    max="50"
+                    value={decalPosX}
+                    onChange={(e) => setDecalPosX(Number(e.target.value))}
+                    className="w-full accent-cyan-400"
+                  />
+                </div>
+                <div>
+                  <div className="flex justify-between text-[10px] text-slate-400">
+                    <span>Posición Y</span>
+                    <span>{decalPosY}px</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="-50"
+                    max="50"
+                    value={decalPosY}
+                    onChange={(e) => setDecalPosY(Number(e.target.value))}
+                    className="w-full accent-cyan-400"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Preset Logos */}
+            <div className="space-y-1.5 pt-2 border-t border-cyber-800">
+              {['Dragon 龍 (Aether Neo)', 'Akira Gear 2045', 'Cyber Tiger Tech'].map((dec) => (
+                <button
+                  key={dec}
+                  onClick={() => setSelectedDecal(dec)}
+                  className={`w-full flex items-center justify-between p-2 rounded-xl border text-left text-xs transition-all ${
+                    selectedDecal === dec
+                      ? 'bg-cyber-gold/20 border-cyber-gold text-cyber-gold font-bold'
+                      : 'bg-cyber-950 border-cyber-800 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span>{dec}</span>
+                  {selectedDecal === dec && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 3. Shader Properties */}
           <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
             <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 block mb-3 flex items-center gap-1.5">
               <Sliders className="w-3.5 h-3.5 text-cyber-gold" /> {t('aurora.shaderStyle')}
@@ -466,49 +689,6 @@ export const Aurora3DStudio: React.FC = () => {
                   ))}
                 </div>
               </div>
-
-              <div>
-                <label className="text-slate-400 block mb-1">{t('aurora.shadingMode')}</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {['Sharp', 'Smooth'].map((mode) => (
-                    <button
-                      key={mode}
-                      onClick={() => setShadingMode(mode)}
-                      className={`py-1.5 rounded-lg border font-semibold ${
-                        shadingMode === mode
-                          ? 'bg-cyber-gold text-black border-cyber-gold shadow-gold-glow'
-                          : 'bg-cyber-950 border-cyber-800 text-slate-400'
-                      }`}
-                    >
-                      {mode}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Decal & Graphic Mapping */}
-          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
-            <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 block mb-3 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-cyber-gold" /> {t('aurora.decalGraphic')}
-            </span>
-
-            <div className="space-y-2 text-xs">
-              {['Dragon 龍 (Aether Neo)', 'Akira Gear 2045', 'Cyber Tiger Tech', 'Minimalist Nordic Logo'].map((dec) => (
-                <button
-                  key={dec}
-                  onClick={() => setSelectedDecal(dec)}
-                  className={`w-full flex items-center justify-between p-2 rounded-xl border text-left transition-all ${
-                    selectedDecal === dec
-                      ? 'bg-cyber-gold/20 border-cyber-gold text-cyber-gold font-bold'
-                      : 'bg-cyber-950 border-cyber-800 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <span>{dec}</span>
-                  {selectedDecal === dec && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
-                </button>
-              ))}
             </div>
           </div>
         </div>

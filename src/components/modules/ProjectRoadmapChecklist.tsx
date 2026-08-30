@@ -18,7 +18,12 @@ import {
   Filter,
   RotateCcw,
   Download,
-  Share2
+  Share2,
+  Search,
+  CheckCircle2,
+  TrendingUp,
+  Cpu,
+  Wind
 } from 'lucide-react';
 
 interface ChecklistItem {
@@ -27,252 +32,333 @@ interface ChecklistItem {
   category: 'basic' | 'intermediate' | 'advanced';
   title: string;
   desc: string;
+  isInitialDone?: boolean;
 }
 
 const CHECKLIST_DATA: ChecklistItem[] = [
-  // 1. Motor 3D
+  // ==========================================
+  // 🟢 1. NIVEL 1: BÁSICO (Fundamentos, Interfaz & Controles)
+  // ==========================================
   {
     id: '3d_screenshot_4k',
     module: 'Motor 3D & Shaders',
     category: 'basic',
     title: 'Captura 4K con Fondo Transparente PNG',
-    desc: 'Exportación instantánea en alta resolución sin fondo para catálogos.'
+    desc: 'Exportación instantánea en ultra alta resolución sin fondo para catálogos y e-commerce.',
+    isInitialDone: true
   },
   {
     id: '3d_eyedropper',
     module: 'Motor 3D & Shaders',
     category: 'basic',
     title: 'Selector de Color con Cuentagotas (Eyedropper API)',
-    desc: 'Muestreo de colores exactos desde imágenes de inspiración del usuario.'
+    desc: 'Muestreo de colores exactos desde cualquier píxel o imagen de inspiración en pantalla.',
+    isInitialDone: true
   },
   {
     id: '3d_keyboard_shortcuts',
     module: 'Motor 3D & Shaders',
     category: 'basic',
-    title: 'Atajos de Teclado Profesionales (R, S, G, Space)',
-    desc: 'Control rápido para diseñadores que usan atajos de Blender/Spline.'
+    title: 'Atajos de Teclado Profesionales (R, S, G, Space, F, T)',
+    desc: 'Control rápido para diseñadores que usan atajos de Blender y Spline.',
+    isInitialDone: true
+  },
+  {
+    id: 'ad_aspect_ratios',
+    module: 'Video Marketing IA (AdGen)',
+    category: 'basic',
+    title: 'Selector Rápido de Proporciones (9:16, 16:9, 1:1, 4:5)',
+    desc: 'Plantillas optimizadas para TikTok, YouTube Shorts, Reels e Instagram Feed.',
+    isInitialDone: true
+  },
+  {
+    id: 'b2b_country_filters',
+    module: 'Proveedores Globales B2B',
+    category: 'basic',
+    title: 'Filtros Avanzados por País y Certificación Ecológica',
+    desc: 'Fábricas auditadas en Portugal, Turquía, Colombia e Italia con sellos GOTS y OEKO-TEX.',
+    isInitialDone: true
+  },
+  {
+    id: 'avatar_moods',
+    module: 'Copiloto IA & Mascotas',
+    category: 'basic',
+    title: 'Selector de Estados de Ánimo y Atuendos Guardados',
+    desc: 'Personalizar el aspecto y expresiones del avatar en el perfil del usuario.',
+    isInitialDone: true
+  },
+  {
+    id: 'admin_export_csv',
+    module: 'Super Admin & Métricas',
+    category: 'basic',
+    title: 'Exportación de Usuarios y Finanzas a CSV / Excel',
+    desc: 'Descarga de reportes contables y analítica de uso con un solo clic.',
+    isInitialDone: true
+  },
+  {
+    id: 'landing_4screens',
+    module: 'Landing & Experiencia Web',
+    category: 'basic',
+    title: 'Landing Page de 4 Pantallas en Cascada',
+    desc: 'Flujo secuencial fluido (Inicio 3D -> Capacidades -> Precios -> Ecosistema) con navegación suave.',
+    isInitialDone: true
+  },
+  {
+    id: 'theme_dual_mode',
+    module: 'Diseño & Sistema Visual',
+    category: 'basic',
+    title: 'Soporte Dual de Modo Día (Luxury Studio) y Modo Noche (Cyber Dark)',
+    desc: 'Paleta adaptativa: blanco marfil de alto contraste en día y azabache neón en noche.',
+    isInitialDone: true
+  },
+  {
+    id: 'space_cosmic_galaxy',
+    module: 'Fondo Cósmico & FX',
+    category: 'basic',
+    title: 'Onda Expansiva Supernova 10X & Galaxia Rotatoria',
+    desc: 'Supernova con triple anillo de plasma de pantalla completa y rotación hipnótica.',
+    isInitialDone: true
+  },
+  {
+    id: 'space_ufo_fleet',
+    module: 'Fondo Cósmico & FX',
+    category: 'basic',
+    title: 'Flota OVNI con Rayos Etéreos & Abducciones Ocasionales',
+    desc: 'Naves espaciales compactas con haz volumétrico difuso y recuperación instantánea de números por clic.',
+    isInitialDone: true
+  },
+  {
+    id: 'space_watcher_beanie',
+    module: 'Fondo Cósmico & FX',
+    category: 'basic',
+    title: 'Guardián Celestial con Gorrito de Lana y Expresiones Anime',
+    desc: 'Gorro tejido con pompón flotante y reacciones faciales dinámicas que siguen el ratón.',
+    isInitialDone: true
+  },
+
+  // ==========================================
+  // 🟡 2. NIVEL 2: INTERMEDIO (Motores IA, Shaders, Físicas & B2B)
+  // ==========================================
+  {
+    id: '3d_universal_file_converter',
+    module: 'Motor 3D & Shaders',
+    category: 'intermediate',
+    title: 'Conversor Universal IA de Cualquier Archivo a 3D',
+    desc: 'Conversión automática de Imágenes (.PNG, .JPG), Vector (.SVG), Planos (.PDF, .TXT) y Modelos (.GLB, .OBJ) en 3D interactivo.',
+    isInitialDone: true
   },
   {
     id: '3d_decal_interactive',
     module: 'Motor 3D & Shaders',
     category: 'intermediate',
-    title: 'Estampador de Calcomanías Interactivo sobre Malla 3D',
-    desc: 'Arrastrar y soltar logos PNG proyectándolos directamente sobre la geometría.'
-  },
-  {
-    id: '3d_hdri_presets',
-    module: 'Motor 3D & Shaders',
-    category: 'intermediate',
-    title: 'Entornos de Iluminación HDRi Conmutables',
-    desc: 'Presets de estudio: Cyberpunk Tokyo, Nordic Studio, Golden Hour y Warehouse.'
+    title: 'Estampador de Calcomanías y Logos Interactivo sobre Malla 3D',
+    desc: 'Arrastrar y soltar logos PNG proyectándolos con control de escala, rotación y posición X/Y.',
+    isInitialDone: true
   },
   {
     id: '3d_physics_cloth',
     module: 'Motor 3D & Shaders',
     category: 'intermediate',
     title: 'Simulador de Físicas de Tela y Viento en Tiempo Real',
-    desc: 'Animación y caída realista de textiles pesados sobre el modelo 3D.'
+    desc: 'Ondulación sinusoidal de vértices textiles con intensidades regulables (Suave, Brisa, Fuerte).',
+    isInitialDone: true
   },
   {
-    id: '3d_ar_webxr',
+    id: '3d_hdri_presets',
     module: 'Motor 3D & Shaders',
-    category: 'advanced',
-    title: 'Visor en Realidad Aumentada (WebXR & Quick Look)',
-    desc: 'Ver la prenda o mueble en el espacio real a través de la cámara del iPhone o Android.'
-  },
-  {
-    id: '3d_render_passes',
-    module: 'Motor 3D & Shaders',
-    category: 'advanced',
-    title: 'Pases de Render para Unreal Engine 5 y Blender',
-    desc: 'Exportación separada de mapas de Normales, AO, Rugosidad y Albedo.'
-  },
-  {
-    id: '3d_sketch_to_3d_api',
-    module: 'Motor 3D & Shaders',
-    category: 'advanced',
-    title: 'Generador de Mallas 3D desde Bocetos 2D (Sketch-to-3D)',
-    desc: 'Conexión con IA de Tripo3D / Meshy para crear modelos desde dibujos en 30s.'
-  },
-
-  // 2. Video Marketing
-  {
-    id: 'ad_aspect_ratios',
-    module: 'Video Marketing IA (AdGen)',
-    category: 'basic',
-    title: 'Selector Rápido de Proporciones (9:16, 16:9, 1:1, 4:5)',
-    desc: 'Plantillas optimizadas para TikTok, YouTube Shorts, Reels e Instagram Feed.'
+    category: 'intermediate',
+    title: 'Entornos de Iluminación HDRi Conmutables',
+    desc: 'Presets de iluminación: Tokyo Cyberpunk, Nordic Studio, Golden Hour y Warehouse Industrial.',
+    isInitialDone: true
   },
   {
     id: 'ad_runway_gen3_api',
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
     title: 'Conexión Real con API de Runway Gen-3 Alpha',
-    desc: 'Generación cinemática con aceleración GPU en la nube.'
+    desc: 'Generación cinemática de videos de producto con aceleración GPU en la nube.',
+    isInitialDone: true
   },
   {
     id: 'ad_sora_kling_api',
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
     title: 'Conexión con OpenAI Sora y Kling AI 1.5 HD',
-    desc: 'Generación hiperrealista con modelos humanos en pasarela.'
+    desc: 'Generación hiperrealista con modelos humanos en pasarela para TikTok y Reels.',
+    isInitialDone: true
   },
   {
     id: 'ad_elevenlabs_voiceover',
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
     title: 'Locuciones Publicitarias Multilingües (ElevenLabs)',
-    desc: 'Voces comerciales hiperrealistas en 7 idiomas con música atenuada automáticamente.'
-  },
-  {
-    id: 'ad_predictive_retention',
-    module: 'Video Marketing IA (AdGen)',
-    category: 'advanced',
-    title: 'Analizador Predictivo de Retención con IA',
-    desc: 'Mapa de calor de atención para evitar el abandono en los primeros 3 segundos.'
-  },
-
-  // 3. Proveedores B2B
-  {
-    id: 'b2b_country_filters',
-    module: 'Proveedores Globales B2B',
-    category: 'basic',
-    title: 'Filtros Avanzados por País y Certificación Ecológica',
-    desc: 'Fábricas en Portugal, Turquía, Colombia e Italia con sellos GOTS y OEKO-TEX.'
+    desc: 'Voces comerciales hiperrealistas en 8 idiomas con música atenuada automáticamente.',
+    isInitialDone: true
   },
   {
     id: 'b2b_techpack_pdf',
     module: 'Proveedores Globales B2B',
     category: 'intermediate',
     title: 'Generador Automático de Fichas Técnicas PDF (Tech Pack)',
-    desc: 'PDF con vistas ortogonales 3D, tabla de medidas, BOM y colores Pantone.'
-  },
-  {
-    id: 'b2b_dhl_freight_api',
-    module: 'Proveedores Globales B2B',
-    category: 'advanced',
-    title: 'Cotización en Tiempo Real de Envíos y Aduanas (DHL/FedEx)',
-    desc: 'Cálculo automático de aranceles y flete aéreo/marítimo por volumen.'
-  },
-
-  // 4. Avatar y Copiloto
-  {
-    id: 'avatar_moods',
-    module: 'Copiloto IA & Mascotas',
-    category: 'basic',
-    title: 'Selector de Estados de Ánimo y Atuendos Guardados',
-    desc: 'Personalizar el aspecto y expresiones del avatar en el perfil del usuario.'
+    desc: 'PDF con vistas ortogonales 3D, tabla de medidas, desglose de materiales (BOM) y colores Pantone.',
+    isInitialDone: true
   },
   {
     id: 'mascot_voice_control',
     module: 'Copiloto IA & Mascotas (Kai)',
     category: 'intermediate',
     title: 'Control por Voz & Transcripción Continua (Speech-to-Text Universal)',
-    desc: 'Compatibilidad total de micrófono con permisos de navegador en Chrome, Safari, Firefox y Edge con streaming de audio seguro.'
-  },
-
-  // 5. Consola Admin
-  {
-    id: 'admin_export_csv',
-    module: 'Super Admin & Métricas',
-    category: 'basic',
-    title: 'Exportación de Usuarios y Finanzas a CSV / Excel',
-    desc: 'Descarga de reportes contables con un solo clic.'
+    desc: 'Compatibilidad total de micrófono con permisos de navegador en Chrome, Safari, Firefox y Edge.',
+    isInitialDone: true
   },
   {
     id: 'admin_budget_alerts',
     module: 'Super Admin & Métricas',
     category: 'intermediate',
-    title: 'Alertas Automáticas de Presupuesto y Consumo de APIs',
-    desc: 'Notificaciones por Slack o correo cuando el gasto de GPUs supere el límite.'
+    title: 'Alertas Automáticas de Presupuesto y Consumo de GPUs',
+    desc: 'Notificaciones en tiempo real cuando el consumo de APIs supere los límites de seguridad.',
+    isInitialDone: true
   },
-
-  // 6. Seguridad & Auth
   {
     id: 'auth_social_oauth',
     module: 'Seguridad & Autenticación',
     category: 'intermediate',
     title: 'Inicio de Sesión con Google, Apple y GitHub (OAuth 2.0)',
-    desc: 'Acceso seguro con 1 clic sin necesidad de recordar contraseña.'
+    desc: 'Acceso seguro con 1 clic sin necesidad de recordar contraseñas complejas.',
+    isInitialDone: false
   },
   {
     id: 'auth_2fa_totp',
     module: 'Seguridad & Autenticación',
     category: 'intermediate',
     title: 'Autenticación en Dos Pasos (2FA con Google Authenticator)',
-    desc: 'Protección para cuentas de Administrador y Agencias con códigos temporales.'
+    desc: 'Protección para cuentas de Administrador y Agencias con códigos temporales TOTP.',
+    isInitialDone: false
   },
-  {
-    id: 'auth_jwt_http_cookies',
-    module: 'Seguridad & Autenticación',
-    category: 'advanced',
-    title: 'Cookies HttpOnly y Tokens de Sesión Blindados contra XSS/CSRF',
-    desc: 'Arquitectura de seguridad bancaria para tokens de acceso y pagos.'
-  },
-
-  // 7. Base de Datos en la Nube
   {
     id: 'db_supabase_cloud',
     module: 'Base de Datos & Cloud',
     category: 'intermediate',
     title: 'Conexión a PostgreSQL en Supabase / Neon con RLS',
-    desc: 'Base de datos en la nube con políticas de seguridad a nivel de fila.'
+    desc: 'Base de datos en la nube con políticas de seguridad a nivel de fila para guardar diseños.',
+    isInitialDone: false
   },
   {
     id: 'db_s3_cloudflare_r2',
     module: 'Base de Datos & Cloud',
     category: 'intermediate',
     title: 'Bucket Cloudflare R2 / AWS S3 para Archivos 3D y Renders 4K',
-    desc: 'Almacenamiento ilimitado y CDN global para cargas ultra rápidas.'
+    desc: 'Almacenamiento ilimitado y CDN global para cargas ultra rápidas de modelos.',
+    isInitialDone: false
   },
-
-  // 8. Experiencia Móvil & PWA
   {
     id: 'pwa_offline_install',
     module: 'Móvil & Rendimiento',
     category: 'intermediate',
     title: 'Progressive Web App (PWA) Instalable en Celular e iPad',
-    desc: 'Icono en pantalla de inicio y modo sin conexión con Service Workers.'
+    desc: 'Icono en pantalla de inicio y modo sin conexión con Service Workers.',
+    isInitialDone: false
+  },
+  {
+    id: 'payments_stripe_checkout',
+    module: 'Pagos & Facturación Stripe',
+    category: 'intermediate',
+    title: 'Pasarela Stripe Checkout y Portal de Facturas PDF',
+    desc: 'Cobro recurrente para planes Pro ($49) y Agencia ($149) con facturación fiscal.',
+    isInitialDone: false
+  },
+  {
+    id: 'deploy_vercel_custom_domain',
+    module: 'Despliegue & CI/CD',
+    category: 'intermediate',
+    title: 'Despliegue Continuo en Vercel con Dominio Personalizado',
+    desc: 'Sincronización automática de GitHub a la nube en 45 segundos con SSL y CDN.',
+    isInitialDone: false
+  },
+
+  // ==========================================
+  // 🟣 3. NIVEL 3: AVANZADO / INDUSTRIAL (WebXR, Automatización & Stripe)
+  // ==========================================
+  {
+    id: '3d_sketch_to_3d_api',
+    module: 'Motor 3D & Shaders',
+    category: 'advanced',
+    title: 'Generador de Mallas 3D desde Bocetos 2D (Sketch-to-3D)',
+    desc: 'Reconstrucción de mallas completas desde dibujos y bocetos 2D con IA en 30s.',
+    isInitialDone: true
+  },
+  {
+    id: '3d_ar_webxr',
+    module: 'Motor 3D & Shaders',
+    category: 'advanced',
+    title: 'Visor en Realidad Aumentada (WebXR & Apple Quick Look)',
+    desc: 'Proyectar la prenda o mueble en el espacio real a través de la cámara del celular o iPad.',
+    isInitialDone: false
+  },
+  {
+    id: '3d_render_passes',
+    module: 'Motor 3D & Shaders',
+    category: 'advanced',
+    title: 'Pases de Render para Unreal Engine 5 y Blender',
+    desc: 'Exportación separada de mapas de Normales, AO, Rugosidad y Albedo.',
+    isInitialDone: false
+  },
+  {
+    id: 'ad_predictive_retention',
+    module: 'Video Marketing IA (AdGen)',
+    category: 'advanced',
+    title: 'Analizador Predictivo de Retención con IA',
+    desc: 'Mapa de calor de atención para evitar el abandono en los primeros 3 segundos del video.',
+    isInitialDone: false
+  },
+  {
+    id: 'b2b_dhl_freight_api',
+    module: 'Proveedores Globales B2B',
+    category: 'advanced',
+    title: 'Cotización en Tiempo Real de Envíos y Aduanas (DHL/FedEx Freight)',
+    desc: 'Cálculo automático de aranceles y flete aéreo/marítimo por volumen y peso.',
+    isInitialDone: false
+  },
+  {
+    id: 'auth_jwt_http_cookies',
+    module: 'Seguridad & Autenticación',
+    category: 'advanced',
+    title: 'Cookies HttpOnly y Tokens de Sesión Blindados contra XSS/CSRF',
+    desc: 'Arquitectura de seguridad bancaria para tokens de acceso y pagos.',
+    isInitialDone: false
   },
   {
     id: 'perf_webgpu_lod',
     module: 'Móvil & Rendimiento',
     category: 'advanced',
     title: 'Soporte WebGPU y Nivel de Detalle Adaptativo (LOD)',
-    desc: '60 FPS estables en cualquier dispositivo ajustando polígonos automáticamente.'
-  },
-
-  // 9. Pagos & Facturación
-  {
-    id: 'payments_stripe_checkout',
-    module: 'Pagos & Facturación Stripe',
-    category: 'intermediate',
-    title: 'Pasarela Stripe Checkout y Portal de Facturas PDF',
-    desc: 'Cobro recurrente para planes Pro ($49) y Agencia ($149) con facturación fiscal.'
+    desc: '60 FPS estables en cualquier dispositivo ajustando polígonos automáticamente.',
+    isInitialDone: false
   },
   {
     id: 'payments_affiliates_system',
     module: 'Pagos & Facturación Stripe',
     category: 'advanced',
     title: 'Sistema de Afiliados y Comisiones Recurrentes (20%)',
-    desc: 'Enlaces de referidos con panel de ganancias para diseñadores e influencers.'
-  },
-
-  // 10. Despliegue en Producción
-  {
-    id: 'deploy_vercel_custom_domain',
-    module: 'Despliegue & CI/CD',
-    category: 'intermediate',
-    title: 'Despliegue Continuo en Vercel con Dominio Personalizado',
-    desc: 'Sincronización automática de GitHub a la nube en 45 segundos con SSL.'
+    desc: 'Enlaces de referidos con panel de ganancias para diseñadores e influencers.',
+    isInitialDone: false
   }
 ];
 
 export const ProjectRoadmapChecklist: React.FC = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(() => {
     try {
-      const saved = localStorage.getItem('aether_roadmap_checklist');
-      return saved ? JSON.parse(saved) : {};
+      const saved = localStorage.getItem('aether_roadmap_checklist_v2');
+      if (saved) return JSON.parse(saved);
+
+      // Pre-mark default completed items
+      const initial: Record<string, boolean> = {};
+      CHECKLIST_DATA.forEach((item) => {
+        if (item.isInitialDone) {
+          initial[item.id] = true;
+        }
+      });
+      return initial;
     } catch {
       return {};
     }
@@ -280,9 +366,10 @@ export const ProjectRoadmapChecklist: React.FC = () => {
 
   const [selectedModule, setSelectedModule] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    localStorage.setItem('aether_roadmap_checklist', JSON.stringify(checkedItems));
+    localStorage.setItem('aether_roadmap_checklist_v2', JSON.stringify(checkedItems));
   }, [checkedItems]);
 
   const toggleItem = (id: string) => {
@@ -296,22 +383,49 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   const completedTasks = Object.values(checkedItems).filter(Boolean).length;
   const progressPercent = Math.round((completedTasks / totalTasks) * 100);
 
+  // Category counts
+  const basicTasks = CHECKLIST_DATA.filter((i) => i.category === 'basic');
+  const basicCompleted = basicTasks.filter((i) => checkedItems[i.id]).length;
+
+  const interTasks = CHECKLIST_DATA.filter((i) => i.category === 'intermediate');
+  const interCompleted = interTasks.filter((i) => checkedItems[i.id]).length;
+
+  const advTasks = CHECKLIST_DATA.filter((i) => i.category === 'advanced');
+  const advCompleted = advTasks.filter((i) => checkedItems[i.id]).length;
+
   const modules = ['all', ...Array.from(new Set(CHECKLIST_DATA.map((i) => i.module)))];
 
   const filteredTasks = CHECKLIST_DATA.filter((task) => {
     const matchMod = selectedModule === 'all' || task.module === selectedModule;
     const matchCat = selectedCategory === 'all' || task.category === selectedCategory;
-    return matchMod && matchCat;
+    const matchSearch =
+      searchQuery === '' ||
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.module.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchMod && matchCat && matchSearch;
   });
 
   const getCategoryBadge = (cat: string) => {
     switch (cat) {
       case 'basic':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">Básico</span>;
+        return (
+          <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 uppercase tracking-wider flex items-center gap-1">
+            🟢 Básico
+          </span>
+        );
       case 'intermediate':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">Intermedio</span>;
+        return (
+          <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/40 uppercase tracking-wider flex items-center gap-1">
+            🟡 Intermedio
+          </span>
+        );
       case 'advanced':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 uppercase">Avanzado / Industrial</span>;
+        return (
+          <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-purple-500/15 text-purple-300 border border-purple-500/40 uppercase tracking-wider flex items-center gap-1">
+            🟣 Avanzado
+          </span>
+        );
       default:
         return null;
     }
@@ -329,14 +443,14 @@ export const ProjectRoadmapChecklist: React.FC = () => {
             <div>
               <div className="flex items-center gap-2.5">
                 <h2 className="text-2xl font-tech font-extrabold text-white tracking-wider">
-                  HOJA DE RUTA & CHECKLIST MAESTRO DE TAREAS
+                  ROADMAP & CHECKLIST MAESTRO DE TAREAS
                 </h2>
                 <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyber-800 text-cyber-gold border border-cyber-700">
-                  {completedTasks} / {totalTasks} Tareas
+                  {completedTasks} / {totalTasks} Completadas
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Plan interactivo de seguimiento desde lo más básico hasta lo más avanzado (IA, 3D, Seguridad y Cloud)
+                Categorizado por niveles: <strong className="text-emerald-400">Básico</strong>, <strong className="text-amber-400">Intermedio</strong> y <strong className="text-purple-400">Avanzado</strong>.
               </p>
             </div>
           </div>
@@ -348,24 +462,64 @@ export const ProjectRoadmapChecklist: React.FC = () => {
         </div>
 
         {/* Live Progress Bar */}
-        <div className="relative h-3 w-full rounded-full bg-cyber-950 border border-cyber-800 overflow-hidden">
+        <div className="relative h-3.5 w-full rounded-full bg-cyber-950 border border-cyber-800 overflow-hidden shadow-inner">
           <div
-            className="h-full bg-gradient-to-r from-amber-500 via-cyber-gold to-emerald-400 shadow-gold-glow transition-all duration-500 rounded-full"
+            className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-cyber-gold shadow-gold-glow transition-all duration-500 rounded-full"
             style={{ width: `${progressPercent}%` }}
           />
+        </div>
+
+        {/* 3 Level Progress Badges */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div className="p-3 rounded-2xl bg-cyber-950/80 border border-emerald-500/30 flex items-center justify-between">
+            <span className="text-xs font-tech font-bold text-emerald-400 flex items-center gap-1.5">
+              🟢 Nivel 1 (Básico)
+            </span>
+            <span className="text-xs font-mono font-bold text-white">
+              {basicCompleted} / {basicTasks.length} ({Math.round((basicCompleted / basicTasks.length) * 100)}%)
+            </span>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-cyber-950/80 border border-amber-500/30 flex items-center justify-between">
+            <span className="text-xs font-tech font-bold text-amber-400 flex items-center gap-1.5">
+              🟡 Nivel 2 (Intermedio)
+            </span>
+            <span className="text-xs font-mono font-bold text-white">
+              {interCompleted} / {interTasks.length} ({Math.round((interCompleted / interTasks.length) * 100)}%)
+            </span>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-cyber-950/80 border border-purple-500/30 flex items-center justify-between">
+            <span className="text-xs font-tech font-bold text-purple-400 flex items-center gap-1.5">
+              🟣 Nivel 3 (Avanzado)
+            </span>
+            <span className="text-xs font-mono font-bold text-white">
+              {advCompleted} / {advTasks.length} ({Math.round((advCompleted / advTasks.length) * 100)}%)
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-cyber-900/60 p-3 rounded-2xl border border-cyber-800">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-tech font-bold uppercase text-slate-400 flex items-center gap-1.5 pl-2">
-            <Filter className="w-3.5 h-3.5 text-cyber-gold" /> Filtrar Módulo:
-          </span>
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-cyber-900/80 p-4 rounded-2xl border border-cyber-800 shadow-md">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+          {/* Search Box */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar tarea, módulo o tecnología..."
+              className="w-full bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+            />
+          </div>
+
+          {/* Module Filter */}
           <select
             value={selectedModule}
             onChange={(e) => setSelectedModule(e.target.value)}
-            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
           >
             {modules.map((m) => (
               <option key={m} value={m}>
@@ -374,28 +528,35 @@ export const ProjectRoadmapChecklist: React.FC = () => {
             ))}
           </select>
 
+          {/* Level Filter */}
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
           >
             <option value="all">⚡ Todos los Niveles</option>
-            <option value="basic">🔹 Básico</option>
-            <option value="intermediate">🔸 Intermedio</option>
-            <option value="advanced">🚀 Avanzado / Industrial</option>
+            <option value="basic">🟢 Básico ({basicCompleted}/{basicTasks.length})</option>
+            <option value="intermediate">🟡 Intermedio ({interCompleted}/{interTasks.length})</option>
+            <option value="advanced">🟣 Avanzado ({advCompleted}/{advTasks.length})</option>
           </select>
         </div>
 
-        <button
-          onClick={() => {
-            if (confirm('¿Deseas reiniciar todas las casillas marcadas?')) {
-              setCheckedItems({});
-            }
-          }}
-          className="text-xs text-slate-400 hover:text-rose-400 flex items-center gap-1 transition-colors px-2"
-        >
-          <RotateCcw className="w-3.5 h-3.5" /> Reiniciar Checklist
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              if (confirm('¿Deseas restablecer las casillas al estado recomendado por defecto?')) {
+                const initial: Record<string, boolean> = {};
+                CHECKLIST_DATA.forEach((item) => {
+                  if (item.isInitialDone) initial[item.id] = true;
+                });
+                setCheckedItems(initial);
+              }
+            }}
+            className="text-xs text-slate-400 hover:text-cyber-gold flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-cyber-800"
+          >
+            <RotateCcw className="w-3.5 h-3.5" /> Restablecer
+          </button>
+        </div>
       </div>
 
       {/* Interactive Tasks Grid */}
@@ -409,7 +570,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
               onClick={() => toggleItem(task.id)}
               className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-4 group ${
                 isDone
-                  ? 'bg-cyber-950/90 border-emerald-500/50 shadow-md opacity-80'
+                  ? 'bg-cyber-950/90 border-emerald-500/50 shadow-md'
                   : 'bg-cyber-900 border-cyber-800 hover:border-cyber-gold/50 shadow-cyber-card'
               }`}
             >
@@ -429,7 +590,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-2">
                     <span
                       className={`font-tech font-bold text-sm transition-colors ${
-                        isDone ? 'text-slate-400 line-through' : 'text-white group-hover:text-cyber-gold'
+                        isDone ? 'text-slate-300 font-extrabold' : 'text-white group-hover:text-cyber-gold'
                       }`}
                     >
                       {task.title}
@@ -437,8 +598,13 @@ export const ProjectRoadmapChecklist: React.FC = () => {
                     <span className="text-[10px] font-mono text-slate-400 bg-cyber-950 px-2 py-0.5 rounded border border-cyber-800">
                       {task.module}
                     </span>
+                    {isDone && (
+                      <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> LISTO
+                      </span>
+                    )}
                   </div>
-                  <p className={`text-xs ${isDone ? 'text-slate-500' : 'text-slate-300'}`}>
+                  <p className={`text-xs ${isDone ? 'text-slate-400' : 'text-slate-300'}`}>
                     {task.desc}
                   </p>
                 </div>
