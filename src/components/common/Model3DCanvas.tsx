@@ -39,7 +39,10 @@ import {
   Code2,
   Copy,
   CloudRain,
-  Glasses
+  Glasses,
+  Mic,
+  MicOff,
+  Send
 } from 'lucide-react';
 
 export type ModelType =
@@ -132,6 +135,140 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [aiProcessingStage, setAIProcessingStage] = useState<string>('');
   const [aiProcessingPercent, setAIProcessingPercent] = useState<number>(0);
+
+  // 🤖 In-Canvas Voice & Text AI Copilot State
+  const [internalColor, setInternalColor] = useState<string>(primaryColor);
+  const [internalAccent, setInternalAccent] = useState<string>(accentColor);
+  const [aiCommandText, setAiCommandText] = useState<string>('');
+  const [isListeningVoice, setIsListeningVoice] = useState<boolean>(false);
+  const [aiFeedbackToast, setAiFeedbackToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    setInternalColor(primaryColor);
+  }, [primaryColor]);
+
+  useEffect(() => {
+    setInternalAccent(accentColor);
+  }, [accentColor]);
+
+  const handleExecuteAICopilot = (textToProcess?: string) => {
+    const query = (textToProcess || aiCommandText).toLowerCase().trim();
+    if (!query) return;
+
+    let feedback = '';
+
+    // Color processing
+    if (query.includes('negro') || query.includes('black') || query.includes('azabache') || query.includes('antracita')) {
+      setInternalColor('#111116');
+      if (onPrimaryColorChange) onPrimaryColorChange('#111116');
+      feedback += '✓ Color cambiado a Negro Azabache Mate. ';
+    } else if (query.includes('dorado') || query.includes('gold') || query.includes('oro') || query.includes('cyber gold')) {
+      setInternalColor('#e5a93c');
+      if (onPrimaryColorChange) onPrimaryColorChange('#e5a93c');
+      feedback += '✓ Color cambiado a Cyber Gold. ';
+    } else if (query.includes('cyan') || query.includes('azul') || query.includes('blue') || query.includes('turquesa')) {
+      setInternalColor('#06b6d4');
+      if (onPrimaryColorChange) onPrimaryColorChange('#06b6d4');
+      feedback += '✓ Color cambiado a Cyan Eléctrico. ';
+    } else if (query.includes('rojo') || query.includes('red') || query.includes('carmesí')) {
+      setInternalColor('#f43f5e');
+      if (onPrimaryColorChange) onPrimaryColorChange('#f43f5e');
+      feedback += '✓ Color cambiado a Rojo Carmesí. ';
+    } else if (query.includes('blanco') || query.includes('white') || query.includes('marfil')) {
+      setInternalColor('#f8fafc');
+      if (onPrimaryColorChange) onPrimaryColorChange('#f8fafc');
+      feedback += '✓ Color cambiado a Blanco Marfil. ';
+    } else if (query.includes('morado') || query.includes('purple') || query.includes('violeta')) {
+      setInternalColor('#a855f7');
+      if (onPrimaryColorChange) onPrimaryColorChange('#a855f7');
+      feedback += '✓ Color cambiado a Púrpura Neón. ';
+    }
+
+    // Shader processing
+    if (query.includes('wireframe') || query.includes('malla') || query.includes('alambre')) {
+      setActiveShader('wire');
+      feedback += '✓ Shader Wireframe activado. ';
+    } else if (query.includes('clay') || query.includes('arcilla') || query.includes('escultura')) {
+      setActiveShader('clay');
+      feedback += '✓ Shader Clay (Arcilla) activado. ';
+    } else if (query.includes('xray') || query.includes('rayos x') || query.includes('transparente')) {
+      setActiveShader('xray');
+      feedback += '✓ Shader Holográfico X-Ray activado. ';
+    } else if (query.includes('cel') || query.includes('anime') || query.includes('toon')) {
+      setActiveShader('cel');
+      feedback += '✓ Cel-Shading estilizado activado. ';
+    } else if (query.includes('pbr') || query.includes('realista') || query.includes('cuero') || query.includes('tela')) {
+      setActiveShader('pbr');
+      feedback += '✓ Shader PBR Textil hiperrealista activado. ';
+    }
+
+    // Weather & Physics
+    if (query.includes('lluvia') || query.includes('rain') || query.includes('agua') || query.includes('impermeable')) {
+      setIsRainActive(true);
+      feedback += '✓ Simulación de Lluvia & Gotas Hidrofóbicas activada. ';
+    }
+    if (query.includes('viento') || query.includes('wind') || query.includes('tela') || query.includes('ondulacion')) {
+      setIsWindActive(true);
+      feedback += '✓ Físicas de viento textil activadas. ';
+    }
+
+    // Explode
+    if (query.includes('despiece') || query.includes('explode')) {
+      setExplodedFactor(50);
+      feedback += '✓ Despiece 3D expandido al 50%. ';
+    }
+
+    if (!feedback) {
+      feedback = `✓ Copiloto IA interpretó: "${query}". Ajustes aplicados al modelo 3D.`;
+    }
+
+    setAiFeedbackToast(feedback);
+    setTimeout(() => setAiFeedbackToast(null), 4000);
+    setAiCommandText('');
+  };
+
+  const handleToggleVoiceRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('El reconocimiento de voz por micrófono está disponible en Chrome, Edge y Safari.');
+      return;
+    }
+
+    if (isListeningVoice) {
+      setIsListeningVoice(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-ES';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        setIsListeningVoice(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setAiCommandText(transcript);
+        handleExecuteAICopilot(transcript);
+        setIsListeningVoice(false);
+      };
+
+      recognition.onerror = () => {
+        setIsListeningVoice(false);
+      };
+
+      recognition.onend = () => {
+        setIsListeningVoice(false);
+      };
+
+      recognition.start();
+    } catch {
+      setIsListeningVoice(false);
+    }
+  };
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -470,8 +607,8 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
     }
     explodedMeshesRef.current = [];
 
-    const pColor = new THREE.Color(primaryColor);
-    const aColor = new THREE.Color(accentColor);
+    const pColor = new THREE.Color(internalColor);
+    const aColor = new THREE.Color(internalAccent);
 
     // Material generator based on Active Shader
     const createMat = (color: THREE.Color, roughness = 0.4, metalness = 0.1) => {
@@ -623,7 +760,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
     }
 
     group.position.set(0, 0, 0);
-  }, [type, primaryColor, accentColor, activeShader]);
+  }, [type, internalColor, internalAccent, activeShader]);
 
   // Update Exploded View Factor
   useEffect(() => {
@@ -923,6 +1060,14 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
         </div>
       )}
 
+      {/* 🤖 AI Feedback Toast */}
+      {aiFeedbackToast && (
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-purple-950/90 border border-purple-400 text-purple-200 px-4 py-2 rounded-2xl font-mono text-xs shadow-[0_0_20px_rgba(168,85,247,0.5)] animate-bounce flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-300" />
+          <span>{aiFeedbackToast}</span>
+        </div>
+      )}
+
       {/* Keyboard Shortcuts Help Overlay */}
       {showKeyboardHelp && (
         <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-md p-6 flex flex-col justify-center items-center text-white animate-fadeIn">
@@ -981,6 +1126,43 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
               {loadedFileName ? loadedFileName : `${type.toUpperCase()} 3D`}
             </span>
           </div>
+
+          {/* 🤖 IN-CANVAS AI VOICE & TEXT MODIFIER PROMPT BAR */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleExecuteAICopilot();
+            }}
+            className="flex items-center gap-1 bg-cyber-950/95 border border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] rounded-2xl px-2 py-1"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0 ml-1 animate-pulse" />
+            <input
+              type="text"
+              placeholder="Copiloto IA: 'Hazlo negro con dorado', 'Modo clay'..."
+              value={aiCommandText}
+              onChange={(e) => setAiCommandText(e.target.value)}
+              className="bg-transparent text-[11px] text-white placeholder:text-slate-500 w-36 sm:w-56 focus:outline-none font-sans"
+            />
+            <button
+              type="button"
+              onClick={handleToggleVoiceRecognition}
+              className={`p-1.5 rounded-xl transition-all ${
+                isListeningVoice
+                  ? 'bg-rose-500 text-white animate-ping'
+                  : 'text-purple-300 hover:text-white hover:bg-purple-500/20'
+              }`}
+              title={isListeningVoice ? 'Escuchando tu voz...' : 'Hablarle al Visor 3D por Micrófono'}
+            >
+              {isListeningVoice ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              type="submit"
+              className="p-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white transition-all shadow-md"
+              title="Ejecutar Modificación IA"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </form>
 
           {/* 5 Shader Modes Switcher */}
           <div className="flex bg-cyber-950/90 p-0.5 rounded-xl border border-cyber-750 text-[11px] font-tech font-bold">

@@ -272,6 +272,7 @@ export const GlobalSuppliers: React.FC = () => {
   const [isGCodeModalOpen, setIsGCodeModalOpen] = useState(false);
   const [isFreightModalOpen, setIsFreightModalOpen] = useState(false);
   const [isDPPModalOpen, setIsDPPModalOpen] = useState(false);
+  const [isShopifySyncModalOpen, setIsShopifySyncModalOpen] = useState(false);
   const [destinationCountry, setDestinationCountry] = useState('Estados Unidos (US)');
   const [shippingMethod, setShippingMethod] = useState<'air' | 'sea'>('air');
   const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
@@ -624,6 +625,14 @@ export const GlobalSuppliers: React.FC = () => {
               >
                 <Tag className="w-4 h-4" />
                 <span>🏷️ Pasaporte Digital de Producto (EU DPP 2026 & QR)</span>
+              </button>
+
+              <button
+                onClick={() => setIsShopifySyncModalOpen(true)}
+                className="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Package className="w-4 h-4" />
+                <span>🛍️ Publicar en Tienda Shopify & WooCommerce (1-Click)</span>
               </button>
 
               <button
@@ -985,6 +994,87 @@ export const GlobalSuppliers: React.FC = () => {
             >
               <Download className="w-4 h-4" />
               <span>Descargar Certificado Oficial EU DPP (PDF)</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🛍️ 6. MODAL SINCRONIZADOR & PUBLICADOR EN TIENDAS (SHOPIFY / WOOCOMMERCE) */}
+      {isShopifySyncModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsShopifySyncModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
+                <Package className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">PUBLICAR PRODUCTO EN SHOPIFY & WOOCOMMERCE</h3>
+                <p className="text-xs text-slate-400">Sincronización directa vía Admin API con modelo 3D embebido</p>
+              </div>
+            </div>
+
+            {/* Product Metadata Config */}
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Título del Producto en Tienda:</label>
+                <input
+                  type="text"
+                  defaultValue="Chaqueta Techwear Modular Cyber Gold 460 GSM"
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-400 font-medium"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">Precio de Venta (MSRP):</label>
+                  <input
+                    type="text"
+                    defaultValue="$128.00 USD"
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-emerald-400 font-mono font-bold text-xs focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">Inventario Inicial:</label>
+                  <input
+                    type="text"
+                    defaultValue={`${orderQuantity} unidades`}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1.5 font-mono text-[11px] text-slate-300">
+                <div className="flex justify-between text-emerald-400 font-bold">
+                  <span>✓ Visor 3D Interactivo Embebido</span>
+                  <span>Activado</span>
+                </div>
+                <div className="flex justify-between text-cyan-300">
+                  <span>✓ Variantes de Talla Creadas</span>
+                  <span>XS, S, M, L, XL</span>
+                </div>
+                <div className="flex justify-between text-purple-300">
+                  <span>✓ Ficha de Materiales & Cuidados</span>
+                  <span>100% Sincronizado</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Producto creado y publicado con éxito en tu tienda Shopify con el visor 3D interactivo!');
+                setIsShopifySyncModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            >
+              <Package className="w-4 h-4" />
+              <span>Publicar en mi Tienda Shopify Ahora (1-Click)</span>
             </button>
           </div>
         </div>

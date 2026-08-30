@@ -28,6 +28,8 @@ import { ProjectRoadmapChecklist } from './components/modules/ProjectRoadmapChec
 import { CommunityExplore } from './components/modules/CommunityExplore';
 import { VirtualRunwayLive } from './components/modules/VirtualRunwayLive';
 import { PatternCutting2D } from './components/modules/PatternCutting2D';
+import { AILookbookStudio } from './components/modules/AILookbookStudio';
+import { TrendForecaster } from './components/modules/TrendForecaster';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -98,6 +100,10 @@ const MainLayout: React.FC = () => {
         return <Scanner3D />;
       case 'adgen':
         return <AdGenAI />;
+      case 'lookbook':
+        return <AILookbookStudio />;
+      case 'trendforecast':
+        return <TrendForecaster />;
       case 'clothify':
         return <ClothifySourcing />;
       case 'pattern2d':

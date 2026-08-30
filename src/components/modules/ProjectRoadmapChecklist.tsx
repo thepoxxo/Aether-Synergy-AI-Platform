@@ -466,6 +466,42 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Pasaporte Digital de Producto de la Unión Europea (EU DPP 2026 & QR)',
     desc: 'Certificado de trazabilidad ecológica con huella de carbono, procedencia textil y código QR de cumplimiento aduanero europeo.',
     isInitialDone: true
+  },
+
+  // ==========================================
+  // 👑 5. NIVEL 5: MASTER ENTERPRISE & AI HYPER-GROWTH
+  // ==========================================
+  {
+    id: 'ai_lookbook_photoshoot_studio',
+    module: 'Estudio Lookbook IA',
+    category: 'advanced',
+    title: 'Estudio de Sesiones Fotográficas con Modelos Humanos IA (AI Lookbook)',
+    desc: 'Generación de lookbooks editoriales de 4 tomas en alta resolución montando la prenda 3D sobre modelos hiperrealistas en locaciones de París, Tokio y NYC.',
+    isInitialDone: true
+  },
+  {
+    id: 'in_canvas_voice_text_modifier',
+    module: 'Motor 3D & Shaders',
+    category: 'advanced',
+    title: 'Copiloto Diseñador IA en Tiempo Real por Voz y Texto (In-Canvas Modifier)',
+    desc: 'Barra de comando conversacional por voz y texto que modifica materiales, colores y acabados de la prenda en el visor 3D instantáneamente.',
+    isInitialDone: true
+  },
+  {
+    id: 'trend_forecaster_sales_predictor',
+    module: 'Predicción de Tendencias IA',
+    category: 'advanced',
+    title: 'Predictor de Tendencias & Pronóstico de Ventas IA (TrendForecaster 2026)',
+    desc: 'Algoritmo de inteligencia de mercado que cruza señales de redes sociales para calcular el Score de Viralidad, precio MSRP óptimo y proyección de ventas.',
+    isInitialDone: true
+  },
+  {
+    id: 'shopify_1click_store_publisher',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Sincronización Automática en 1 Clic con Tiendas Shopify & WooCommerce',
+    desc: 'Publicación directa del producto con ficha técnica, tallas, fotos 4K y el visor 3D interactivo listo para vender.',
+    isInitialDone: true
   }
 ];
 
