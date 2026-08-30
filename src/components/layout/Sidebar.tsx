@@ -241,7 +241,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Desktop Persistent / Collapsible Categorized Sidebar */}
       <aside
-        className={`hidden md:flex flex-col bg-cyber-950/80 border-r border-cyber-800/80 p-3 shrink-0 backdrop-blur-xl min-h-[calc(100vh-65px)] transition-all duration-300 ${
+        className={`hidden md:flex flex-col bg-cyber-950/90 border-r border-cyber-800/80 p-3 shrink-0 backdrop-blur-2xl sticky top-[65px] h-[calc(100vh-65px)] overflow-hidden transition-all duration-300 z-20 ${
           isCollapsed ? 'w-20 items-center' : 'w-72'
         }`}
       >
@@ -283,8 +283,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
-        {/* Categorized Navigation Stack */}
-        <div className="space-y-4 flex-1 w-full overflow-y-auto pr-1">
+        {/* Categorized Navigation Stack with Independent Scroll */}
+        <div className="space-y-4 flex-1 w-full overflow-y-auto overscroll-contain pr-1.5">
           {categories.map((category) => {
             const visibleItems = category.items.filter((item) => !filterMyPlanOnly || hasAccess(item.requiredRole));
             if (visibleItems.length === 0) return null;
