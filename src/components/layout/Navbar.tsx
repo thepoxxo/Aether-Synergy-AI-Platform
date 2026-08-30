@@ -25,7 +25,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) => {
   const { user, role, isAuthenticated, setLoginModalOpen, setProfileModalOpen, switchRole } = useAuth();
   const { theme, setTheme, themes } = useTheme();
-  const { language, setLanguage, languages, t } = useLanguage();
+  const { language, setLanguage, currentLanguageOption, t, setIsWorldLanguageModalOpen } = useLanguage();
 
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
@@ -139,39 +139,63 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
               className="flex items-center gap-1.5 p-2 rounded-xl bg-cyber-900 border border-cyber-700/80 hover:border-cyber-gold text-xs font-bold text-slate-200 transition-colors shadow-sm"
               title="Cambiar Idioma"
             >
-              <span className="text-base leading-none">{currentLang?.flag}</span>
-              <span className="hidden sm:inline uppercase">{currentLang?.code}</span>
+              <span className="text-base leading-none">{currentLanguageOption.flag}</span>
+              <span className="hidden sm:inline uppercase">{currentLanguageOption.code}</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {isLangOpen && (
-              <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-cyber-900 border border-cyber-gold/40 shadow-gold-glow-lg p-2 z-50 animate-fadeIn space-y-1">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
-                  Idiomas Clave en Diseño
+              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-cyber-900 border border-cyber-gold/40 shadow-gold-glow-lg p-2 z-50 animate-fadeIn space-y-1 max-h-80 overflow-y-auto">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1 flex items-center justify-between">
+                  <span>Idiomas Populares</span>
+                  <span className="text-cyber-gold font-mono">{currentLanguageOption.code.toUpperCase()}</span>
                 </div>
-                {languages.map((l) => (
-                  <button
-                    key={l.code}
-                    onClick={() => {
-                      setLanguage(l.code);
-                      setIsLangOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-all ${
-                      language === l.code
-                        ? 'bg-cyber-gold/20 text-cyber-gold font-bold border border-cyber-gold/50'
-                        : 'text-slate-300 hover:bg-cyber-850'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">{l.flag}</span>
-                      <div className="text-left">
-                        <div className="font-semibold">{l.name}</div>
-                        <div className="text-[9px] text-slate-400">{l.category}</div>
+                {['es', 'en', 'ja', 'it', 'fr', 'zh', 'de', 'pt'].map((code) => {
+                  const l = {
+                    es: { name: 'Español', flag: '🇪🇸' },
+                    en: { name: 'English', flag: '🇺🇸' },
+                    ja: { name: '日本語 (Japonés)', flag: '🇯🇵' },
+                    it: { name: 'Italiano', flag: '🇮🇹' },
+                    fr: { name: 'Français', flag: '🇫🇷' },
+                    zh: { name: '中文 (Chino)', flag: '🇨🇳' },
+                    de: { name: 'Deutsch (Alemán)', flag: '🇩🇪' },
+                    pt: { name: 'Português', flag: '🇧🇷' },
+                  }[code] || { name: code, flag: '🌐' };
+
+                  return (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        setLanguage(code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-all ${
+                        language === code
+                          ? 'bg-cyber-gold/20 text-cyber-gold font-bold border border-cyber-gold/50'
+                          : 'text-slate-300 hover:bg-cyber-850'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{l.flag}</span>
+                        <span className="font-semibold">{l.name}</span>
                       </div>
-                    </div>
-                    {language === l.code && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
+                      {language === code && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
+                    </button>
+                  );
+                })}
+
+                <div className="pt-1.5 border-t border-cyber-800">
+                  <button
+                    onClick={() => {
+                      setIsLangOpen(false);
+                      setIsWorldLanguageModalOpen(true);
+                    }}
+                    className="w-full py-2 px-3 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 text-cyber-gold text-xs font-tech font-bold flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>Ver Todos los Idiomas del Mundo...</span>
                   </button>
-                ))}
+                </div>
               </div>
             )}
           </div>

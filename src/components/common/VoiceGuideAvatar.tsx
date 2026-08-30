@@ -1,5 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Sparkles, ChevronRight, ChevronLeft, X, Play, HelpCircle, MessageSquare } from 'lucide-react';
+import {
+  Volume2,
+  VolumeX,
+  Sparkles,
+  ChevronRight,
+  ChevronLeft,
+  X,
+  Play,
+  Mic,
+  MicOff,
+  Smile,
+  Zap,
+  Target,
+  BrainCircuit,
+  MessageSquare
+} from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export interface VoiceGuideStep {
@@ -9,12 +24,17 @@ export interface VoiceGuideStep {
   highlightId?: string;
 }
 
+export type AvatarMood = 'focused' | 'creative' | 'happy' | 'analytical';
+
 export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => void }> = ({ onNavigateToModule }) => {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [recognizedText, setRecognizedText] = useState<string>('');
+  const [mood, setMood] = useState<AvatarMood>('creative');
 
   const guideSteps: VoiceGuideStep[] = [
     {
@@ -63,6 +83,53 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
     window.speechSynthesis.speak(utterance);
   };
 
+  // Speech Recognition (Microphone listening)
+  const toggleListening = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert('El reconocimiento de voz está soportado en navegadores Google Chrome, Brave y Edge.');
+      return;
+    }
+
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = language === 'en' ? 'en-US' : 'es-ES';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        setRecognizedText('Escuchando tu voz por el micrófono...');
+      };
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setRecognizedText(`"${transcript}"`);
+        setIsListening(false);
+        speakCurrentStep(`Entendido. Analizando tu instrucción sobre ${transcript}.`);
+      };
+
+      recognition.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+    } catch (e) {
+      console.error(e);
+      setIsListening(false);
+    }
+  };
+
   const handleToggleVoice = () => {
     if (isVoiceEnabled) {
       window.speechSynthesis?.cancel();
@@ -95,6 +162,20 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
     speakCurrentStep(currentStep.speechText);
   };
 
+  const getMoodIcon = () => {
+    switch (mood) {
+      case 'focused':
+        return <Target className="w-3.5 h-3.5 text-cyan-400" />;
+      case 'happy':
+        return <Smile className="w-3.5 h-3.5 text-amber-400" />;
+      case 'analytical':
+        return <BrainCircuit className="w-3.5 h-3.5 text-purple-400" />;
+      case 'creative':
+      default:
+        return <Zap className="w-3.5 h-3.5 text-cyber-gold" />;
+    }
+  };
+
   return (
     <>
       {/* Floating Avatar Trigger Button */}
@@ -110,10 +191,10 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             </div>
             <div className="text-left">
               <div className="font-tech font-bold text-xs text-white group-hover:text-cyber-gold transition-colors flex items-center gap-1">
-                <span>Kai Guía IA</span>
+                <span>Kai Copiloto IA</span>
                 <Sparkles className="w-3 h-3 text-cyber-gold" />
               </div>
-              <span className="text-[10px] text-slate-400 font-mono">Guía Interactiva & Voz</span>
+              <span className="text-[10px] text-slate-400 font-mono">Voz & Micrófono Activo</span>
             </div>
           </button>
         </div>
@@ -136,15 +217,30 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
               <div>
                 <div className="font-tech font-bold text-sm text-white flex items-center gap-1.5">
                   <span>Kai Copiloto & Guía de Diseño</span>
-                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-cyber-800 text-cyber-gold border border-cyber-700">
-                    VOZ ACTIVA
-                  </span>
+                  <div className="flex items-center gap-1 bg-cyber-950 px-2 py-0.5 rounded-full border border-cyber-800">
+                    {getMoodIcon()}
+                    <span className="text-[9px] font-mono text-slate-300 capitalize">{mood}</span>
+                  </div>
                 </div>
                 <div className="text-[10px] text-slate-400">Paso {currentStepIndex + 1} de {guideSteps.length}</div>
               </div>
             </div>
 
             <div className="flex items-center gap-1">
+              {/* Mic Button */}
+              <button
+                onClick={toggleListening}
+                className={`p-2 rounded-xl border transition-all ${
+                  isListening
+                    ? 'bg-rose-500 text-white border-rose-400 animate-pulse shadow-lg'
+                    : 'bg-cyber-950 text-slate-400 border-cyber-800 hover:text-white'
+                }`}
+                title="Hablar por Micrófono (Speech-to-Text)"
+              >
+                {isListening ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+              </button>
+
+              {/* Voice toggle */}
               <button
                 onClick={handleToggleVoice}
                 className={`p-2 rounded-xl border transition-all ${
@@ -169,6 +265,22 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
             </div>
           </div>
 
+          {/* Mood Selector Buttons */}
+          <div className="flex items-center justify-between text-[10px] bg-cyber-950 p-1 rounded-xl border border-cyber-850">
+            <span className="text-slate-500 font-tech font-bold uppercase px-1">Mood:</span>
+            {(['creative', 'focused', 'analytical', 'happy'] as AvatarMood[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMood(m)}
+                className={`px-2 py-0.5 rounded-lg capitalize transition-all ${
+                  mood === m ? 'bg-cyber-gold text-black font-bold' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+
           {/* Current Step Content */}
           <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1.5">
             <div className="font-tech font-bold text-xs sm:text-sm text-cyber-gold flex items-center gap-1.5">
@@ -178,6 +290,13 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
               {currentStep.desc}
             </p>
           </div>
+
+          {/* Recognized Voice Transcript Bar */}
+          {recognizedText && (
+            <div className="p-2 rounded-xl bg-cyber-950/80 border border-cyan-500/40 text-[11px] text-cyan-300 font-mono">
+              🎙️ {recognizedText}
+            </div>
+          )}
 
           {/* Controls: Prev / Replay Voice / Next */}
           <div className="flex items-center justify-between gap-2 pt-1">

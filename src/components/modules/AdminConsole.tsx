@@ -26,7 +26,8 @@ import {
   Search,
   Filter,
   BarChart3,
-  PieChart
+  PieChart,
+  Download
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
@@ -511,6 +512,36 @@ export const AdminConsole: React.FC = () => {
                 <option value="instrumentation_hardware">Instrumentalización</option>
               </select>
             </div>
+
+            <button
+              onClick={() => {
+                const headers = ['ID', 'Nombre', 'Email', 'Empresa', 'Nicho', 'Pais', 'Telefono', 'Rol', 'Plan', 'Creditos Usados'];
+                const rows = usersList.map((u) => [
+                  u.id,
+                  `"${u.name}"`,
+                  `"${u.email}"`,
+                  `"${u.company}"`,
+                  `"${u.niche || ''}"`,
+                  `"${u.country || ''}"`,
+                  `"${u.phone || ''}"`,
+                  u.role,
+                  `"${u.planName}"`,
+                  u.aiCredits?.used || 0
+                ]);
+                const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement('a');
+                link.setAttribute('href', encodedUri);
+                link.setAttribute('download', `Aether_Clients_Report_${Date.now()}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-cyber-gold text-xs font-tech font-bold transition-all shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Exportar Reporte CSV</span>
+            </button>
           </div>
 
           <div className="overflow-x-auto rounded-2xl border border-cyber-800">

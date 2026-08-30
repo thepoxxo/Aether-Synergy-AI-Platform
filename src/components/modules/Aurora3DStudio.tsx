@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
 import { Model3DCanvas, ModelType } from '../common/Model3DCanvas';
-import { Layers, Palette, Sliders, Film, Play, Download, Eye, EyeOff, Sparkles, Check, Upload, Box, Shirt, Armchair, SlidersHorizontal, Coffee } from 'lucide-react';
+import {
+  Layers,
+  Palette,
+  Sliders,
+  Film,
+  Play,
+  Download,
+  Eye,
+  EyeOff,
+  Sparkles,
+  Check,
+  Upload,
+  Box,
+  Shirt,
+  Armchair,
+  SlidersHorizontal,
+  Coffee,
+  Wand2,
+  Brush
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -18,6 +37,14 @@ export const Aurora3DStudio: React.FC = () => {
   const [selectedDecal, setSelectedDecal] = useState('Dragon 龍');
   const [activeFrame, setActiveFrame] = useState(45);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // 4 AI Harmonic Color Palettes Presets
+  const harmonicPalettes = [
+    { name: 'Cyberpunk Neon', primary: '#0A0D14', accent: '#06B6D4' },
+    { name: 'Nordic Pastel', primary: '#F1F5F9', accent: '#E5A93C' },
+    { name: 'Earthy Techwear', primary: '#1C1917', accent: '#15803D' },
+    { name: 'Monochrome Luxury', primary: '#000000', accent: '#F59E0B' },
+  ];
 
   const [layers, setLayers] = useState([
     { id: 'graphic', name: 'Graphic Decal [Active]', visible: true },
@@ -51,11 +78,11 @@ export const Aurora3DStudio: React.FC = () => {
                 AURORA 3D MULTI-INDUSTRY STUDIO
               </h2>
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyber-800 text-cyber-gold border border-cyber-700">
-                PRO ENGINE v3.2 • TOUCH OPTIMIZED
+                PRO ENGINE v3.2 • ATADOS & HDRI
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Diseño, texturizado y simulación 3D para Moda, Decoración de Interiores e Instrumentalización
+              Diseño, texturizado PBR/Anime y simulación 3D para Moda, Interiores e Instrumentalización
             </p>
           </div>
         </div>
@@ -209,7 +236,7 @@ export const Aurora3DStudio: React.FC = () => {
 
       {/* Main Studio Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Layer Stack & Colors */}
+        {/* Left Column: Layer Stack, Colors & AI Palette Generator */}
         <div className="lg:col-span-3 space-y-4">
           <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
             <div className="flex items-center justify-between mb-3">
@@ -239,6 +266,35 @@ export const Aurora3DStudio: React.FC = () => {
             </div>
           </div>
 
+          {/* AI Harmonic Palettes Generator */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/40 shadow-cyber-card space-y-2.5">
+            <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+              <Wand2 className="w-3.5 h-3.5 text-cyber-gold" /> Paletas Armónicas con IA
+            </span>
+
+            <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+              {harmonicPalettes.map((pal) => (
+                <button
+                  key={pal.name}
+                  onClick={() => {
+                    setPrimaryColor(pal.primary);
+                    setAccentColor(pal.accent);
+                  }}
+                  className="p-2 rounded-xl bg-cyber-950 border border-cyber-800 hover:border-cyber-gold text-left space-y-1.5 transition-all group"
+                >
+                  <div className="flex gap-1">
+                    <div className="w-4 h-4 rounded-md border border-cyber-700" style={{ backgroundColor: pal.primary }} />
+                    <div className="w-4 h-4 rounded-md border border-cyber-700" style={{ backgroundColor: pal.accent }} />
+                  </div>
+                  <span className="text-[10px] text-slate-300 font-tech font-semibold block truncate group-hover:text-cyber-gold">
+                    {pal.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Color Selectors */}
           <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
             <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 block mb-3 flex items-center gap-1.5">
               <Palette className="w-3.5 h-3.5 text-cyber-gold" /> {t('aurora.colors')}
@@ -287,6 +343,7 @@ export const Aurora3DStudio: React.FC = () => {
               type={productType}
               primaryColor={primaryColor}
               accentColor={accentColor}
+              onPrimaryColorChange={setPrimaryColor}
               celShaded={true}
               showDecal={layers.find((l) => l.id === 'graphic')?.visible}
             />
@@ -333,7 +390,7 @@ export const Aurora3DStudio: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 font-mono text-[11px] text-slate-400">
-                <span>Touch Gestures: 1 Dedo Rotar • 2 Dedos Zoom & Pan</span>
+                <span>Atajos: R (Rotar) • S (Shader) • G (Rejilla) • F (Front)</span>
               </div>
             </div>
           </div>

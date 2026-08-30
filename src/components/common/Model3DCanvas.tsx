@@ -15,7 +15,15 @@ import {
   Minimize2,
   Compass,
   Palette,
-  Image as ImageIcon
+  Pipette,
+  Sun,
+  Moon,
+  Sunset,
+  Factory,
+  Grid,
+  Download,
+  HelpCircle,
+  Keyboard
 } from 'lucide-react';
 
 export type ModelType =
@@ -31,11 +39,13 @@ export type ModelType =
 
 export type ShaderMode = 'cel' | 'pbr' | 'clay' | 'wire' | 'xray';
 export type CameraPreset = 'front' | 'side' | 'top' | 'isometric' | 'perspective';
+export type HDRIEnvironment = 'tokyo_cyberpunk' | 'nordic_daylight' | 'golden_hour' | 'industrial';
 
 interface Model3DCanvasProps {
   type?: ModelType | string;
   primaryColor?: string;
   accentColor?: string;
+  onPrimaryColorChange?: (color: string) => void;
   celShaded?: boolean;
   showDecal?: boolean;
   autoRotate?: boolean;
@@ -46,6 +56,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
   type = 'jacket',
   primaryColor = '#1e293b',
   accentColor = '#e5a93c',
+  onPrimaryColorChange,
   celShaded = true,
   showDecal = true,
   autoRotate = true,
@@ -53,7 +64,6 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const decalInputRef = useRef<HTMLInputElement>(null);
 
   const [isRotating, setIsRotating] = useState(autoRotate);
   const [activeShader, setActiveShader] = useState<ShaderMode>(celShaded ? 'cel' : 'pbr');
@@ -61,14 +71,16 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
   const [loadedFileName, setLoadedFileName] = useState<string | null>(null);
   const [explodedFactor, setExplodedFactor] = useState<number>(0);
   const [activeCamera, setActiveCamera] = useState<CameraPreset>('perspective');
-  const [customDecalUrl, setCustomDecalUrl] = useState<string | null>(null);
-  const [decalScale, setDecalScale] = useState<number>(1.0);
-  const [isStudioControlsOpen, setIsStudioControlsOpen] = useState(false);
+  const [activeHDRI, setActiveHDRI] = useState<HDRIEnvironment>('tokyo_cyberpunk');
+  const [showGridFloor, setShowGridFloor] = useState(true);
+  const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const modelGroupRef = useRef<THREE.Group | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const lightsGroupRef = useRef<THREE.Group | null>(null);
+  const gridHelperRef = useRef<THREE.GridHelper | null>(null);
   const explodedMeshesRef = useRef<{ mesh: THREE.Object3D; originalPos: THREE.Vector3; explodeDir: THREE.Vector3 }[]>([]);
 
   // Setup Three.js Engine with Full Touch Support for Tablets/iPads/Phones
@@ -87,7 +99,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     camera.position.set(0, 1.2, 3.8);
     cameraRef.current = camera;
 
-    // 3. Renderer
+    // 3. Renderer with transparent background capability
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -105,29 +117,16 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     mountRef.current.innerHTML = '';
     mountRef.current.appendChild(renderer.domElement);
 
-    // 4. Studio 3-Point Lights Setup
-    const keyLight = new THREE.DirectionalLight('#FFF7ED', 2.4);
-    keyLight.position.set(4, 6, 4);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 1024;
-    keyLight.shadow.mapSize.height = 1024;
-    scene.add(keyLight);
-
-    const fillLight = new THREE.DirectionalLight('#E0F2FE', 1.1);
-    fillLight.position.set(-4, 2, -2);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight('#F59E0B', 1.8);
-    rimLight.position.set(0, -3, -4);
-    scene.add(rimLight);
-
-    const ambientLight = new THREE.AmbientLight('#FFFFFF', 0.85);
-    scene.add(ambientLight);
+    // 4. Lights Group
+    const lightsGroup = new THREE.Group();
+    scene.add(lightsGroup);
+    lightsGroupRef.current = lightsGroup;
 
     // Circular Floor Grid
     const gridHelper = new THREE.GridHelper(6, 24, '#E5A93C', '#232D42');
     gridHelper.position.y = -1.2;
     scene.add(gridHelper);
+    gridHelperRef.current = gridHelper;
 
     // 5. Model Container Group
     const modelGroup = new THREE.Group();
@@ -221,7 +220,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     };
 
     const dom = renderer.domElement;
-    dom.style.touchAction = 'none'; // Prevents iPad gesture conflicts
+    dom.style.touchAction = 'none';
     dom.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
@@ -269,6 +268,94 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     };
   }, []);
 
+  // Update HDRi Lighting Setup based on preset
+  useEffect(() => {
+    if (!lightsGroupRef.current) return;
+    const group = lightsGroupRef.current;
+    while (group.children.length > 0) {
+      group.remove(group.children[0]);
+    }
+
+    switch (activeHDRI) {
+      case 'nordic_daylight': {
+        const key = new THREE.DirectionalLight('#FFFFFF', 2.0);
+        key.position.set(3, 5, 3);
+        const fill = new THREE.DirectionalLight('#F1F5F9', 1.5);
+        fill.position.set(-3, 3, -3);
+        const amb = new THREE.AmbientLight('#FFFFFF', 1.1);
+        group.add(key, fill, amb);
+        break;
+      }
+      case 'golden_hour': {
+        const key = new THREE.DirectionalLight('#F59E0B', 2.8);
+        key.position.set(4, 3, 2);
+        const fill = new THREE.DirectionalLight('#FEF3C7', 1.2);
+        fill.position.set(-4, 2, -2);
+        const amb = new THREE.AmbientLight('#78350F', 0.8);
+        group.add(key, fill, amb);
+        break;
+      }
+      case 'industrial': {
+        const key = new THREE.DirectionalLight('#E2E8F0', 2.6);
+        key.position.set(2, 6, 2);
+        const rim = new THREE.DirectionalLight('#06B6D4', 2.2);
+        rim.position.set(-2, -3, -3);
+        const amb = new THREE.AmbientLight('#0F172A', 0.9);
+        group.add(key, rim, amb);
+        break;
+      }
+      case 'tokyo_cyberpunk':
+      default: {
+        const key = new THREE.DirectionalLight('#FFF7ED', 2.4);
+        key.position.set(4, 6, 4);
+        const fill = new THREE.DirectionalLight('#06B6D4', 1.4);
+        fill.position.set(-4, 2, -2);
+        const rim = new THREE.DirectionalLight('#E5A93C', 2.0);
+        rim.position.set(0, -3, -4);
+        const amb = new THREE.AmbientLight('#38BDF8', 0.75);
+        group.add(key, fill, rim, amb);
+        break;
+      }
+    }
+  }, [activeHDRI]);
+
+  // Update Grid visibility
+  useEffect(() => {
+    if (gridHelperRef.current) {
+      gridHelperRef.current.visible = showGridFloor;
+    }
+  }, [showGridFloor]);
+
+  // Keyboard Shortcuts Handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['input', 'textarea', 'select'].includes((e.target as HTMLElement)?.tagName?.toLowerCase())) return;
+
+      const key = e.key.toLowerCase();
+      if (key === 'r') {
+        setIsRotating((prev) => !prev);
+      } else if (key === 's') {
+        const shaders: ShaderMode[] = ['cel', 'pbr', 'clay', 'wire', 'xray'];
+        const nextIdx = (shaders.indexOf(activeShader) + 1) % shaders.length;
+        setActiveShader(shaders[nextIdx]);
+      } else if (key === 'g') {
+        setShowGridFloor((prev) => !prev);
+      } else if (key === ' ' || key === 'space') {
+        e.preventDefault();
+        setIsRotating((prev) => !prev);
+      } else if (key === 'f') {
+        setCameraPreset('front');
+      } else if (key === 't') {
+        setCameraPreset('top');
+      } else if (key === 'i') {
+        setCameraPreset('isometric');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeShader]);
+
   // Update Camera Presets
   const setCameraPreset = (preset: CameraPreset) => {
     if (!cameraRef.current || !modelGroupRef.current) return;
@@ -297,7 +384,24 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     camera.lookAt(0, 0, 0);
   };
 
-  // Generate Multi-Industry 3D Models and Components with Exploded View Vectors
+  // Color Eyedropper API (Sample exact screen colors)
+  const handleOpenEyedropper = async () => {
+    if ('EyeDropper' in window) {
+      try {
+        const eyeDropper = new (window as any).EyeDropper();
+        const result = await eyeDropper.open();
+        if (result?.sRGBHex && onPrimaryColorChange) {
+          onPrimaryColorChange(result.sRGBHex);
+        }
+      } catch (e) {
+        console.log('Eyedropper closed');
+      }
+    } else {
+      alert('La herramienta Cuentagotas está disponible en navegadores Chrome, Brave y Edge.');
+    }
+  };
+
+  // Generate 3D Models and Components
   useEffect(() => {
     if (!modelGroupRef.current || !sceneRef.current) return;
 
@@ -360,20 +464,14 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       });
     };
 
-    // =========================================================
-    // 1. NICHO: MODA & STREETWEAR (Techwear Jacket / Hoodie / Sneaker)
-    // =========================================================
     if (type === 'jacket' || type === 'hoodie') {
-      // Main Body
       const body = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.62, 1.35, 24), mainMat);
       registerExplodedMesh(body, new THREE.Vector3(0, 0, 0));
 
-      // Collar
       const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.46, 0.35, 24), accentMat);
       collar.position.y = 0.8;
       registerExplodedMesh(collar, new THREE.Vector3(0, 0.6, 0));
 
-      // Sleeves
       const sleeveL = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.18, 1.1, 16), mainMat);
       sleeveL.position.set(-0.85, 0.2, 0);
       sleeveL.rotation.z = Math.PI / 7;
@@ -384,7 +482,6 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       sleeveR.rotation.z = -Math.PI / 7;
       registerExplodedMesh(sleeveR, new THREE.Vector3(0.7, 0.1, 0));
 
-      // Modular Tactical Pouches (Separate in Exploded view)
       const pouchL = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.32, 0.15), darkMat);
       pouchL.position.set(-0.35, -0.25, 0.65);
       registerExplodedMesh(pouchL, new THREE.Vector3(-0.4, 0, 0.8));
@@ -392,9 +489,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       const pouchR = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.32, 0.15), darkMat);
       pouchR.position.set(0.35, -0.25, 0.65);
       registerExplodedMesh(pouchR, new THREE.Vector3(0.4, 0, 0.8));
-    }
-    // Cyberpunk Sneaker X-1
-    else if (type === 'sneaker') {
+    } else if (type === 'sneaker') {
       const sole = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.24, 2.0, 16), accentMat);
       sole.position.y = -0.5;
       registerExplodedMesh(sole, new THREE.Vector3(0, -0.8, 0));
@@ -406,11 +501,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       const upper = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 1.7), mainMat);
       upper.position.set(0, 0.02, 0.05);
       registerExplodedMesh(upper, new THREE.Vector3(0, 0.2, 0));
-    }
-    // =========================================================
-    // 2. NICHO: DISEÑO & DECORACIÓN DE INTERIORES (Lounge Chair & Table)
-    // =========================================================
-    else if (type === 'chair') {
+    } else if (type === 'chair') {
       const seat = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.25, 1.3), mainMat);
       seat.position.y = -0.1;
       registerExplodedMesh(seat, new THREE.Vector3(0, 0, 0));
@@ -439,11 +530,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       const base = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.7, 0.8, 24), accentMat);
       base.position.y = -0.25;
       registerExplodedMesh(base, new THREE.Vector3(0, -0.5, 0));
-    }
-    // =========================================================
-    // 3. NICHO: INSTRUMENTALIZACIÓN & AUDIO HARDWARE (Synthesizer & Speaker)
-    // =========================================================
-    else if (type === 'synth') {
+    } else if (type === 'synth') {
       const chassis = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.28, 1.2), darkMat);
       registerExplodedMesh(chassis, new THREE.Vector3(0, 0, 0));
 
@@ -467,9 +554,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       tweeter.position.set(0, 0.35, 0.46);
       tweeter.rotation.x = Math.PI / 2;
       registerExplodedMesh(tweeter, new THREE.Vector3(0, 0, 0.8));
-    }
-    // Default Merch Tumbler
-    else {
+    } else {
       const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 1.7, 24), mainMat);
       registerExplodedMesh(bottle, new THREE.Vector3(0, 0, 0));
 
@@ -490,7 +575,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     });
   }, [explodedFactor]);
 
-  // Handle Drag & Drop of 3D Files (.GLB / .OBJ)
+  // Handle Drag & Drop
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
@@ -537,11 +622,12 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
     }
   };
 
-  const handleSnapshot = () => {
+  // 4K Transparent PNG Snapshot
+  const handleSnapshotTransparent = () => {
     if (!rendererRef.current) return;
     const dataUrl = rendererRef.current.domElement.toDataURL('image/png');
     const link = document.createElement('a');
-    link.download = `Aether3D_Snapshot_${type}_${Date.now()}.png`;
+    link.download = `Aether3D_Transparent_4K_${type}_${Date.now()}.png`;
     link.href = dataUrl;
     link.click();
   };
@@ -554,7 +640,7 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
       }}
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleFileDrop}
-      className="relative w-full h-full min-h-[420px] rounded-3xl bg-gradient-to-b from-cyber-900/90 to-cyber-950/95 border-2 border-cyber-gold/40 shadow-2xl overflow-hidden group flex flex-col justify-between select-none"
+      className="relative w-full h-full min-h-[440px] rounded-3xl bg-gradient-to-b from-cyber-900/90 to-cyber-950/95 border-2 border-cyber-gold/40 shadow-2xl overflow-hidden group flex flex-col justify-between select-none"
     >
       {/* 3D Canvas Viewport */}
       <div ref={mountRef} className="absolute inset-0 cursor-grab active:cursor-grabbing touch-none" />
@@ -570,7 +656,46 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
         </div>
       )}
 
-      {/* Hidden File Inputs */}
+      {/* Keyboard Shortcuts Help Overlay */}
+      {showKeyboardHelp && (
+        <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-md p-6 flex flex-col justify-center items-center text-white animate-fadeIn">
+          <div className="bg-cyber-950 p-6 rounded-3xl border border-cyber-gold/50 max-w-sm w-full space-y-3">
+            <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
+              <span className="font-tech font-bold text-sm text-cyber-gold flex items-center gap-1.5">
+                <Keyboard className="w-4 h-4" /> Atajos de Teclado 3D
+              </span>
+              <button
+                onClick={() => setShowKeyboardHelp(false)}
+                className="text-xs text-slate-400 hover:text-white"
+              >
+                ✕ Cerrar
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">R</span> : Rotación 360°
+              </div>
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">S</span> : Cambiar Shader
+              </div>
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">G</span> : Mostrar Rejilla
+              </div>
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">Space</span> : Pausar Giro
+              </div>
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">F</span> : Cámara Frontal
+              </div>
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">T</span> : Cámara Superior
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden File Input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -592,51 +717,92 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
 
           {/* 5 Shader Modes Switcher */}
           <div className="flex bg-cyber-950/90 p-0.5 rounded-xl border border-cyber-750 text-[11px] font-tech font-bold">
+            {(['cel', 'pbr', 'clay', 'wire', 'xray'] as ShaderMode[]).map((sh) => (
+              <button
+                key={sh}
+                onClick={() => setActiveShader(sh)}
+                className={`px-2.5 py-1 rounded-lg transition-all capitalize ${
+                  activeShader === sh ? 'bg-cyber-gold text-black shadow-gold-glow font-bold' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {sh}
+              </button>
+            ))}
+          </div>
+
+          {/* HDRi Environment Lighting Selector */}
+          <div className="flex bg-cyber-950/90 p-0.5 rounded-xl border border-cyber-800 text-[11px] font-tech">
             <button
-              onClick={() => setActiveShader('cel')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeShader === 'cel' ? 'bg-cyber-gold text-black shadow-gold-glow font-bold' : 'text-slate-400 hover:text-white'
+              onClick={() => setActiveHDRI('tokyo_cyberpunk')}
+              className={`p-1.5 rounded-lg transition-all ${
+                activeHDRI === 'tokyo_cyberpunk' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50' : 'text-slate-400'
               }`}
+              title="Iluminación Tokyo Cyberpunk"
             >
-              Cel-Shaded
+              <Moon className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setActiveShader('pbr')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeShader === 'pbr' ? 'bg-cyber-gold text-black shadow-gold-glow font-bold' : 'text-slate-400 hover:text-white'
+              onClick={() => setActiveHDRI('nordic_daylight')}
+              className={`p-1.5 rounded-lg transition-all ${
+                activeHDRI === 'nordic_daylight' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' : 'text-slate-400'
               }`}
+              title="Iluminación Nordic Daylight (Luz Natural)"
             >
-              PBR Real
+              <Sun className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setActiveShader('clay')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeShader === 'clay' ? 'bg-cyber-gold text-black shadow-gold-glow font-bold' : 'text-slate-400 hover:text-white'
+              onClick={() => setActiveHDRI('golden_hour')}
+              className={`p-1.5 rounded-lg transition-all ${
+                activeHDRI === 'golden_hour' ? 'bg-orange-500/20 text-orange-300 border border-orange-500/50' : 'text-slate-400'
               }`}
+              title="Iluminación Golden Hour (Atardecer Dorado)"
             >
-              Clay Arcilla
+              <Sunset className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setActiveShader('wire')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeShader === 'wire' ? 'bg-cyan-400 text-black shadow-cyan-glow font-bold' : 'text-slate-400 hover:text-white'
+              onClick={() => setActiveHDRI('industrial')}
+              className={`p-1.5 rounded-lg transition-all ${
+                activeHDRI === 'industrial' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/50' : 'text-slate-400'
               }`}
+              title="Iluminación Industrial Warehouse"
             >
-              Wireframe
-            </button>
-            <button
-              onClick={() => setActiveShader('xray')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeShader === 'xray' ? 'bg-purple-400 text-black shadow-lg font-bold' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              X-Ray
+              <Factory className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Action Buttons: Camera angles, Upload, Snapshot, Studio Settings */}
+        {/* Action Buttons */}
         <div className="flex items-center gap-1.5 pointer-events-auto">
+          {/* Eyedropper Button */}
+          <button
+            onClick={handleOpenEyedropper}
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-cyber-gold transition-all shadow-md"
+            title="Cuentagotas de Color (Muestrear pantalla)"
+          >
+            <Pipette className="w-4 h-4" />
+          </button>
+
+          {/* Floor Grid Toggle */}
+          <button
+            onClick={() => setShowGridFloor(!showGridFloor)}
+            className={`p-2 rounded-xl border transition-all shadow-md ${
+              showGridFloor ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-950/90 border-cyber-700 text-slate-500'
+            }`}
+            title="Mostrar / Ocultar Rejilla de Piso"
+          >
+            <Grid className="w-4 h-4" />
+          </button>
+
+          {/* Keyboard Shortcuts Info */}
+          <button
+            onClick={() => setShowKeyboardHelp(!showKeyboardHelp)}
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 text-slate-300 transition-all shadow-md"
+            title="Ver Atajos de Teclado (R, S, G, Space, F, T)"
+          >
+            <Keyboard className="w-4 h-4" />
+          </button>
+
+          {/* Import File */}
           <button
             onClick={() => fileInputRef.current?.click()}
             className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-cyber-gold transition-all shadow-md"
@@ -645,19 +811,20 @@ export const Model3DCanvas: React.FC<Model3DCanvasProps> = ({
             <Upload className="w-4 h-4" />
           </button>
 
+          {/* 4K Transparent Snapshot */}
           <button
-            onClick={handleSnapshot}
-            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-emerald-400 transition-all shadow-md"
-            title="Descargar Captura 4K"
+            onClick={handleSnapshotTransparent}
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-emerald-400 text-emerald-400 transition-all shadow-md"
+            title="Descargar Captura 4K PNG Transparente"
           >
-            <Camera className="w-4 h-4" />
+            <Download className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Bottom HUD: Camera Angle Shortcuts & Exploded View Slider */}
       <div className="relative z-10 p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs pointer-events-none">
-        {/* Quick Camera Presets (Front, Side, Top, Iso) */}
+        {/* Quick Camera Presets */}
         <div className="flex items-center gap-1 pointer-events-auto bg-cyber-950/90 backdrop-blur-md p-1 rounded-2xl border border-cyber-800 shadow-lg">
           <button
             onClick={() => setIsRotating(!isRotating)}

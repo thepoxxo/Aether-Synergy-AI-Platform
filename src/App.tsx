@@ -9,6 +9,7 @@ import { LoginModal } from './components/auth/LoginModal';
 import { UpgradeModal } from './components/auth/UpgradeModal';
 import { UserProfileModal } from './components/auth/UserProfileModal';
 import { VoiceGuideAvatar } from './components/common/VoiceGuideAvatar';
+import { WorldLanguageModal } from './components/common/WorldLanguageModal';
 
 // Landing Page (1 INTRO: Exactly screens 1, 2, 3, 4 with vertical mouse scroll)
 import { LandingPage } from './components/landing/LandingPage';
@@ -140,6 +141,7 @@ const MainLayout: React.FC = () => {
       <LoginModal />
       <UpgradeModal />
       <UserProfileModal />
+      <WorldLanguageModal />
 
       {/* Floating Role Switcher inside Workspace */}
       <div className="fixed bottom-5 right-5 z-40 flex items-center gap-2 p-2 rounded-2xl bg-cyber-900/90 backdrop-blur-xl border border-cyber-gold/50 shadow-gold-glow-lg text-xs">
