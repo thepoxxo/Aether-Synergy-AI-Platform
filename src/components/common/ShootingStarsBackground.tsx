@@ -249,6 +249,27 @@ export const ShootingStarsBackground: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
+    // USER CLICK INSTANT RECOVERY LISTENER:
+    // If the user clicks on any card or element with abducted numbers, restore immediately!
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const abductedEls = document.querySelectorAll('[data-original-val]');
+      abductedEls.forEach((el) => {
+        const htmlEl = el as HTMLElement;
+        const card = htmlEl.closest('[class*="rounded-3xl"], section, div');
+        if (htmlEl.contains(target) || (card && card.contains(target))) {
+          const orig = htmlEl.getAttribute('data-original-val');
+          if (orig && htmlEl.innerHTML.includes('❓')) {
+            htmlEl.innerHTML = orig;
+            htmlEl.style.opacity = '1';
+            htmlEl.style.transform = 'scale(1) translateY(0px)';
+            htmlEl.style.textShadow = '0 0 35px #F59E0B, 0 0 50px #FFFFFF';
+          }
+        }
+      });
+    };
+    window.addEventListener('click', handleDocumentClick);
+
     const handleResize = () => {
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
@@ -350,10 +371,10 @@ export const ShootingStarsBackground: React.FC = () => {
       const pulseType = pRand < 0.35 ? 'breathe' : pRand < 0.75 ? 'sparkle' : 'steady';
       const twinkleSpeed =
         pulseType === 'breathe'
-          ? Math.random() * 0.004 + 0.002
+          ? Math.random() * 0.005 + 0.002
           : pulseType === 'sparkle'
-          ? Math.random() * 0.018 + 0.008
-          : Math.random() * 0.008 + 0.003;
+          ? Math.random() * 0.022 + 0.01
+          : Math.random() * 0.01 + 0.004;
 
       return {
         x: Math.random() * width,
@@ -374,12 +395,12 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'comet-halley',
         x: width * 0.05,
         y: height * 0.15,
-        vx: 0.12,
-        vy: 0.05,
+        vx: 0.14,
+        vy: 0.06,
         radius: 4.5 * scaleFactor,
         comaRadius: 28 * scaleFactor,
         tailLength: (isUltra ? 230 : 150) * scaleFactor,
-        angle: Math.atan2(0.05, 0.12),
+        angle: Math.atan2(0.06, 0.14),
         nucleusColor: '#FFFFFF',
         auraColor: 'rgba(56, 189, 248, 0.65)',
         tailColor: 'rgba(6, 182, 212, 0.75)',
@@ -390,12 +411,12 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'comet-neowise',
         x: width * 0.85,
         y: height * 0.75,
-        vx: -0.10,
-        vy: -0.04,
+        vx: -0.12,
+        vy: -0.05,
         radius: 3.5 * scaleFactor,
         comaRadius: 22 * scaleFactor,
         tailLength: (isUltra ? 190 : 120) * scaleFactor,
-        angle: Math.atan2(-0.04, -0.10),
+        angle: Math.atan2(-0.05, -0.12),
         nucleusColor: '#FDE68A',
         auraColor: 'rgba(245, 158, 11, 0.6)',
         tailColor: 'rgba(234, 88, 12, 0.7)',
@@ -433,7 +454,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }))
     };
 
-    // 6. ULTRA-SLOW GALAXY & 10X MASSIVE EXPANSION SHOCKWAVE
+    // 6. GALAXY ENGINE (FASTER SMOOTH ORBITAL MOTION) & 10X SUPERNOVA SHOCKWAVE
     let galaxyState: 'expanding' | 'exploding' | 'reforming' = 'expanding';
     let galaxyScale = 1.0;
     let galaxyRotation = 0;
@@ -451,7 +472,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: 0,
         baseRadius: radius,
         angle: angle,
-        speed: Math.random() * 0.000015 + 0.000006,
+        speed: Math.random() * 0.00009 + 0.00004, // Pleasantly faster smooth motion
         color: activeColors[i % activeColors.length],
         size: (Math.random() * 2.4 + 0.8) * scaleFactor,
         sparklePhase: Math.random() * Math.PI * 2,
@@ -459,7 +480,7 @@ export const ShootingStarsBackground: React.FC = () => {
       };
     });
 
-    // 7. ULTRA-SLOW MULTI-LANE ASTEROID BELT
+    // 7. MULTI-LANE ASTEROID BELT
     const asteroidCount = isMobile ? 12 : isTablet ? 20 : isUltra ? 36 : 18;
     const asteroids: Asteroid[] = Array.from({ length: asteroidCount }, (_, idx) => {
       const lane: 'inner' | 'mid' | 'outer' = idx % 3 === 0 ? 'inner' : idx % 3 === 1 ? 'mid' : 'outer';
@@ -472,10 +493,10 @@ export const ShootingStarsBackground: React.FC = () => {
 
       const orbitSpeed =
         lane === 'inner'
-          ? (Math.random() * 0.00008 + 0.00005) * (Math.random() > 0.5 ? 1 : -1)
+          ? (Math.random() * 0.00015 + 0.00008) * (Math.random() > 0.5 ? 1 : -1)
           : lane === 'mid'
-          ? (Math.random() * 0.00004 + 0.00002) * (Math.random() > 0.5 ? 1 : -1)
-          : (Math.random() * 0.00002 + 0.00001) * (Math.random() > 0.5 ? 1 : -1);
+          ? (Math.random() * 0.00008 + 0.00004) * (Math.random() > 0.5 ? 1 : -1)
+          : (Math.random() * 0.00004 + 0.00002) * (Math.random() > 0.5 ? 1 : -1);
 
       const numVerts = Math.floor(Math.random() * 3) + 5;
       const baseR = (Math.random() * 5 + 3) * scaleFactor;
@@ -493,7 +514,7 @@ export const ShootingStarsBackground: React.FC = () => {
         orbitRadius: orbitRadius,
         orbitSpeed: orbitSpeed,
         rotation: Math.random() * Math.PI * 2,
-        rotSpeed: Math.random() * 0.003 - 0.0015,
+        rotSpeed: Math.random() * 0.005 - 0.0025,
         vertices: vertices,
         color: isLight ? '#94A3B8' : '#64748B',
         lane: lane
@@ -502,9 +523,9 @@ export const ShootingStarsBackground: React.FC = () => {
 
     // 8. Dwarf Galaxies
     const dwarfGalaxies: DistantDwarfGalaxy[] = [
-      { x: width * 0.08, y: height * 0.14, radius: 28 * scaleFactor, rotation: 0, rotSpeed: 0.00008, color: '#06B6D4', opacity: 0.55 },
-      { x: width * 0.92, y: height * 0.38, radius: 35 * scaleFactor, rotation: 0, rotSpeed: -0.0001, color: '#EC4899', opacity: 0.5 },
-      { x: width * 0.45, y: height * 0.92, radius: 24 * scaleFactor, rotation: 0, rotSpeed: 0.0001, color: '#F59E0B', opacity: 0.45 }
+      { x: width * 0.08, y: height * 0.14, radius: 28 * scaleFactor, rotation: 0, rotSpeed: 0.0001, color: '#06B6D4', opacity: 0.55 },
+      { x: width * 0.92, y: height * 0.38, radius: 35 * scaleFactor, rotation: 0, rotSpeed: -0.00012, color: '#EC4899', opacity: 0.5 },
+      { x: width * 0.45, y: height * 0.92, radius: 24 * scaleFactor, rotation: 0, rotSpeed: 0.00015, color: '#F59E0B', opacity: 0.45 }
     ];
 
     // 9. Deep Space Planets
@@ -513,14 +534,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-saturn',
         x: width * 0.86,
         y: height * 0.8,
-        vx: -0.005,
+        vx: -0.006,
         vy: 0.002,
         radius: 24 * scaleFactor,
         type: 'gas_giant',
         rotation: 0,
-        rotationSpeed: 0.001,
+        rotationSpeed: 0.0012,
         lightAngle: 0.8,
-        lightPhaseSpeed: 0.0004,
+        lightPhaseSpeed: 0.0005,
         primaryColor: '#F59E0B',
         secondaryColor: '#FDE68A',
         shadowColor: '#451A03',
@@ -540,14 +561,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-cyber',
         x: width * 0.16,
         y: height * 0.24,
-        vx: 0.005,
+        vx: 0.006,
         vy: -0.003,
         radius: 17 * scaleFactor,
         type: 'cyber_neon',
         rotation: 0,
-        rotationSpeed: 0.0015,
+        rotationSpeed: 0.0018,
         lightAngle: -0.6,
-        lightPhaseSpeed: 0.0006,
+        lightPhaseSpeed: 0.0008,
         primaryColor: '#06B6D4',
         secondaryColor: '#E0F2FE',
         shadowColor: '#082F49',
@@ -566,14 +587,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-volcanic',
         x: width * 0.78,
         y: height * 0.22,
-        vx: -0.004,
-        vy: 0.0015,
+        vx: -0.005,
+        vy: 0.002,
         radius: 14 * scaleFactor,
         type: 'volcanic',
         rotation: 0,
-        rotationSpeed: 0.002,
+        rotationSpeed: 0.0025,
         lightAngle: 1.2,
-        lightPhaseSpeed: 0.0008,
+        lightPhaseSpeed: 0.001,
         primaryColor: '#DC2626',
         secondaryColor: '#F97316',
         shadowColor: '#450A0A',
@@ -591,14 +612,14 @@ export const ShootingStarsBackground: React.FC = () => {
         id: 'planet-cryo',
         x: width * 0.3,
         y: height * 0.88,
-        vx: 0.003,
-        vy: -0.0015,
+        vx: 0.004,
+        vy: -0.002,
         radius: 12 * scaleFactor,
         type: 'cryo_moon',
         rotation: 0,
-        rotationSpeed: 0.001,
+        rotationSpeed: 0.0012,
         lightAngle: -1.0,
-        lightPhaseSpeed: 0.0004,
+        lightPhaseSpeed: 0.0005,
         primaryColor: '#38BDF8',
         secondaryColor: '#E0F2FE',
         shadowColor: '#0C4A6E',
@@ -618,7 +639,7 @@ export const ShootingStarsBackground: React.FC = () => {
     let blackHoleY = height * 0.72;
     let blackHolePulse = 0;
 
-    // 10. ACTIVE PROMINENT FLEET OF 5 ALIEN SHIPS (SEEDED ON MOUNT)
+    // 10. COMPACT FLEET OF 5 ALIEN SHIPS (REDUCED PROPORTIONS)
     const shipDesigns: ShipDesign[] = ['classic_saucer', 'cyber_cruiser', 'bio_scout', 'plasma_orb', 'golden_mothership'];
     const shipColors = [
       { p: '#06B6D4', s: '#38BDF8' },
@@ -635,11 +656,11 @@ export const ShootingStarsBackground: React.FC = () => {
 
       return {
         id: 'ship-' + Math.random(),
-        x: customX !== undefined ? customX : fromLeft ? -100 : width + 100,
+        x: customX !== undefined ? customX : fromLeft ? -80 : width + 80,
         y: customY !== undefined ? customY : Math.random() * (height * 0.6) + 50,
         speed: (Math.random() * 1.5 + 1.2) * (fromLeft ? 1 : -1),
         design: design,
-        size: (Math.random() * 8 + 22) * scaleFactor, // Big, bold & highly visible
+        size: (Math.random() * 4 + 14) * scaleFactor, // REDUCED, SLEEK & COMPACT
         primaryColor: color.p,
         secondaryColor: color.s,
         beamActive: true,
@@ -651,10 +672,10 @@ export const ShootingStarsBackground: React.FC = () => {
         hoverTimer: 0,
         targetCardX: 0,
         targetCardY: 0,
-        beamParticles: Array.from({ length: 18 }, () => ({
-          y: Math.random() * 180,
-          xOffset: (Math.random() - 0.5) * 35,
-          size: Math.random() * 2.5 + 1,
+        beamParticles: Array.from({ length: 16 }, () => ({
+          y: Math.random() * 160,
+          xOffset: (Math.random() - 0.5) * 30,
+          size: Math.random() * 2 + 1,
           alpha: Math.random()
         }))
       };
@@ -707,7 +728,6 @@ export const ShootingStarsBackground: React.FC = () => {
       magicSparkles: []
     };
 
-    // Periodic Guardian Re-Patrol
     const scheduleGuardianPatrol = () => {
       setTimeout(() => {
         if (!guardian.active || guardian.state === 'peeking_corner') {
@@ -724,7 +744,6 @@ export const ShootingStarsBackground: React.FC = () => {
     };
     scheduleGuardianPatrol();
 
-    // Periodic Ship Spawner
     const scheduleShip = () => {
       setTimeout(() => {
         const maxShips = isMobile ? 2 : 4;
@@ -783,7 +802,7 @@ export const ShootingStarsBackground: React.FC = () => {
         lastShootingStarSpawn = now;
       }
 
-      galaxyRotation += 0.000004; // Timeless slow
+      galaxyRotation += 0.00008; // Pleasant and noticeable gentle orbital rotation
       blackHolePulse += 0.008;
       radiantSun.pulsePhase += 0.008;
       radiantSun.flarePhase += 0.012;
@@ -1016,13 +1035,13 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 7. ULTRA-SLOW GALAXY & 10X PANORAMIC SUPERNOVA WAVE
+      // 7. GALAXY SMOOTH ROTATION & 10X PANORAMIC SUPERNOVA WAVE
       // ===========================================================
       const centerX = width * 0.5;
       const centerY = height * 0.45;
 
       if (galaxyState === 'expanding') {
-        galaxyScale += 0.000015;
+        galaxyScale += 0.00006;
         if (galaxyScale > 4.5) {
           galaxyState = 'exploding';
           supernovaProgress = 0;
@@ -1032,15 +1051,15 @@ export const ShootingStarsBackground: React.FC = () => {
           currentExplosionPattern = patterns[Math.floor(Math.random() * patterns.length)];
         }
       } else if (galaxyState === 'exploding') {
-        supernovaProgress += 0.006;
-        shockwaveRadius += 32; // 10X MASSIVE EXPANSION SWEEP
+        supernovaProgress += 0.008;
+        shockwaveRadius += 32;
         shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.25);
 
         if (supernovaProgress > 3.8) {
           galaxyState = 'reforming';
         }
       } else if (galaxyState === 'reforming') {
-        galaxyScale -= 0.005;
+        galaxyScale -= 0.006;
         if (galaxyScale <= 1.0) {
           galaxyScale = 1.0;
           galaxyState = 'expanding';
@@ -1058,7 +1077,6 @@ export const ShootingStarsBackground: React.FC = () => {
       // 10X Massive Panoramic Concentric Shockwave Fronts
       if (galaxyState === 'exploding' && shockwaveAlpha > 0.01) {
         ctx.save();
-        // 1. Primary Giant Golden Plasma Blast Wave (10X Scale)
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(245, 158, 11, ${shockwaveAlpha})`;
@@ -1067,7 +1085,6 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.shadowColor = '#F59E0B';
         ctx.stroke();
 
-        // 2. Secondary Cyan Ion Ring
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius * 0.85, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(6, 182, 212, ${shockwaveAlpha * 0.9})`;
@@ -1076,7 +1093,6 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.shadowColor = '#38BDF8';
         ctx.stroke();
 
-        // 3. Relativistic Purple Shock Ring
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius * 1.15, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(217, 70, 239, ${shockwaveAlpha * 0.75})`;
@@ -1100,7 +1116,7 @@ export const ShootingStarsBackground: React.FC = () => {
 
       galaxyParticles.forEach((p, idx) => {
         p.angle += p.speed;
-        p.sparklePhase += 0.01;
+        p.sparklePhase += 0.015;
 
         let px = 0;
         let py = 0;
@@ -1337,7 +1353,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 12. DRAW 5 HIGHLY VISIBLE ALIEN CRAFTS & REAL NUMBER ABDUCTION
+      // 12. DRAW 5 SLEEK ALIEN CRAFTS & CUTE BOUNCING QUESTION MARKS
       // ===========================================================
       const numberElements = Array.from(
         document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"], [class*="font-mono"]')
@@ -1345,7 +1361,7 @@ export const ShootingStarsBackground: React.FC = () => {
         const text = el.textContent || '';
         const rect = el.getBoundingClientRect();
         return (
-          /[0-9]/.test(text) &&
+          (/[0-9]/.test(text) || text.includes('❓')) &&
           rect.width > 0 &&
           rect.height > 0 &&
           rect.top >= -50 &&
@@ -1419,7 +1435,7 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.fill();
         ctx.globalAlpha = 1.0;
 
-        // Upward Beam Dust Particles
+        // Upward Beam Particles
         ship.beamParticles.forEach((bp) => {
           bp.y -= 2.4;
           if (bp.y < 4) bp.y = beamLen;
@@ -1433,22 +1449,21 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.globalAlpha = 1.0;
 
         // -------------------------------------------------------------
-        // RENDER 5 UNIQUE SPACESHIP DESIGNS
+        // RENDER 5 SLEEK COMPACT SPACESHIP DESIGNS
         // -------------------------------------------------------------
         if (ship.design === 'classic_saucer') {
-          // 1. Classic Neon Flying Saucer
           ctx.beginPath();
-          ctx.arc(0, -6, ship.size * 0.5, Math.PI, 0);
+          ctx.arc(0, -5, ship.size * 0.48, Math.PI, 0);
           ctx.fillStyle = ship.secondaryColor;
-          ctx.shadowBlur = 18;
+          ctx.shadowBlur = 14;
           ctx.shadowColor = ship.primaryColor;
           ctx.fill();
 
           ctx.beginPath();
-          ctx.ellipse(0, 0, ship.size, ship.size * 0.4, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, ship.size, ship.size * 0.38, 0, 0, Math.PI * 2);
           ctx.fillStyle = '#0F172A';
           ctx.strokeStyle = ship.primaryColor;
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 2.0;
           ctx.fill();
           ctx.stroke();
 
@@ -1456,92 +1471,84 @@ export const ShootingStarsBackground: React.FC = () => {
             const lX = ((l - 2.5) / 2.8) * (ship.size * 0.75);
             const lPhase = (Math.sin(ship.lightPhase + l) + 1) / 2;
             ctx.beginPath();
-            ctx.arc(lX, 2, 2.5, 0, Math.PI * 2);
+            ctx.arc(lX, 2, 2, 0, Math.PI * 2);
             ctx.fillStyle = lPhase > 0.5 ? ship.primaryColor : '#FFFFFF';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = ship.primaryColor;
             ctx.fill();
           }
         } else if (ship.design === 'cyber_cruiser') {
-          // 2. Triangular Stealth Plasma Cruiser
           ctx.beginPath();
-          ctx.moveTo(ship.size * 1.35, 0);
-          ctx.lineTo(-ship.size * 0.95, -ship.size * 0.7);
+          ctx.moveTo(ship.size * 1.3, 0);
+          ctx.lineTo(-ship.size * 0.9, -ship.size * 0.65);
           ctx.lineTo(-ship.size * 0.5, 0);
-          ctx.lineTo(-ship.size * 0.95, ship.size * 0.7);
+          ctx.lineTo(-ship.size * 0.9, ship.size * 0.65);
           ctx.closePath();
           ctx.fillStyle = '#1E293B';
           ctx.strokeStyle = ship.primaryColor;
-          ctx.lineWidth = 2.6;
-          ctx.shadowBlur = 15;
+          ctx.lineWidth = 2.2;
+          ctx.shadowBlur = 12;
           ctx.shadowColor = ship.primaryColor;
           ctx.fill();
           ctx.stroke();
 
-          // Twin Fiery Plasma Rocket Exhaust
           ctx.beginPath();
-          ctx.arc(-ship.size * 0.85, -ship.size * 0.38, 3.5, 0, Math.PI * 2);
-          ctx.arc(-ship.size * 0.85, ship.size * 0.38, 3.5, 0, Math.PI * 2);
+          ctx.arc(-ship.size * 0.8, -ship.size * 0.35, 3, 0, Math.PI * 2);
+          ctx.arc(-ship.size * 0.8, ship.size * 0.35, 3, 0, Math.PI * 2);
           ctx.fillStyle = '#38BDF8';
-          ctx.shadowBlur = 14;
+          ctx.shadowBlur = 12;
           ctx.shadowColor = '#38BDF8';
           ctx.fill();
         } else if (ship.design === 'bio_scout') {
-          // 3. Organic Manta-Ray Bio-Vessel
           ctx.beginPath();
-          ctx.moveTo(0, -ship.size * 0.7);
-          ctx.quadraticCurveTo(ship.size * 1.3, 0, 0, ship.size * 0.7);
-          ctx.quadraticCurveTo(-ship.size * 1.3, 0, 0, -ship.size * 0.7);
+          ctx.moveTo(0, -ship.size * 0.65);
+          ctx.quadraticCurveTo(ship.size * 1.25, 0, 0, ship.size * 0.65);
+          ctx.quadraticCurveTo(-ship.size * 1.25, 0, 0, -ship.size * 0.65);
           ctx.fillStyle = '#4A044E';
           ctx.strokeStyle = '#D946EF';
-          ctx.lineWidth = 2.4;
-          ctx.shadowBlur = 18;
+          ctx.lineWidth = 2.0;
+          ctx.shadowBlur = 14;
           ctx.shadowColor = '#D946EF';
           ctx.fill();
           ctx.stroke();
 
-          // Pulsing Cyclopean Bio-Eye
           ctx.beginPath();
-          ctx.arc(0, 0, ship.size * 0.38, 0, Math.PI * 2);
+          ctx.arc(0, 0, ship.size * 0.35, 0, Math.PI * 2);
           ctx.fillStyle = '#F43F5E';
-          ctx.shadowBlur = 18;
+          ctx.shadowBlur = 15;
           ctx.shadowColor = '#F43F5E';
           ctx.fill();
         } else if (ship.design === 'plasma_orb') {
-          // 4. Gyroscopic Plasma Drone
           ctx.beginPath();
-          ctx.arc(0, 0, ship.size * 0.58, 0, Math.PI * 2);
+          ctx.arc(0, 0, ship.size * 0.55, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
-          ctx.shadowBlur = 24;
+          ctx.shadowBlur = 20;
           ctx.shadowColor = ship.primaryColor;
           ctx.fill();
 
           ctx.beginPath();
-          ctx.ellipse(0, 0, ship.size * 1.15, ship.size * 0.4, ship.lightPhase, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, ship.size * 1.1, ship.size * 0.38, ship.lightPhase, 0, Math.PI * 2);
           ctx.strokeStyle = ship.primaryColor;
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 2.0;
           ctx.stroke();
         } else {
-          // 5. Golden Hexagonal Imperial Mothership
           ctx.beginPath();
           for (let h = 0; h < 6; h++) {
             const hAngle = (h * Math.PI) / 3;
-            const hx = Math.cos(hAngle) * ship.size * 0.95;
-            const hy = Math.sin(hAngle) * ship.size * 0.6;
+            const hx = Math.cos(hAngle) * ship.size * 0.9;
+            const hy = Math.sin(hAngle) * ship.size * 0.55;
             if (h === 0) ctx.moveTo(hx, hy);
             else ctx.lineTo(hx, hy);
           }
           ctx.closePath();
           ctx.fillStyle = '#78350F';
           ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = 2.8;
-          ctx.shadowBlur = 20;
+          ctx.lineWidth = 2.2;
+          ctx.shadowBlur = 16;
           ctx.shadowColor = '#F59E0B';
           ctx.fill();
           ctx.stroke();
 
           ctx.beginPath();
-          ctx.arc(0, 0, ship.size * 0.32, 0, Math.PI * 2);
+          ctx.arc(0, 0, ship.size * 0.3, 0, Math.PI * 2);
           ctx.fillStyle = '#FBBF24';
           ctx.fill();
         }
@@ -1549,13 +1556,13 @@ export const ShootingStarsBackground: React.FC = () => {
         // Stolen Digit HUD on Craft
         if (ship.stolenDigit) {
           ctx.fillStyle = '#F59E0B';
-          ctx.font = 'bold 12px monospace';
-          ctx.shadowBlur = 10;
+          ctx.font = 'bold 11px monospace';
+          ctx.shadowBlur = 8;
           ctx.shadowColor = '#F59E0B';
-          ctx.fillText(ship.stolenDigit, -12, 3);
+          ctx.fillText(ship.stolenDigit, -10, 2);
         }
 
-        // Physical Number Abduction
+        // PHYSICAL ABDUCTION: REPLACE WITH CUTE BOUNCING QUESTION MARKS
         if (ship.state === 'hover_sucking') {
           numberElements.forEach((el) => {
             const htmlEl = el as HTMLElement;
@@ -1563,29 +1570,33 @@ export const ShootingStarsBackground: React.FC = () => {
             const elCenterX = rect.left + rect.width / 2;
 
             if (Math.abs(ship.x - elCenterX) < 70 && Math.abs(ship.y - (rect.top - 130)) < 55) {
-              const rawText = htmlEl.getAttribute('data-original-val') || htmlEl.textContent || '$49';
-              if (!htmlEl.getAttribute('data-original-val')) {
-                htmlEl.setAttribute('data-original-val', rawText);
-              }
+              const currentContent = htmlEl.textContent || '';
+              if (!currentContent.includes('❓')) {
+                const rawText = htmlEl.getAttribute('data-original-val') || currentContent || '$49';
+                if (!htmlEl.getAttribute('data-original-val')) {
+                  htmlEl.setAttribute('data-original-val', rawText);
+                }
 
-              ship.stolenDigit = rawText.substring(0, 4);
+                ship.stolenDigit = rawText.substring(0, 4);
 
-              htmlEl.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-              htmlEl.style.opacity = '0';
-              htmlEl.style.transform = 'scale(0) translateY(-40px)';
+                // INSERT VISIBLE, CUTE BOUNCING QUESTION MARKS
+                htmlEl.style.opacity = '1';
+                htmlEl.style.transform = 'scale(1)';
+                htmlEl.innerHTML = `<span class="inline-flex items-center gap-1 text-amber-400 font-mono text-3xl sm:text-4xl animate-bounce drop-shadow-[0_0_15px_rgba(245,158,11,0.9)] cursor-pointer select-none" title="¡Número abducido! Haz clic para restaurarlo o espera al guardián...">❓❓</span>`;
 
-              if (!guardian.active || guardian.state === 'peeking_corner') {
-                guardian.active = true;
-                guardian.state = 'sprinting';
-                guardian.x = ship.x > width / 2 ? -70 : width + 70;
-                guardian.y = rect.top + 20;
-                guardian.targetX = elCenterX;
-                guardian.targetY = rect.top + 20;
-                guardian.progress = 0;
-                guardian.legPhase = 0;
-                guardian.targetElement = htmlEl;
-                guardian.originalHTML = rawText;
-                guardian.magicSparkles = [];
+                if (!guardian.active || guardian.state === 'peeking_corner') {
+                  guardian.active = true;
+                  guardian.state = 'sprinting';
+                  guardian.x = ship.x > width / 2 ? -70 : width + 70;
+                  guardian.y = rect.top + 20;
+                  guardian.targetX = elCenterX;
+                  guardian.targetY = rect.top + 20;
+                  guardian.progress = 0;
+                  guardian.legPhase = 0;
+                  guardian.targetElement = htmlEl;
+                  guardian.originalHTML = rawText;
+                  guardian.magicSparkles = [];
+                }
               }
             }
           });
@@ -1887,7 +1898,6 @@ export const ShootingStarsBackground: React.FC = () => {
 
           if (Math.hypot(dx, dy) < 25) {
             watcher.active = false;
-            // Respawn after short while
             setTimeout(() => {
               watcher.active = true;
               watcher.phase = 'peeking';
@@ -1917,7 +1927,6 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.translate(watcher.x, watcher.y + watcher.jumpOffset);
         ctx.rotate(watcher.spinAngle);
 
-        // Glowing Aura
         const aura = ctx.createRadialGradient(0, 0, 5, 0, 0, 42 * scaleFactor);
         aura.addColorStop(0, 'rgba(245, 158, 11, 0.45)');
         aura.addColorStop(0.7, 'rgba(56, 189, 248, 0.25)');
@@ -1927,7 +1936,6 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.arc(0, 0, 42 * scaleFactor, 0, Math.PI * 2);
         ctx.fill();
 
-        // Round Kawaii Head/Body
         ctx.beginPath();
         ctx.arc(0, 2 * scaleFactor, 22 * scaleFactor, 0, Math.PI * 2);
         ctx.fillStyle = isLight ? '#0F172A' : '#FFFFFF';
@@ -1941,7 +1949,6 @@ export const ShootingStarsBackground: React.FC = () => {
         const pomPomX = Math.sin(watcher.pomPomWobble) * 4 * scaleFactor;
         const pomPomY = -34 * scaleFactor + Math.cos(watcher.pomPomWobble) * 2 * scaleFactor;
 
-        // Beanie Dome (Tejido cálido)
         ctx.beginPath();
         ctx.arc(0, -6 * scaleFactor, 22 * scaleFactor, Math.PI * 0.9, Math.PI * 2.1);
         ctx.fillStyle = '#F59E0B';
@@ -1949,13 +1956,11 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.shadowColor = '#F59E0B';
         ctx.fill();
 
-        // Beanie Brim (Dobleces del gorrito)
         ctx.beginPath();
         ctx.roundRect(-20 * scaleFactor, -10 * scaleFactor, 40 * scaleFactor, 8 * scaleFactor, 4 * scaleFactor);
         ctx.fillStyle = '#FDE68A';
         ctx.fill();
 
-        // Beanie String Lines
         for (let b = -12; b <= 12; b += 6) {
           ctx.beginPath();
           ctx.moveTo(b * scaleFactor, -10 * scaleFactor);
@@ -1965,7 +1970,6 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.stroke();
         }
 
-        // Fluffy Glowing Pom-Pom on top (Pompón tierno que se balancea)
         ctx.beginPath();
         ctx.arc(pomPomX, pomPomY, 7 * scaleFactor, 0, Math.PI * 2);
         ctx.fillStyle = '#FFFFFF';
@@ -1976,7 +1980,6 @@ export const ShootingStarsBackground: React.FC = () => {
         // -------------------------------------------------------------
         // ULTRA-EXPRESSIVE KAWAII FACE & ROSY BLUSH CHEEKS
         // -------------------------------------------------------------
-        // Rosy Blushing Cheeks (Mejillas sonrosadas tiernas)
         ctx.beginPath();
         ctx.ellipse(-12 * scaleFactor, 6 * scaleFactor, 4.5 * scaleFactor, 2.8 * scaleFactor, 0, 0, Math.PI * 2);
         ctx.ellipse(12 * scaleFactor, 6 * scaleFactor, 4.5 * scaleFactor, 2.8 * scaleFactor, 0, 0, Math.PI * 2);
@@ -1986,7 +1989,6 @@ export const ShootingStarsBackground: React.FC = () => {
         const eyeColor = isLight ? '#F59E0B' : '#0F172A';
 
         if (watcher.phase === 'giggling') {
-          // Closed joyful laughing eyes (^ _ ^)
           ctx.beginPath();
           ctx.arc(-7 * scaleFactor, 1 * scaleFactor, 4 * scaleFactor, Math.PI * 0.2, Math.PI * 0.8, true);
           ctx.arc(7 * scaleFactor, 1 * scaleFactor, 4 * scaleFactor, Math.PI * 0.2, Math.PI * 0.8, true);
@@ -1995,13 +1997,11 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.lineCap = 'round';
           ctx.stroke();
 
-          // Big Open Laughing Mouth
           ctx.beginPath();
           ctx.arc(0, 7 * scaleFactor, 6 * scaleFactor, 0, Math.PI);
           ctx.fillStyle = '#F43F5E';
           ctx.fill();
         } else if (watcher.phase === 'kissing') {
-          // Winking Anime Eye (> . <)
           ctx.beginPath();
           ctx.moveTo(-11 * scaleFactor, -1 * scaleFactor);
           ctx.lineTo(-7 * scaleFactor, 2 * scaleFactor);
@@ -2011,31 +2011,26 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.lineCap = 'round';
           ctx.stroke();
 
-          // Sparkling Open Star Eye on other side
           ctx.beginPath();
           ctx.arc(7 * scaleFactor + watcher.eyeX, 2 * scaleFactor + watcher.eyeY, 3.8 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = eyeColor;
           ctx.fill();
-          // Star Reflection Catchlight
+
           ctx.beginPath();
           ctx.arc(6 * scaleFactor + watcher.eyeX, 0.5 * scaleFactor + watcher.eyeY, 1.5 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
           ctx.fill();
 
-          // Cute Kissy Lips (Pucker "3")
           ctx.beginPath();
           ctx.arc(0, 8 * scaleFactor, 2.5 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#F43F5E';
           ctx.fill();
         } else {
-          // Big Sparkling Anime Eyes with dual catchlight reflections
-          // Left Eye
           ctx.beginPath();
           ctx.arc(-7 * scaleFactor + watcher.eyeX, 1 * scaleFactor + watcher.eyeY, 4 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = eyeColor;
           ctx.fill();
 
-          // Left Catchlights
           ctx.beginPath();
           ctx.arc(-8.5 * scaleFactor + watcher.eyeX, -0.5 * scaleFactor + watcher.eyeY, 1.6 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
@@ -2044,13 +2039,11 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.arc(-5.8 * scaleFactor + watcher.eyeX, 2.2 * scaleFactor + watcher.eyeY, 0.9 * scaleFactor, 0, Math.PI * 2);
           ctx.fill();
 
-          // Right Eye
           ctx.beginPath();
           ctx.arc(7 * scaleFactor + watcher.eyeX, 1 * scaleFactor + watcher.eyeY, 4 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = eyeColor;
           ctx.fill();
 
-          // Right Catchlights
           ctx.beginPath();
           ctx.arc(5.5 * scaleFactor + watcher.eyeX, -0.5 * scaleFactor + watcher.eyeY, 1.6 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
@@ -2059,7 +2052,6 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.arc(8.2 * scaleFactor + watcher.eyeX, 2.2 * scaleFactor + watcher.eyeY, 0.9 * scaleFactor, 0, Math.PI * 2);
           ctx.fill();
 
-          // Sweet Kawaii Smile with Little Tongue
           ctx.beginPath();
           ctx.arc(0, 6 * scaleFactor, 5 * scaleFactor, 0.1, Math.PI - 0.1);
           ctx.strokeStyle = eyeColor;
@@ -2073,7 +2065,6 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.fill();
         }
 
-        // Cute Waving Hand
         if (watcher.phase === 'happy' || watcher.phase === 'kissing') {
           const waveAngle = Math.sin(now * 0.012) * 0.5;
           ctx.save();
@@ -2097,6 +2088,7 @@ export const ShootingStarsBackground: React.FC = () => {
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('click', handleDocumentClick);
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
