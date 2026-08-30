@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cyber-950 text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, .font-tech {
+    font-family: 'Rajdhani', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* =========================================================
+   LIGHT MODE (LUXURY STUDIO) - HIGH CONTRAST & ELEGANT
+   ========================================================= */
+html.light body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-cyber-950 {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-cyber-900 {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-cyber-850 {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #1E293B !important;
+}
+
+html.light .bg-cyber-800 {
+  background-color: #E2E8F0 !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+html.light header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light aside {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: #1E293B !important;
+}
+
+html.light .text-slate-300,
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748B !important;
+}
+
+html.light .border-cyber-800,
+html.light .border-cyber-700 {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .gold-gradient-text {
+  background: linear-gradient(135deg, #B45309 0%, #D97706 40%, #92400E 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.light .cyan-gradient-text {
+  background: linear-gradient(135deg, #0369A1 0%, #0284C7 50%, #075985 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+  color: #0F172A !important;
+}
+
+html.light .glass-panel-hover:hover {
+  background: #FFFFFF !important;
+  border-color: #D97706 !important;
+  box-shadow: 0 15px 30px -5px rgba(217, 119, 6, 0.15) !important;
+}
+
+html.light .glass-panel-gold {
+  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, #FFFFFF 85%) !important;
+  border: 1px solid rgba(217, 119, 6, 0.4) !important;
+  box-shadow: 0 10px 30px rgba(217, 119, 6, 0.1) !important;
+  color: #0F172A !important;
+}
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #D97706 !important;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+}
+
+html.light .cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+/* =========================================================
+   TOKYO SYNTHWAVE NEON MODE (HIGH VOLTAGE)
+   ========================================================= */
+html.theme-neon body {
+  background-color: #05050D !important;
+}
+
+html.theme-neon .glass-panel {
+  border-color: rgba(6, 182, 212, 0.3) !important;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15), 0 0 15px rgba(217, 70, 239, 0.1) !important;
+}
+
+html.theme-neon .glass-panel-gold {
+  border-color: rgba(217, 70, 239, 0.5) !important;
+  box-shadow: 0 0 35px rgba(217, 70, 239, 0.25), 0 0 20px rgba(6, 182, 212, 0.2) !important;
+}
+
+/* =========================================================
+   DARK CYBER LUXURY DEFAULT
+   ========================================================= */
+.glass-panel {
+  background: rgba(18, 23, 35, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(229, 169, 60, 0.15);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(23, 30, 46, 0.85);
+  border-color: rgba(229, 169, 60, 0.4);
+  box-shadow: 0 0 25px -4px rgba(229, 169, 60, 0.25);
+  transform: translateY(-2px);
+}
+
+.glass-panel-gold {
+  background: radial-gradient(circle at 50% 0%, rgba(229, 169, 60, 0.15) 0%, rgba(18, 23, 35, 0.8) 75%);
+  border: 1px solid rgba(229, 169, 60, 0.4);
+  box-shadow: 0 0 30px rgba(229, 169, 60, 0.15);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF6D6 0%, #F59E0B 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cyan-gradient-text {
+  background: linear-gradient(135deg, #E0F2FE 0%, #38BDF8 50%, #0284C7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Cyber Grid Background */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(229, 169, 60, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(229, 169, 60, 0.05) 1px, transparent 1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07090E;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232D42;
+  border-radius: 4px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E5A93C;
+}
