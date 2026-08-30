@@ -514,24 +514,39 @@ export const LoginModal: React.FC = () => {
           </>
         ) : (
           /* =========================================================
-             PASO 2: VERIFICACIÓN 2FA OTP
+             PASO 2: VERIFICACIÓN 2FA OTP CON GOOGLE AUTHENTICATOR
              ========================================================= */
-          <div className="text-center space-y-6 py-2">
-            <div className="w-16 h-16 rounded-2xl bg-cyber-gold/20 border border-cyber-gold flex items-center justify-center text-cyber-gold mx-auto shadow-gold-glow">
-              <Smartphone className="w-8 h-8" />
+          <div className="text-center space-y-4 py-2">
+            <div className="w-14 h-14 rounded-2xl bg-cyber-gold/20 border border-cyber-gold flex items-center justify-center text-cyber-gold mx-auto shadow-gold-glow">
+              <Smartphone className="w-7 h-7" />
             </div>
 
             <div>
-              <h3 className="text-2xl font-tech font-bold text-white tracking-wide">
+              <h3 className="text-xl font-tech font-bold text-white tracking-wide">
                 {t('auth.twoFactorTitle')}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-md mx-auto">
-                {t('auth.enterCode')} ({formData.email || 'tu dispositivo seguro'}).
+              <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                Escanea con Google Authenticator o ingresa el código OTP enviado a <strong className="text-white">{formData.email || 'tu dispositivo'}</strong>.
               </p>
             </div>
 
+            {/* QR Code Authenticator Simulator Card */}
+            <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-gold/30 max-w-xs mx-auto flex items-center gap-3 text-left">
+              <div className="w-16 h-16 bg-white p-1 rounded-xl shrink-0 flex items-center justify-center">
+                {/* SVG QR Code Pattern */}
+                <svg className="w-full h-full text-black" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 0h4v4h-4v-4zm-4 4h4v4h-4v-4zm4-4h4v4h-4v-4zm-4-4h4v4h-4v-4zm-4 4h4v4h-4v-4z" />
+                </svg>
+              </div>
+              <div className="space-y-0.5 text-[11px] font-mono">
+                <span className="text-slate-400 block font-tech uppercase text-[10px]">Clave Secreta TOTP:</span>
+                <span className="text-cyber-gold font-bold select-all">AETH-7772-0499-SYNC</span>
+                <span className="text-emerald-400 text-[10px] block">✓ Algoritmo SHA-256</span>
+              </div>
+            </div>
+
             {/* 6 Digit OTP Input Boxes */}
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <div className="flex items-center justify-center gap-2 sm:gap-2.5 pt-1">
               {otp.map((digit, idx) => (
                 <input
                   key={idx}
@@ -541,13 +556,13 @@ export const LoginModal: React.FC = () => {
                   value={digit}
                   onChange={(e) => handleOtpChange(idx, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(idx, e)}
-                  className="w-11 h-13 sm:w-12 sm:h-14 bg-cyber-950 border-2 border-cyber-gold/50 focus:border-cyber-gold rounded-xl text-center text-xl sm:text-2xl font-mono font-bold text-cyber-gold focus:outline-none shadow-gold-glow transition-all"
+                  className="w-10 h-12 sm:w-11 sm:h-13 bg-cyber-950 border-2 border-cyber-gold/50 focus:border-cyber-gold rounded-xl text-center text-lg sm:text-xl font-mono font-bold text-cyber-gold focus:outline-none shadow-gold-glow transition-all"
                 />
               ))}
             </div>
 
             {/* Auto-fill demo button */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setOtp(['7', '7', '7', '2', '0', '4'])}
@@ -555,7 +570,7 @@ export const LoginModal: React.FC = () => {
               >
                 <KeyRound className="w-3.5 h-3.5" /> Autocompletar Código Demo (777-204)
               </button>
-              <span className="text-[11px] text-slate-500 font-mono">
+              <span className="text-[10px] text-slate-500 font-mono">
                 Reenviar código en {timer}s
               </span>
             </div>

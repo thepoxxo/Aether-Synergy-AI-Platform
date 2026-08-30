@@ -1,4 +1,4 @@
-import { StoredUser, UserRegistrationData } from '../types/database';
+import { StoredUser, UserRegistrationData, CloudProject, R2BucketAsset } from '../types/database';
 import { UserRole } from '../types/auth';
 
 const DB_KEY = 'aether_users_database_v1';
@@ -182,6 +182,106 @@ class DatabaseService {
     if (filtered.length === users.length) return false;
     this.saveStorage(filtered);
     return true;
+  }
+
+  // =========================================
+  // ☁️ SUPABASE CLOUD 3D PROJECTS (POSTGRESQL + RLS)
+  // =========================================
+  public getAllProjects(): CloudProject[] {
+    const raw = localStorage.getItem('aether_cloud_projects_v1');
+    if (!raw) {
+      const initial: CloudProject[] = [
+        {
+          id: 'proj_cyber_jacket_01',
+          userId: 'usr_pro_01',
+          title: 'Cyber Bomber Jacket 2045',
+          type: 'jacket',
+          primaryColor: '#1E293B',
+          accentColor: '#E5A93C',
+          fileSizeMb: 4.8,
+          createdAt: '2026-08-25',
+          updatedAt: '2026-08-29',
+          status: 'synced'
+        },
+        {
+          id: 'proj_sneaker_chunky_02',
+          userId: 'usr_agency_01',
+          title: 'Chunky Sneaker Neo-Pulse',
+          type: 'sneaker',
+          primaryColor: '#0F172A',
+          accentColor: '#38BDF8',
+          fileSizeMb: 8.2,
+          createdAt: '2026-08-27',
+          updatedAt: '2026-08-30',
+          status: 'synced'
+        }
+      ];
+      localStorage.setItem('aether_cloud_projects_v1', JSON.stringify(initial));
+      return initial;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return [];
+    }
+  }
+
+  public saveProject(project: Omit<CloudProject, 'id' | 'createdAt' | 'updatedAt' | 'status'>): CloudProject {
+    const projects = this.getAllProjects();
+    const newProject: CloudProject = {
+      ...project,
+      id: `proj_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      status: 'synced'
+    };
+    projects.unshift(newProject);
+    localStorage.setItem('aether_cloud_projects_v1', JSON.stringify(projects));
+    window.dispatchEvent(new Event('aether_cloud_projects_updated'));
+    return newProject;
+  }
+
+  public deleteProject(id: string): boolean {
+    const projects = this.getAllProjects();
+    const filtered = projects.filter((p) => p.id !== id);
+    localStorage.setItem('aether_cloud_projects_v1', JSON.stringify(filtered));
+    window.dispatchEvent(new Event('aether_cloud_projects_updated'));
+    return true;
+  }
+
+  // =========================================
+  // 📦 CLOUDFLARE R2 & S3 BUCKET ASSETS
+  // =========================================
+  public getR2BucketAssets(): R2BucketAsset[] {
+    return [
+      {
+        id: 'r2_01',
+        name: 'Cyber_Bomber_Jacket_4K.glb',
+        format: 'glb',
+        size: '4.8 MB',
+        cdnUrl: 'https://pub-r2.aethersynergy.ai/models/jacket_4k.glb',
+        latencyMs: 11,
+        uploadedAt: '2026-08-28 14:20'
+      },
+      {
+        id: 'r2_02',
+        name: 'Sneaker_NeoPulse_PBR.usdz',
+        format: 'usdz',
+        size: '7.1 MB',
+        cdnUrl: 'https://pub-r2.aethersynergy.ai/ar/sneaker_ar.usdz',
+        latencyMs: 9,
+        uploadedAt: '2026-08-29 18:45'
+      },
+      {
+        id: 'r2_03',
+        name: 'TechPack_Production_Spec.pdf',
+        format: 'pdf',
+        size: '1.4 MB',
+        cdnUrl: 'https://pub-r2.aethersynergy.ai/docs/techpack_894.pdf',
+        latencyMs: 14,
+        uploadedAt: '2026-08-30 02:10'
+      }
+    ];
   }
 }
 

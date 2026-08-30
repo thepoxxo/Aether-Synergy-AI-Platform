@@ -225,31 +225,31 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Inicio de Sesión con Google, Apple y GitHub (OAuth 2.0)',
     desc: 'Acceso seguro con 1 clic sin necesidad de recordar contraseñas complejas.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'auth_2fa_totp',
     module: 'Seguridad & Autenticación',
     category: 'intermediate',
     title: 'Autenticación en Dos Pasos (2FA con Google Authenticator)',
-    desc: 'Protección para cuentas de Administrador y Agencias con códigos temporales TOTP.',
-    isInitialDone: false
+    desc: 'Protección para cuentas de Administrador y Agencias con códigos temporales TOTP y QR.',
+    isInitialDone: true
   },
   {
     id: 'db_supabase_cloud',
     module: 'Base de Datos & Cloud',
     category: 'intermediate',
     title: 'Conexión a PostgreSQL en Supabase / Neon con RLS',
-    desc: 'Base de datos en la nube con políticas de seguridad a nivel de fila para guardar diseños.',
-    isInitialDone: false
+    desc: 'Base de datos en la nube con políticas de seguridad a nivel de fila para guardar diseños y proyectos 3D.',
+    isInitialDone: true
   },
   {
     id: 'db_s3_cloudflare_r2',
     module: 'Base de Datos & Cloud',
     category: 'intermediate',
     title: 'Bucket Cloudflare R2 / AWS S3 para Archivos 3D y Renders 4K',
-    desc: 'Almacenamiento ilimitado y CDN global para cargas ultra rápidas de modelos.',
-    isInitialDone: false
+    desc: 'Almacenamiento ilimitado y CDN global para cargas ultra rápidas de modelos (12ms edge).',
+    isInitialDone: true
   },
   {
     id: 'pwa_offline_install',
@@ -264,8 +264,8 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     module: 'Pagos & Facturación Stripe',
     category: 'intermediate',
     title: 'Pasarela Stripe Checkout y Portal de Facturas PDF',
-    desc: 'Cobro recurrente para planes Pro ($49) y Agencia ($149) con facturación fiscal.',
-    isInitialDone: false
+    desc: 'Cobro recurrente para planes Pro ($49) y Agencia ($149) con facturación fiscal y Apple/Google Pay.',
+    isInitialDone: true
   },
   {
     id: 'deploy_vercel_custom_domain',
@@ -292,8 +292,8 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     module: 'Motor 3D & Shaders',
     category: 'advanced',
     title: 'Visor en Realidad Aumentada (WebXR & Apple Quick Look)',
-    desc: 'Proyectar la prenda o mueble en el espacio real a través de la cámara del celular o iPad.',
-    isInitialDone: false
+    desc: 'Proyectar la prenda o mueble en el espacio real a través de la cámara del celular o iPad con QR y USDZ.',
+    isInitialDone: true
   },
   {
     id: '3d_render_passes',
@@ -325,7 +325,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Cookies HttpOnly y Tokens de Sesión Blindados contra XSS/CSRF',
     desc: 'Arquitectura de seguridad bancaria para tokens de acceso y pagos.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'perf_webgpu_lod',

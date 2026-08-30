@@ -46,3 +46,27 @@ export interface StoredUser {
   createdAt: string;
   status: 'active' | 'suspended' | 'pending_verification';
 }
+
+export interface CloudProject {
+  id: string;
+  userId: string;
+  title: string;
+  type: string;
+  primaryColor: string;
+  accentColor: string;
+  thumbnailUrl?: string;
+  fileSizeMb: number;
+  createdAt: string;
+  updatedAt: string;
+  status: 'synced' | 'local';
+}
+
+export interface R2BucketAsset {
+  id: string;
+  name: string;
+  format: 'glb' | 'obj' | 'png' | 'pdf' | 'usdz';
+  size: string;
+  cdnUrl: string;
+  latencyMs: number;
+  uploadedAt: string;
+}

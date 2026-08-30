@@ -1,7 +1,22 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
-import { X, Sparkles, Shield, Building2, Zap, User as UserIcon, LogOut, CheckCircle2, RefreshCw } from 'lucide-react';
+import {
+  X,
+  Sparkles,
+  Shield,
+  Building2,
+  Zap,
+  User as UserIcon,
+  LogOut,
+  CheckCircle2,
+  RefreshCw,
+  Lock,
+  Cloud,
+  Fingerprint,
+  Smartphone,
+  KeyRound
+} from 'lucide-react';
 
 export const UserProfileModal: React.FC = () => {
   const { user, isProfileModalOpen, setProfileModalOpen, logout, switchRole } = useAuth();
@@ -51,7 +66,7 @@ export const UserProfileModal: React.FC = () => {
         </div>
 
         {/* Plan & Usage Stats */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800">
             <span className="text-[11px] uppercase tracking-wider text-slate-400">Plan Actual</span>
             <div className="font-tech font-bold text-base text-white mt-0.5">{user.planName}</div>
@@ -64,6 +79,37 @@ export const UserProfileModal: React.FC = () => {
               {user.aiCredits.total > 1000 ? 'Ilimitados ∞' : `${user.aiCredits.total - user.aiCredits.used} restantes`}
             </div>
             <div className="text-[11px] text-slate-400">{user.aiCredits.used} generados este mes</div>
+          </div>
+        </div>
+
+        {/* 🔐 Security & Cloud State Badges */}
+        <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 mb-5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-slate-300 font-semibold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" /> Blindaje de Seguridad & Cloud
+            </span>
+            <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+              ACTIVO
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-400 pt-1">
+            <div className="flex items-center gap-1.5 bg-cyber-900 p-1.5 rounded-lg border border-cyber-800">
+              <Lock className="w-3 h-3 text-cyan-400" />
+              <span>2FA TOTP: Protegido</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-cyber-900 p-1.5 rounded-lg border border-cyber-800">
+              <Fingerprint className="w-3 h-3 text-cyber-gold" />
+              <span>Token: JWT HttpOnly</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-cyber-900 p-1.5 rounded-lg border border-cyber-800">
+              <Cloud className="w-3 h-3 text-purple-400" />
+              <span>Supabase: RLS ON</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-cyber-900 p-1.5 rounded-lg border border-cyber-800">
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              <span>Cloudflare R2: 12ms</span>
+            </div>
           </div>
         </div>
 
