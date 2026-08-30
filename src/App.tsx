@@ -34,6 +34,11 @@ import { AgencyWorkspaces } from './components/modules/AgencyWorkspaces';
 import { CinematicTurntable } from './components/modules/CinematicTurntable';
 import { ShopifyLandingBuilderAI } from './components/modules/ShopifyLandingBuilderAI';
 import { AutonomousAgentSwarm } from './components/modules/AutonomousAgentSwarm';
+import { BrandKitStudio } from './components/modules/BrandKitStudio';
+import { MediaBuyerCampaigns } from './components/modules/MediaBuyerCampaigns';
+import { VersionControl3D } from './components/modules/VersionControl3D';
+import { MetaverseGamingExporter } from './components/modules/MetaverseGamingExporter';
+import { TextileEngineeringLab } from './components/modules/TextileEngineeringLab';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -104,6 +109,16 @@ const MainLayout: React.FC = () => {
         return <Scanner3D />;
       case 'adgen':
         return <AdGenAI />;
+      case 'brandkit':
+        return <BrandKitStudio />;
+      case 'mediabuyer':
+        return <MediaBuyerCampaigns />;
+      case 'versioncontrol':
+        return <VersionControl3D />;
+      case 'metaverse':
+        return <MetaverseGamingExporter />;
+      case 'textilelab':
+        return <TextileEngineeringLab />;
       case 'shopifylanding':
         return <ShopifyLandingBuilderAI />;
       case 'agentswarm':

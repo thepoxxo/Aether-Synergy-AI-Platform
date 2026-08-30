@@ -602,6 +602,410 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Sincronización & Bóveda de Diseños 3D en la Nube (Cloud Assets Vault)',
     desc: 'Almacenamiento seguro e inmutable de geometrías .GLB, texturas PBR 4K y fichas técnicas exportables.',
     isInitialDone: true
+  },
+
+  // ==========================================
+  // 👑 9. NIVEL 9: BRAND KIT, MEDIA BUYER & ROAS, GIT 3D, METAVERSE EXPORTER & LAB TEXTIL (50 HITOS GIGANTES)
+  // ==========================================
+  {
+    id: 'brand_kit_corporate_global',
+    module: 'Identidad & Brand Kit',
+    category: 'advanced',
+    title: 'Brand Kit Corporativo Global (Tipografías, SVG & Marcas de Agua)',
+    desc: 'Centralización de ADN de marca con tipografías oficiales, logotipos vectoriales SVG y aplicación automática a todos los renders.',
+    isInitialDone: true
+  },
+  {
+    id: 'pantone_cmyk_converter',
+    module: 'Identidad & Brand Kit',
+    category: 'advanced',
+    title: 'Conversor y Selector de Paletas Pantone / CMYK para Estampación',
+    desc: 'Correspondencia de color exacta entre pantalla y tintas textiles para evitar variaciones en producción de fábrica.',
+    isInitialDone: true
+  },
+  {
+    id: 'ai_moodboard_extractor',
+    module: 'Identidad & Brand Kit',
+    category: 'advanced',
+    title: 'Extractor de Moodboards & Tableros de Tendencias con IA',
+    desc: 'Extracción inteligente de códigos Pantone y texturas a partir de imágenes de inspiración de moda.',
+    isInitialDone: true
+  },
+  {
+    id: 'parametric_3d_embroidery_patch',
+    module: 'Identidad & Brand Kit',
+    category: 'advanced',
+    title: 'Bordador & Creador de Parches 3D Paramétrico con Hilos de Relieve',
+    desc: 'Generación de hilos con brillo satinado, metálico y relieve volumétrico para escudos y parches.',
+    isInitialDone: true
+  },
+  {
+    id: 'printable_hangtags_barcode_generator',
+    module: 'Identidad & Brand Kit',
+    category: 'advanced',
+    title: 'Generador de Hangtags Colgantes y Etiquetas con Código EAN-13',
+    desc: 'Diseño automático de etiquetas de cuello y cartulinas colgantes de 300 DPI listas para imprenta con código de barras.',
+    isInitialDone: true
+  },
+  {
+    id: 'storyboard_3_acts_scriptwriter',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Generador de Storyboards de 3 Actos con IA (Hook, Proof, CTA)',
+    desc: 'Estructuración cinematográfica visual para anuncios de alta retención en TikTok y Reels con tiempos de locución.',
+    isInitialDone: true
+  },
+  {
+    id: 'hormozi_style_dynamic_subtitles',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Creador de Subtítulos Animados Dinámicos Estilo Alex Hormozi',
+    desc: 'Animación de subtítulos con palabras clave resaltadas en colores neón y escala interactiva.',
+    isInitialDone: true
+  },
+  {
+    id: 'sfx_audio_soundboard_library',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Biblioteca de Efectos de Sonido SFX Textil y Transiciones',
+    desc: 'Sonidos de cremalleras, lluvia, cortes y clics de cámara sincronizados con la edición de video.',
+    isInitialDone: true
+  },
+  {
+    id: 'hook_3s_retention_analyzer',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Analizador y Calificador de Retención de los Primeros 3 Segundos',
+    desc: 'Predicción de CTR y fuerza visual del frame de apertura para evitar que el usuario haga scroll.',
+    isInitialDone: true
+  },
+  {
+    id: 'high_ctr_thumbnails_generator',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Generador de Portadas y Miniaturas de Alto CTR para TikTok/YouTube',
+    desc: 'Miniaturas publicitarias con alto contraste, bordes iluminados y títulos de impacto.',
+    isInitialDone: true
+  },
+  {
+    id: 'tiktok_meta_campaign_pack_exporter',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Exportador de Paquetes de Campaña Listos para TikTok/Meta Ads',
+    desc: 'Archivo ZIP con videos, variantes de texto, llamados a la acción y segmentaciones sugeridas.',
+    isInitialDone: true
+  },
+  {
+    id: 'ad_ab_testing_variations_generator',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Generador de 3 Variantes de Anuncio para A/B Testing',
+    desc: 'Creación automática de 3 versiones con ganchos contrastantes para optimizar el costo por compra (CPA).',
+    isInitialDone: true
+  },
+  {
+    id: 'roas_budget_media_buying_calculator',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Calculadora Predictiva de ROAS & Presupuesto Publicitario',
+    desc: 'Simulación en vivo de ventas diarias, facturación a 30 días y beneficio neto según la inversión en pauta.',
+    isInitialDone: true
+  },
+  {
+    id: 'aida_pas_ad_copy_generator',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Generador de Textos Publicitarios con Fórmulas AIDA / PAS',
+    desc: 'Redacción persuasiva con escasez y prueba social para anuncios en Instagram, Facebook y Google Ads.',
+    isInitialDone: true
+  },
+  {
+    id: 'ad_policy_compliance_scanner',
+    module: 'Media Buying & Video Ads',
+    category: 'advanced',
+    title: 'Escáner de Cumplimiento de Políticas Publicitarias de Meta/TikTok',
+    desc: 'Verificación automática para prevenir rechazos y bloqueos de anuncios en plataformas de pauta.',
+    isInitialDone: true
+  },
+  {
+    id: 'git_3d_fashion_version_control',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Historial de Versiones & Puntos de Restauración Inmutables (Git 3D)',
+    desc: 'Línea de tiempo de revisiones (v1.0, v1.2, v2.0) con rollback en 1 clic y autoría de cambios.',
+    isInitialDone: true
+  },
+  {
+    id: 'split_slider_visual_diff_comparator',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Comparador Visual de Pantalla Dividida (Antes vs Después 3D)',
+    desc: 'Barra deslizable en tiempo real sobre el modelo para evaluar evoluciones de diseño.',
+    isInitialDone: true
+  },
+  {
+    id: 'spatial_3d_garment_pin_annotations',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Anotaciones y Marcadores Espaciales 3D para Equipos de Confección',
+    desc: 'Notas y comentarios fijados directamente en coordenadas 3D de la prenda para el patronista.',
+    isInitialDone: true
+  },
+  {
+    id: 'executive_client_presentation_mode',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Modo Presentación Limpio para Reuniones y Clientes VIP',
+    desc: 'Vista inmersiva a pantalla completa sin distracciones para juntas de aprobación de colección.',
+    isInitialDone: true
+  },
+  {
+    id: 'team_change_audit_activity_log',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Registro de Auditoría de Cambios de Diseño en la Agencia',
+    desc: 'Trazabilidad de modificaciones de medidas, colores y materiales por cada miembro del equipo.',
+    isInitialDone: true
+  },
+  {
+    id: 'unreal_engine_5_nanite_usd_exporter',
+    module: 'Gaming & Metaverso 3D',
+    category: 'advanced',
+    title: 'Exportador para Unreal Engine 5 con Nanite y Formato USD',
+    desc: 'Compilación volumétrica con texturas 8K para producción cinematográfica y pasarelas LED gigantes.',
+    isInitialDone: true
+  },
+  {
+    id: 'roblox_decentraland_ugc_optimizer',
+    module: 'Gaming & Metaverso 3D',
+    category: 'advanced',
+    title: 'Optimizador de Mallas Low-Poly para Roblox y Decentraland',
+    desc: 'Reducción poligonal automática y atlas de textura empaquetado para avatares de videojuegos.',
+    isInitialDone: true
+  },
+  {
+    id: 'clo3d_marvelous_zprj_quad_bridge',
+    module: 'Gaming & Metaverso 3D',
+    category: 'advanced',
+    title: 'Intercambio con CLO3D y Marvelous Designer (.ZPRJ Quad Retopo)',
+    desc: 'Mallas 100% cuádruples con coordenadas UV limpias y líneas de costura editables.',
+    isInitialDone: true
+  },
+  {
+    id: 'rigged_fbx_humanoid_bone_hierarchy',
+    module: 'Gaming & Metaverso 3D',
+    category: 'advanced',
+    title: 'Exportador con Esqueleto Anatómico Rigged FBX (Caminar / Bailar)',
+    desc: 'Ropa adaptada a huesos humanoides con clips de animación listos para Unity y Blender.',
+    isInitialDone: true
+  },
+  {
+    id: 'vrchat_vtuber_secondary_physics',
+    module: 'Gaming & Metaverso 3D',
+    category: 'advanced',
+    title: 'Exportador para VRChat & VTubers con Físicas Textiles Secundarias',
+    desc: 'Assets optimizados para streamers virtuales con movimiento fluido de capas y cordones.',
+    isInitialDone: true
+  },
+  {
+    id: 'interactive_us_vs_others_table',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Generador de Tablas Comparativas E-Commerce ("Nosotros vs Otros")',
+    desc: 'Bloque persuasivo para tiendas online destacando ventajas de materiales, precio y garantías.',
+    isInitialDone: true
+  },
+  {
+    id: 'ai_height_weight_size_recommender',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Recomendador de Tallas IA Basado en Estatura y Peso Corporal',
+    desc: 'Widget interactivo para reducir la tasa de devoluciones recomendando la talla exacta al cliente.',
+    isInitialDone: true
+  },
+  {
+    id: 'aov_upselling_bundle_builder',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Creador de Bundles de Compra y Descuentos por Volumen (Upselling)',
+    desc: 'Configurador de paquetes coordinados (Chaqueta + Pantalón) para incrementar el ticket promedio.',
+    isInitialDone: true
+  },
+  {
+    id: 'high_converting_mobile_sticky_buy_bar',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Barra de Compra Fija (Sticky Buy Bar) Móvil para Celulares',
+    desc: 'Barra inferior de checkout que acompaña al usuario durante el scroll en dispositivos móviles.',
+    isInitialDone: true
+  },
+  {
+    id: 'amazon_mercadolibre_seo_sheet',
+    module: 'Integración E-Commerce',
+    category: 'advanced',
+    title: 'Generador de Fichas de Producto Optimizadas para Amazon y Mercado Libre',
+    desc: 'Títulos SEO, viñetas de especificaciones y descripción comercial para marketplaces globales.',
+    isInitialDone: true
+  },
+  {
+    id: 'auto_retopology_quad_cleaner',
+    module: 'Fabricación & Hardware 3D',
+    category: 'advanced',
+    title: 'Optimizador Automático de Topología 3D Cuádruple (Auto-Retopology)',
+    desc: 'Conversión de triángulos irregulares en mallas limpias de quads con 1 solo clic.',
+    isInitialDone: true
+  },
+  {
+    id: 'runway_photo_palette_extractor',
+    module: 'Identidad & Brand Kit',
+    category: 'advanced',
+    title: 'Extractor de Paletas Cromáticas desde Fotos de Pasarela',
+    desc: 'Mapeo instantáneo de colores dominantes y acentos a partir de imágenes de alta costura.',
+    isInitialDone: true
+  },
+  {
+    id: 'ai_creative_garment_name_generator',
+    module: 'Copiloto IA & Mascotas',
+    category: 'advanced',
+    title: 'Generador de Nombres Comerciales Conceptuales de Prendas',
+    desc: 'Nombres atractivos y futuristas para colecciones cápsula generados con inteligencia artificial.',
+    isInitialDone: true
+  },
+  {
+    id: 'lighting_shadow_studio_corrector',
+    module: 'Fabricación & Hardware 3D',
+    category: 'advanced',
+    title: 'Corrector de Sombras e Iluminación de Estudio Comercial 4K',
+    desc: 'Balance de iluminación de tres puntos (Key, Fill, Rim) para máxima calidad publicitaria.',
+    isInitialDone: true
+  },
+  {
+    id: 'multilingual_factory_po_assistant',
+    module: 'Proveedores Globales B2B',
+    category: 'advanced',
+    title: 'Redactor Asistente de Términos de Compra para Fábricas (Inglés/Turco)',
+    desc: 'Generación de órdenes de compra con términos claros para fábricas en Portugal, Turquía y Asia.',
+    isInitialDone: true
+  },
+  {
+    id: 'breathability_heat_cfm_simulator',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Simulador de Transpirabilidad y Evacuación de Calor (CFM)',
+    desc: 'Cálculo del flujo de aire y regulación térmica del tejido según el gramaje GSM.',
+    isInitialDone: true
+  },
+  {
+    id: 'post_wash_shrinkage_predictor',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Predictor de Encogimiento Post-Lavado (Norma AATCC 135)',
+    desc: 'Estimación de porcentaje de reducción longitudinal y transversal tras lavado.',
+    isInitialDone: true
+  },
+  {
+    id: 'nesting_fabric_waste_minimizer',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Algoritmo de Acomodo de Patrones (Nesting 2D) Ahorro de Metraje',
+    desc: 'Rotación y acomodo inteligente de piezas de moldería para reducir el desperdicio textil.',
+    isInitialDone: true
+  },
+  {
+    id: 'grs_gots_eco_badges_generator',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Generador de Insignias Verificables de Sostenibilidad (GRS / GOTS)',
+    desc: 'Sellos de algodón orgánico y reciclabilidad para etiquetas y empaques.',
+    isInitialDone: true
+  },
+  {
+    id: 'martindale_abrasion_friction_tester',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Simulador de Ciclos de Fricción y Resistencia al Desgaste (Martindale)',
+    desc: 'Cálculo de ciclos de desgaste (ISO 12947) para asegurar longevidad extrema de la prenda.',
+    isInitialDone: true
+  },
+  {
+    id: 'webcam_virtual_tryon_mirror',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Espejo Virtual Try-On con Cámara Frontal y Tracking Corporal',
+    desc: 'Prueba virtual en tiempo real superponiendo la silueta de la prenda sobre la cámara.',
+    isInitialDone: true
+  },
+  {
+    id: 'camera_foot_shoe_size_scanner',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Medidor de Talla de Calzado con Foto de Pie',
+    desc: 'Detección métrica de longitud y ancho del pie para sugerir la talla exacta en calzado.',
+    isInitialDone: true
+  },
+  {
+    id: 'webxr_ar_floor_scale_projector',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Proyector AR de Suelo a Escala 1:1 para Espacios Reales',
+    desc: 'Visualización espacial WebXR en el suelo de la habitación para calzado y accesorios.',
+    isInitialDone: true
+  },
+  {
+    id: 'spark_ar_tiktok_effect_filters',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Generador de Filtros de Realidad Aumentada para Instagram y TikTok',
+    desc: 'Exportación de paquetes .arexport y .ehproj para experiencias virales de marca.',
+    isInitialDone: true
+  },
+  {
+    id: 'offline_pwa_runway_booth_mode',
+    module: 'Control de Versiones & AR',
+    category: 'advanced',
+    title: 'Modo Sin Conexión Offline para Ferias y Pasarelas Físicas',
+    desc: 'Caché PWA para operar y tomar pedidos en eventos presenciales sin conexión a Internet.',
+    isInitialDone: true
+  },
+  {
+    id: 'international_commercial_proforma_invoice',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Generador de Facturas Proforma Comerciales con Incoterms (FOB/CIF)',
+    desc: 'Documentación comercial internacional con códigos arancelarios HTS y datos de exportación.',
+    isInitialDone: true
+  },
+  {
+    id: 'b2b_nda_confidentiality_contracts',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Gestor de Contratos de Confidencialidad (NDA) para Diseños',
+    desc: 'Generación y firma digital de acuerdos legales antes de enviar archivos 3D a fábricas.',
+    isInitialDone: true
+  },
+  {
+    id: 'physical_sample_approval_workflow',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Flujo de Seguimiento y Aprobación de Muestras Físicas (Proto #1)',
+    desc: 'Panel de control con estados de aprobación (Aprobada, Ajustar, Rechazada) con registro fotográfico.',
+    isInitialDone: true
+  },
+  {
+    id: 'anti_piracy_invisible_mesh_watermark',
+    module: 'Gaming & Metaverso 3D',
+    category: 'advanced',
+    title: 'Bóveda de Protección con Marcas de Agua Criptográficas Invisibles',
+    desc: 'Micro-vértices cifrados en mallas 3D para certificar autoría legal e inmutable.',
+    isInitialDone: true
+  },
+  {
+    id: 'quickbooks_xero_accounting_sync',
+    module: 'Laboratorio Textil & B2B',
+    category: 'advanced',
+    title: 'Exportador Contable para QuickBooks y Xero con Márgenes y Fletes',
+    desc: 'Reportes de costos de producción, fletes aduaneros y balance financiero listo para contabilidad.',
+    isInitialDone: true
   }
 ];
 
@@ -615,7 +1019,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
         }
       });
 
-      const saved = localStorage.getItem('aether_roadmap_checklist_v5');
+      const saved = localStorage.getItem('aether_roadmap_checklist_v6');
       if (saved) {
         return { ...initial, ...JSON.parse(saved) };
       }
@@ -630,7 +1034,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    localStorage.setItem('aether_roadmap_checklist_v5', JSON.stringify(checkedItems));
+    localStorage.setItem('aether_roadmap_checklist_v6', JSON.stringify(checkedItems));
   }, [checkedItems]);
 
   const toggleItem = (id: string) => {

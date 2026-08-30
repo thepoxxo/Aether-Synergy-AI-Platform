@@ -30,7 +30,11 @@ import {
   Film,
   Building2,
   ShoppingBag,
-  Cpu
+  Cpu,
+  Palette,
+  Gamepad2,
+  History,
+  Activity
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -61,8 +65,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const navItems: NavItem[] = [
     { id: 'aurora3d', nameKey: 'sidebar.aurora3d', icon: Layers, requiredRole: 'free', badge: '3D' },
+    { id: 'brandkit', nameKey: 'Brand Kit & Identidad', icon: Palette, requiredRole: 'pro', badge: 'BRAND', isLiteralLabel: true },
     { id: 'scanner3d', nameKey: 'sidebar.scanner3d', icon: Scan, requiredRole: 'pro', badge: 'PRO' },
     { id: 'adgen', nameKey: 'sidebar.adgen', icon: Video, requiredRole: 'pro', badge: 'PRO' },
+    { id: 'mediabuyer', nameKey: 'Media Buyer & ROAS Ads', icon: TrendingUp, requiredRole: 'pro', badge: 'ADS', isLiteralLabel: true },
+    { id: 'versioncontrol', nameKey: 'Control Versiones 3D', icon: History, requiredRole: 'pro', badge: 'GIT 3D', isLiteralLabel: true },
+    { id: 'metaverse', nameKey: 'Gaming & Metaverso 3D', icon: Gamepad2, requiredRole: 'pro', badge: 'UNREAL', isLiteralLabel: true },
+    { id: 'textilelab', nameKey: 'Laboratorio Textil & B2B', icon: Activity, requiredRole: 'agency', badge: 'LAB', isLiteralLabel: true },
     { id: 'shopifylanding', nameKey: 'Landings Shopify IA', icon: ShoppingBag, requiredRole: 'pro', badge: 'LANDING', isLiteralLabel: true },
     { id: 'agentswarm', nameKey: 'Enjambre Agentes IA', icon: Cpu, requiredRole: 'free', badge: 'SWARM', isLiteralLabel: true },
     { id: 'turntable', nameKey: 'Video Cinemático 360°', icon: Film, requiredRole: 'pro', badge: 'CINEMA', isLiteralLabel: true },
