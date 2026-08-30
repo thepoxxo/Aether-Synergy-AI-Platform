@@ -135,6 +135,22 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     desc: 'Gorro tejido con pompón flotante y reacciones faciales dinámicas que siguen el ratón.',
     isInitialDone: true
   },
+  {
+    id: 'ui_preset_bookmarks',
+    module: 'Diseño & Sistema Visual',
+    category: 'basic',
+    title: 'Marcadores de Proyectos y Favoritos en 1 Clic',
+    desc: 'Guardar combinaciones favoritas de colores, modelos y configuraciones de cámara en el navegador.',
+    isInitialDone: false
+  },
+  {
+    id: 'ui_multi_window_split',
+    module: 'Motor 3D & Shaders',
+    category: 'basic',
+    title: 'Vista Dividida Multipantalla 3D (Frontal / Perfil / Isométrico)',
+    desc: 'Visualizar el modelo desde múltiples ángulos simultáneamente para máxima precisión de diseño.',
+    isInitialDone: false
+  },
 
   // ==========================================
   // 🟡 2. NIVEL 2: INTERMEDIO (Motores IA, Shaders, Físicas & B2B)
@@ -172,6 +188,22 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     isInitialDone: true
   },
   {
+    id: '3d_ai_texture_generator',
+    module: 'Motor 3D & Shaders',
+    category: 'intermediate',
+    title: 'Generador de Texturas PBR con Prompt de Texto IA',
+    desc: 'Síntesis de materiales procedurales (cuero desgastado, fibra de carbono, terciopelo, látex, metal cepillado) mediante IA.',
+    isInitialDone: false
+  },
+  {
+    id: '3d_avatar_tryon',
+    module: 'Aurora 3D Studio',
+    category: 'intermediate',
+    title: 'Probador Virtual 3D & Maniquí Paramétrico con Tallas (XS a 3XL)',
+    desc: 'Montar prendas sobre maniquíes animados con ajuste dinámico de proporciones corporales.',
+    isInitialDone: false
+  },
+  {
     id: 'ad_runway_gen3_api',
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
@@ -196,12 +228,36 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     isInitialDone: true
   },
   {
+    id: 'ad_soundtrack_ai_synth',
+    module: 'Video Marketing IA (AdGen)',
+    category: 'intermediate',
+    title: 'Generador de Bandas Sonoras & Beats con IA para Ads',
+    desc: 'Música comercial royalty-free generada por IA (Trap, Synthwave, Lo-Fi, Cinematic) sincronizada al ritmo.',
+    isInitialDone: false
+  },
+  {
     id: 'b2b_techpack_pdf',
     module: 'Proveedores Globales B2B',
     category: 'intermediate',
     title: 'Generador Automático de Fichas Técnicas PDF (Tech Pack)',
     desc: 'PDF con vistas ortogonales 3D, tabla de medidas, desglose de materiales (BOM) y colores Pantone.',
     isInitialDone: true
+  },
+  {
+    id: 'b2b_instant_rfq',
+    module: 'Proveedores Globales B2B',
+    category: 'intermediate',
+    title: 'Envío Automatizado de Solicitudes de Cotización (RFQ) por WhatsApp & Email',
+    desc: 'Despacho directo de ficha técnica y solicitud de muestras a directores de fábrica en 1 clic.',
+    isInitialDone: false
+  },
+  {
+    id: 'automo_auto_caption',
+    module: 'Automo Calendar & Redes',
+    category: 'intermediate',
+    title: 'Generador de Subtítulos Dinámicos con Emojis para TikTok & Reels',
+    desc: 'Transcripción palabra por palabra con resaltado neón animado para retención en redes.',
+    isInitialDone: false
   },
   {
     id: 'mascot_voice_control',
@@ -304,6 +360,14 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     isInitialDone: false
   },
   {
+    id: '3d_print_slicing_gcode',
+    module: 'Fabricación & Hardware 3D',
+    category: 'advanced',
+    title: 'Comprobador de Imprimibilidad 3D & Generador G-Code',
+    desc: 'Análisis de grosor de pared, soportes de voladizo y preparación para impresoras 3D FDM/SLA.',
+    isInitialDone: false
+  },
+  {
     id: 'ad_predictive_retention',
     module: 'Video Marketing IA (AdGen)',
     category: 'advanced',
@@ -317,6 +381,22 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Cotización en Tiempo Real de Envíos y Aduanas (DHL/FedEx Freight)',
     desc: 'Cálculo automático de aranceles y flete aéreo/marítimo por volumen y peso.',
+    isInitialDone: false
+  },
+  {
+    id: 'b2b_smart_contracts_escrow',
+    module: 'Proveedores Globales B2B',
+    category: 'advanced',
+    title: 'Sistema de Pagos en Escrow / Fideicomiso para Producción Segura',
+    desc: 'Retención de fondos protegida que libera pagos al fabricante tras aprobación de control de calidad.',
+    isInitialDone: false
+  },
+  {
+    id: 'ai_multi_agent_brand_audit',
+    module: 'Super Admin & Copiloto IA',
+    category: 'advanced',
+    title: 'Auditoría de Identidad de Marca con Enjambre de Agentes IA',
+    desc: 'Revisión multi-agente que evalúa coherencia visual, viabilidad técnica de costura y márgenes de rentabilidad.',
     isInitialDone: false
   },
   {
