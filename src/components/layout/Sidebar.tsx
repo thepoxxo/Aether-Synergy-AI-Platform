@@ -70,6 +70,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { t } = useLanguage();
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [filterMyPlanOnly, setFilterMyPlanOnly] = useState(false);
+  const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
+
+  const toggleCategory = (categoryId: string) => {
+    setCollapsedCategories((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
+  };
 
   const categories: NavCategory[] = [
     {
@@ -197,40 +205,61 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {categories.map((category) => {
                 const visibleItems = category.items.filter((item) => !filterMyPlanOnly || hasAccess(item.requiredRole));
                 if (visibleItems.length === 0) return null;
+                const isCatCollapsed = !!collapsedCategories[category.id];
 
                 return (
                   <div key={category.id} className="space-y-1.5">
-                    <div className="px-2 py-1 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                      <span>{category.icon}</span>
-                      <span>{category.title}</span>
-                    </div>
-                    {visibleItems.map((item) => {
-                      const Icon = item.icon;
-                      const active = currentView === item.id;
-                      const allowed = hasAccess(item.requiredRole);
-
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => handleNavClick(item)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                            active
-                              ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
-                              : 'text-slate-300 hover:text-white hover:bg-cyber-900'
+                    <button
+                      onClick={() => toggleCategory(category.id)}
+                      className="w-full px-2 py-1.5 rounded-xl hover:bg-cyber-900 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 hover:text-cyber-gold flex items-center justify-between transition-all group"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>{category.icon}</span>
+                        <span className="group-hover:text-cyber-gold transition-colors">{category.title}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-mono text-slate-400 bg-cyber-900 px-1.5 py-0.2 rounded-md">
+                          {visibleItems.length}
+                        </span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 text-slate-400 group-hover:text-cyber-gold transition-transform duration-300 ${
+                            isCatCollapsed ? '-rotate-90' : 'rotate-0'
                           }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <Icon className="w-4 h-4" />
-                            <span>{item.isLiteralLabel ? item.nameKey : t(item.nameKey)}</span>
-                          </div>
-                          {item.badge && (
-                            <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
-                              {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                        />
+                      </div>
+                    </button>
+
+                    {!isCatCollapsed && (
+                      <div className="space-y-1 pl-1">
+                        {visibleItems.map((item) => {
+                          const Icon = item.icon;
+                          const active = currentView === item.id;
+                          const allowed = hasAccess(item.requiredRole);
+
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => handleNavClick(item)}
+                              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                                active
+                                  ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
+                                  : 'text-slate-300 hover:text-white hover:bg-cyber-900'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Icon className="w-4 h-4" />
+                                <span>{item.isLiteralLabel ? item.nameKey : t(item.nameKey)}</span>
+                              </div>
+                              {item.badge && (
+                                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
+                                  {item.badge}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -288,80 +317,93 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {categories.map((category) => {
             const visibleItems = category.items.filter((item) => !filterMyPlanOnly || hasAccess(item.requiredRole));
             if (visibleItems.length === 0) return null;
+            const isCatCollapsed = !!collapsedCategories[category.id];
 
             return (
               <div key={category.id} className="space-y-1">
                 {!isCollapsed && (
-                  <div className="px-2.5 py-1 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="w-full px-2.5 py-1.5 rounded-xl hover:bg-cyber-900/60 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 hover:text-cyber-gold flex items-center justify-between transition-all group cursor-pointer"
+                  >
                     <div className="flex items-center gap-1.5">
                       <span>{category.icon}</span>
-                      <span>{category.title}</span>
+                      <span className="group-hover:text-cyber-gold transition-colors">{category.title}</span>
                     </div>
-                    <span className="text-[9px] font-mono text-slate-400 bg-cyber-900 px-1.5 py-0.2 rounded-md">
-                      {visibleItems.length}
-                    </span>
-                  </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] font-mono text-slate-400 bg-cyber-900 px-1.5 py-0.2 rounded-md">
+                        {visibleItems.length}
+                      </span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 text-slate-400 group-hover:text-cyber-gold transition-transform duration-300 ${
+                          isCatCollapsed ? '-rotate-90' : 'rotate-0'
+                        }`}
+                      />
+                    </div>
+                  </button>
                 )}
 
-                <div className="space-y-1">
-                  {visibleItems.map((item) => {
-                    const Icon = item.icon;
-                    const allowed = hasAccess(item.requiredRole);
-                    const active = currentView === item.id;
+                {(!isCatCollapsed || isCollapsed) && (
+                  <div className="space-y-1">
+                    {visibleItems.map((item) => {
+                      const Icon = item.icon;
+                      const allowed = hasAccess(item.requiredRole);
+                      const active = currentView === item.id;
 
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item)}
-                      title={isCollapsed ? (item.isLiteralLabel ? item.nameKey : t(item.nameKey)) : undefined}
-                      className={`w-full flex items-center rounded-xl transition-all group ${
-                        isCollapsed
-                          ? 'justify-center p-3'
-                          : 'justify-between px-3 py-2 text-xs font-semibold'
-                      } ${
-                        active
-                          ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
-                          : allowed
-                          ? 'text-slate-300 hover:text-white hover:bg-cyber-900/90 border border-transparent hover:border-cyber-750'
-                          : 'text-slate-500 hover:text-slate-300 hover:bg-cyber-950/60 opacity-60 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon
-                          className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
-                            active ? 'text-black' : allowed ? 'text-cyber-gold' : 'text-slate-500'
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => handleNavClick(item)}
+                          title={isCollapsed ? (item.isLiteralLabel ? item.nameKey : t(item.nameKey)) : undefined}
+                          className={`w-full flex items-center rounded-xl transition-all group ${
+                            isCollapsed
+                              ? 'justify-center p-3'
+                              : 'justify-between px-3 py-2 text-xs font-semibold'
+                          } ${
+                            active
+                              ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
+                              : allowed
+                              ? 'text-slate-300 hover:text-white hover:bg-cyber-900/90 border border-transparent hover:border-cyber-750'
+                              : 'text-slate-500 hover:text-slate-300 hover:bg-cyber-950/60 opacity-60 border border-transparent'
                           }`}
-                        />
-                        {!isCollapsed && (
-                          <span className="truncate">
-                            {item.isLiteralLabel ? item.nameKey : t(item.nameKey)}
-                          </span>
-                        )}
-                      </div>
-
-                      {!isCollapsed && (
-                        <div className="flex items-center gap-1">
-                          {!allowed && <Lock className="w-3 h-3 text-slate-500" />}
-                          {item.badge && (
-                            <span
-                              className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
-                                active
-                                  ? 'bg-black text-cyber-gold border-black'
-                                  : getBadgeClass(item.badge)
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <Icon
+                              className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
+                                active ? 'text-black' : allowed ? 'text-cyber-gold' : 'text-slate-500'
                               }`}
-                            >
-                              {item.badge}
-                            </span>
+                            />
+                            {!isCollapsed && (
+                              <span className="truncate">
+                                {item.isLiteralLabel ? item.nameKey : t(item.nameKey)}
+                              </span>
+                            )}
+                          </div>
+
+                          {!isCollapsed && (
+                            <div className="flex items-center gap-1">
+                              {!allowed && <Lock className="w-3 h-3 text-slate-500" />}
+                              {item.badge && (
+                                <span
+                                  className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
+                                    active
+                                      ? 'bg-black text-cyber-gold border-black'
+                                      : getBadgeClass(item.badge)
+                                  }`}
+                                >
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
                           )}
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         </div>
       </aside>
     </>

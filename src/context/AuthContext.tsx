@@ -133,18 +133,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const demo = DEMO_ACCOUNTS.find(a => a.role === targetRole);
-    const existing = customEmail ? dbService.getUserByEmail(customEmail) : undefined;
+    const lookupEmail = customEmail || demo?.email || `${targetRole}@aethersynergy.ai`;
+    const existing = dbService.getUserByEmail(lookupEmail);
 
     if (existing) {
+      existing.role = targetRole;
       setUser({
         id: existing.id,
-        name: existing.name,
+        name: customName || existing.name || demo?.name || 'Creador Aether',
         email: existing.email,
-        role: existing.role,
+        role: targetRole,
         avatar: existing.avatar,
         company: existing.company,
-        planName: existing.planName,
-        planPrice: existing.planPrice,
+        planName: demo?.plan || (targetRole === 'agency' ? 'Agency Enterprise ($149/mo)' : targetRole === 'pro' ? 'Pro Studio ($49/mo)' : 'Free Starter ($0)'),
+        planPrice: demo?.price ?? (targetRole === 'agency' ? 149 : targetRole === 'pro' ? 49 : 0),
         aiCredits: existing.aiCredits,
         licensesCount: existing.licensesCount,
         joinedDate: existing.createdAt
@@ -155,8 +157,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const stored = dbService.registerUser({
-      name: customName || demo?.name || 'Creador Aether',
-      email: customEmail || demo?.email || `${targetRole}@aethersynergy.ai`,
+      name: customName || demo?.name || `Creador ${targetRole.toUpperCase()}`,
+      email: lookupEmail,
       role: targetRole,
       registrationType: 'basic',
       termsAccepted: true
@@ -166,7 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: stored.id,
       name: stored.name,
       email: stored.email,
-      role: stored.role,
+      role: targetRole,
       avatar: stored.avatar,
       company: stored.company,
       planName: stored.planName,
@@ -186,7 +188,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const switchRole = (newRole: UserRole) => {
-    login(newRole);
+    if (user) {
+      const demo = DEMO_ACCOUNTS.find(a => a.role === newRole);
+      setUser({
+        ...user,
+        role: newRole,
+        planName: demo?.plan || (newRole === 'agency' ? 'Agency Enterprise ($149/mo)' : newRole === 'pro' ? 'Pro Studio ($49/mo)' : 'Free Starter ($0)'),
+        planPrice: demo?.price ?? (newRole === 'agency' ? 149 : newRole === 'pro' ? 49 : 0)
+      });
+      setViewMode('app');
+    } else {
+      login(newRole);
+    }
   };
 
   const hasAccess = (requiredRole: UserRole): boolean => {
