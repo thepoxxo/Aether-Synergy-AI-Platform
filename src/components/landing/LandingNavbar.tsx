@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { ChevronDown, Moon, Sun, Zap, Check } from 'lucide-react';
+import { ChevronDown, Moon, Sun, Zap, Check, Globe } from 'lucide-react';
 
 interface LandingNavbarProps {
   onOpenLogin: (initialMode?: 'login' | 'register') => void;
@@ -10,12 +10,10 @@ interface LandingNavbarProps {
 
 export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => {
   const { theme, setTheme, themes } = useTheme();
-  const { language, setLanguage, languages } = useLanguage();
+  const { language, setLanguage, currentLanguageOption, setIsWorldLanguageModalOpen } = useLanguage();
 
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
-
-  const currentLang = languages.find((l) => l.code === language);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -42,30 +40,36 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => 
           </span>
         </div>
 
-        {/* Center: Top Navigation Capsule (Features | Pricing | Ecosystem as in image 1) */}
-        <nav className="hidden md:flex items-center gap-1 bg-cyber-900/80 px-3 py-1.5 rounded-full border border-cyber-700/60 shadow-sm text-xs font-semibold text-slate-300">
+        {/* Center: Clean Smooth-Scroll Links for the 4 Waterfall Screens */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-tech font-semibold tracking-wider text-slate-300">
           <button
-            onClick={() => scrollToSection('capabilities-section')}
-            className="px-4 py-1 rounded-full hover:bg-cyber-800 hover:text-white transition-all"
+            onClick={() => scrollToSection('screen-hero')}
+            className="hover:text-cyber-gold transition-colors"
           >
-            Features
+            01 • INICIO
           </button>
           <button
-            onClick={() => scrollToSection('pricing-section')}
-            className="px-4 py-1 rounded-full hover:bg-cyber-800 hover:text-white transition-all"
+            onClick={() => scrollToSection('screen-avantgarde')}
+            className="hover:text-cyber-gold transition-colors"
           >
-            Pricing
+            02 • CEL-SHADED
           </button>
           <button
-            onClick={() => scrollToSection('about-section')}
-            className="px-4 py-1 rounded-full hover:bg-cyber-800 hover:text-white transition-all"
+            onClick={() => scrollToSection('screen-pricing')}
+            className="hover:text-cyber-gold transition-colors"
           >
-            Ecosystem
+            03 • PLANES & PRECIOS
+          </button>
+          <button
+            onClick={() => scrollToSection('screen-about')}
+            className="hover:text-cyber-gold transition-colors"
+          >
+            04 • ECOSISTEMA
           </button>
         </nav>
 
-        {/* Right: Language + Theme + Login + Registrarse Buttons */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Right Controls: Language + Theme + Login/Register */}
+        <div className="flex items-center gap-3">
           {/* Language Selector */}
           <div className="relative">
             <button
@@ -76,36 +80,63 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => 
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cyber-900 border border-cyber-700/80 hover:border-cyber-gold text-xs font-bold text-slate-200 transition-colors shadow-sm"
               title="Cambiar Idioma"
             >
-              <span className="text-sm">{currentLang?.flag}</span>
-              <span className="hidden sm:inline uppercase text-[11px]">{currentLang?.code}</span>
+              <span className="text-sm">{currentLanguageOption.flag}</span>
+              <span className="hidden sm:inline uppercase text-[11px]">{currentLanguageOption.code}</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {isLangOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-cyber-900 border border-cyber-gold/40 shadow-gold-glow-lg p-2 z-50 animate-fadeIn space-y-1">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
-                  Seleccionar Idioma
+              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-cyber-900 border border-cyber-gold/40 shadow-gold-glow-lg p-2 z-50 animate-fadeIn space-y-1 max-h-80 overflow-y-auto">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1 flex items-center justify-between">
+                  <span>Seleccionar Idioma</span>
+                  <span className="text-cyber-gold font-mono">{currentLanguageOption.code.toUpperCase()}</span>
                 </div>
-                {languages.map((l) => (
+                {['es', 'en', 'ja', 'it', 'fr', 'zh', 'de', 'pt'].map((code) => {
+                  const l = {
+                    es: { name: 'Español', flag: '🇪🇸' },
+                    en: { name: 'English', flag: '🇺🇸' },
+                    ja: { name: '日本語 (Japonés)', flag: '🇯🇵' },
+                    it: { name: 'Italiano', flag: '🇮🇹' },
+                    fr: { name: 'Français', flag: '🇫🇷' },
+                    zh: { name: '中文 (Chino)', flag: '🇨🇳' },
+                    de: { name: 'Deutsch (Alemán)', flag: '🇩🇪' },
+                    pt: { name: 'Português', flag: '🇧🇷' },
+                  }[code] || { name: code, flag: '🌐' };
+
+                  return (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        setLanguage(code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-all ${
+                        language === code
+                          ? 'bg-cyber-gold/20 text-cyber-gold font-bold border border-cyber-gold/50'
+                          : 'text-slate-300 hover:bg-cyber-850'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span>{l.flag}</span>
+                        <span>{l.name}</span>
+                      </div>
+                      {language === code && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
+                    </button>
+                  );
+                })}
+
+                <div className="pt-1.5 border-t border-cyber-800">
                   <button
-                    key={l.code}
                     onClick={() => {
-                      setLanguage(l.code);
                       setIsLangOpen(false);
+                      setIsWorldLanguageModalOpen(true);
                     }}
-                    className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-all ${
-                      language === l.code
-                        ? 'bg-cyber-gold/20 text-cyber-gold font-bold border border-cyber-gold/50'
-                        : 'text-slate-300 hover:bg-cyber-850'
-                    }`}
+                    className="w-full py-2 px-3 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 text-cyber-gold text-xs font-tech font-bold flex items-center justify-center gap-1.5 transition-all"
                   >
-                    <div className="flex items-center gap-2">
-                      <span>{l.flag}</span>
-                      <span>{l.name}</span>
-                    </div>
-                    {language === l.code && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>Ver Todos los Idiomas...</span>
                   </button>
-                ))}
+                </div>
               </div>
             )}
           </div>
@@ -118,7 +149,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => 
                 setIsLangOpen(false);
               }}
               className="p-2 rounded-xl bg-cyber-900 border border-cyber-700/80 hover:border-cyber-gold text-slate-200 transition-colors shadow-sm"
-              title="Cambiar Tema"
+              title="Cambiar Tema Visual"
             >
               {theme === 'light' ? (
                 <Sun className="w-4 h-4 text-amber-500" />
@@ -130,43 +161,39 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => 
             </button>
 
             {isThemeOpen && (
-              <div className="absolute right-0 mt-2 w-52 rounded-2xl bg-cyber-900 border border-cyber-gold/40 shadow-gold-glow-lg p-2 z-50 animate-fadeIn space-y-1">
-                {themes.map((th) => (
+              <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-cyber-900 border border-cyber-gold/40 shadow-gold-glow-lg p-2 z-50 animate-fadeIn space-y-1">
+                {themes.map((tItem) => (
                   <button
-                    key={th.id}
+                    key={tItem.id}
                     onClick={() => {
-                      setTheme(th.id);
+                      setTheme(tItem.id);
                       setIsThemeOpen(false);
                     }}
                     className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-all ${
-                      theme === th.id
+                      theme === tItem.id
                         ? 'bg-cyber-gold/20 text-cyber-gold font-bold border border-cyber-gold/50'
                         : 'text-slate-300 hover:bg-cyber-850'
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      {th.id === 'light' ? <Sun className="w-4 h-4 text-amber-500" /> : th.id === 'neon' ? <Zap className="w-4 h-4 text-cyan-400" /> : <Moon className="w-4 h-4 text-cyber-gold" />}
-                      <span>{th.name}</span>
-                    </div>
-                    {theme === th.id && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
+                    <span>{tItem.name}</span>
+                    {theme === tItem.id && <Check className="w-3.5 h-3.5 text-cyber-gold" />}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Login Button (As seen in image 1 top right) */}
+          {/* Action Buttons */}
           <button
             onClick={() => onOpenLogin('login')}
-            className="px-4 py-1.5 rounded-xl bg-cyber-900 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-slate-200 hover:text-white font-tech font-bold text-xs uppercase tracking-wider transition-all"
+            className="hidden sm:block px-4 py-2 rounded-xl bg-cyber-900 hover:bg-cyber-850 border border-cyber-700 text-xs font-tech font-bold text-slate-200 hover:text-white transition-all shadow-sm"
           >
-            Login
+            Iniciar Sesión
           </button>
 
-          {/* Registrarse Button (Requested next to Login) */}
           <button
             onClick={() => onOpenLogin('register')}
-            className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-cyber-gold to-amber-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:scale-105 transition-all"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
           >
             Registrarse
           </button>

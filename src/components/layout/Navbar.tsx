@@ -44,7 +44,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
   };
 
   const badge = getRoleBadge(role);
-  const currentLang = languages.find((l) => l.code === language);
 
   return (
     <header className="sticky top-0 z-40 w-full bg-cyber-950/90 backdrop-blur-xl border-b border-cyber-800/80 px-4 lg:px-8 py-3 transition-colors shadow-sm">
