@@ -53,7 +53,7 @@ html.theme-luxury body {
   color: #0F172A !important;
 }
 
-/* Universal Wildcard Transform for Dark Background Classes in Light Mode */
+/* Universal Wildcard Transform for ALL Dark Background Classes in Light Mode */
 html.light [class*="bg-cyber-9"],
 html.light [class*="bg-cyber-8"],
 html.light [class*="bg-slate-9"],
@@ -64,7 +64,7 @@ html.theme-luxury [class*="bg-slate-9"],
 html.theme-luxury [class*="bg-slate-8"] {
   background-color: #FFFFFF !important;
   color: #0F172A !important;
-  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.07), 0 0 20px -2px rgba(217, 119, 6, 0.08) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 0 15px -2px rgba(217, 119, 6, 0.06) !important;
 }
 
 /* Transform Interactive Hover States to Warm Gold Glow (NO BLACK SHADOWS!) */
@@ -72,7 +72,7 @@ html.light [class*="bg-cyber-"]:hover,
 html.light [class*="bg-slate-"]:hover,
 html.theme-luxury [class*="bg-cyber-"]:hover,
 html.theme-luxury [class*="bg-slate-"]:hover {
-  box-shadow: 0 16px 40px -5px rgba(217, 119, 6, 0.18) !important;
+  box-shadow: 0 16px 40px -5px rgba(217, 119, 6, 0.2) !important;
 }
 
 /* Universal Wildcard for Typography & Headings in Luxury */
@@ -97,6 +97,33 @@ html.light [class*="text-slate-5"],
 html.theme-luxury [class*="text-slate-4"],
 html.theme-luxury [class*="text-slate-5"] {
   color: #475569 !important;
+}
+
+/* Specific Card Elevation & Presence in Light Mode */
+html.light #screen-hero .rounded-3xl:not([class*="bg-transparent"]),
+html.theme-luxury #screen-hero .rounded-3xl:not([class*="bg-transparent"]) {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 2px solid rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(217, 119, 6, 0.14), 0 4px 10px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light #screen-avantgarde .group.relative.flex.flex-col,
+html.theme-luxury #screen-avantgarde .group.relative.flex.flex-col {
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08), 0 0 20px -2px rgba(217, 119, 6, 0.08) !important;
+}
+
+html.light #screen-pricing .group.relative.flex.flex-col,
+html.theme-luxury #screen-pricing .group.relative.flex.flex-col {
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.08), 0 0 25px -2px rgba(217, 119, 6, 0.1) !important;
+}
+
+html.light #screen-about .rounded-3xl,
+html.theme-luxury #screen-about .rounded-3xl {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 2px solid rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(217, 119, 6, 0.14) !important;
 }
 
 /* Headers, Sidebars and Navbars */

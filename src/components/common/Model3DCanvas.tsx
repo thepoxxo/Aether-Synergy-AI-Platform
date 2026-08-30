@@ -647,7 +647,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
       className={`relative w-full h-full min-h-[440px] rounded-3xl overflow-hidden group flex flex-col justify-between select-none transition-all duration-500 ${
         transparentStage
           ? 'bg-transparent border-none shadow-none'
-          : 'bg-gradient-to-b from-slate-100/90 via-white to-slate-100/95 dark:from-cyber-900/90 dark:to-cyber-950/95 border-2 border-amber-500/40 shadow-xl dark:shadow-2xl'
+          : 'bg-gradient-to-b from-cyber-900/90 to-cyber-950/95 border-2 border-cyber-gold/40 shadow-2xl'
       }`}
     >
       {/* 3D Canvas Viewport */}
@@ -667,36 +667,36 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
       {/* Keyboard Shortcuts Help Overlay */}
       {showKeyboardHelp && (
         <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-md p-6 flex flex-col justify-center items-center text-white animate-fadeIn">
-          <div className="bg-white dark:bg-cyber-950 p-6 rounded-3xl border border-amber-500/50 max-w-sm w-full space-y-3 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-cyber-800 pb-2">
-              <span className="font-tech font-bold text-sm text-amber-600 dark:text-cyber-gold flex items-center gap-1.5">
+          <div className="bg-cyber-950 p-6 rounded-3xl border border-cyber-gold/50 max-w-sm w-full space-y-3">
+            <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
+              <span className="font-tech font-bold text-sm text-cyber-gold flex items-center gap-1.5">
                 <Keyboard className="w-4 h-4" /> Atajos de Teclado 3D
               </span>
               <button
                 onClick={() => setShowKeyboardHelp(false)}
-                className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                className="text-xs text-slate-400 hover:text-white"
               >
                 ✕ Cerrar
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-              <div className="p-2 bg-slate-50 dark:bg-cyber-900 rounded-xl border border-slate-200 dark:border-cyber-800 text-slate-800 dark:text-slate-200">
-                <span className="text-amber-600 dark:text-cyber-gold font-bold">R</span> : Rotación 360°
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">R</span> : Rotación 360°
               </div>
-              <div className="p-2 bg-slate-50 dark:bg-cyber-900 rounded-xl border border-slate-200 dark:border-cyber-800 text-slate-800 dark:text-slate-200">
-                <span className="text-amber-600 dark:text-cyber-gold font-bold">S</span> : Cambiar Shader
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">S</span> : Cambiar Shader
               </div>
-              <div className="p-2 bg-slate-50 dark:bg-cyber-900 rounded-xl border border-slate-200 dark:border-cyber-800 text-slate-800 dark:text-slate-200">
-                <span className="text-amber-600 dark:text-cyber-gold font-bold">G</span> : Mostrar Rejilla
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">G</span> : Mostrar Rejilla
               </div>
-              <div className="p-2 bg-slate-50 dark:bg-cyber-900 rounded-xl border border-slate-200 dark:border-cyber-800 text-slate-800 dark:text-slate-200">
-                <span className="text-amber-600 dark:text-cyber-gold font-bold">Space</span> : Pausar Giro
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">Space</span> : Pausar Giro
               </div>
-              <div className="p-2 bg-slate-50 dark:bg-cyber-900 rounded-xl border border-slate-200 dark:border-cyber-800 text-slate-800 dark:text-slate-200">
-                <span className="text-amber-600 dark:text-cyber-gold font-bold">F</span> : Cámara Frontal
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">F</span> : Cámara Frontal
               </div>
-              <div className="p-2 bg-slate-50 dark:bg-cyber-900 rounded-xl border border-slate-200 dark:border-cyber-800 text-slate-800 dark:text-slate-200">
-                <span className="text-amber-600 dark:text-cyber-gold font-bold">T</span> : Cámara Superior
+              <div className="p-2 bg-cyber-900 rounded-xl border border-cyber-800">
+                <span className="text-cyber-gold font-bold">T</span> : Cámara Superior
               </div>
             </div>
           </div>
@@ -716,21 +716,21 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
       <div className="relative z-10 p-3.5 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         <div className="flex flex-wrap items-center gap-2 pointer-events-auto">
           {/* Active Model Pill */}
-          <div className="px-3 py-1.5 rounded-xl bg-white/95 dark:bg-cyber-950/90 border border-slate-200 dark:border-cyber-gold/50 shadow-sm dark:shadow-gold-glow flex items-center gap-2">
-            <Box className="w-3.5 h-3.5 text-amber-600 dark:text-cyber-gold" />
-            <span className="font-tech font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider">
+          <div className="px-3 py-1.5 rounded-xl bg-cyber-950/90 border border-cyber-gold/50 shadow-gold-glow flex items-center gap-2">
+            <Box className="w-3.5 h-3.5 text-cyber-gold" />
+            <span className="font-tech font-bold text-xs text-white uppercase tracking-wider">
               {loadedFileName ? loadedFileName : `${type.toUpperCase()} 3D`}
             </span>
           </div>
 
           {/* 5 Shader Modes Switcher */}
-          <div className="flex bg-white/95 dark:bg-cyber-950/90 p-0.5 rounded-xl border border-slate-200 dark:border-cyber-750 text-[11px] font-tech font-bold shadow-sm">
+          <div className="flex bg-cyber-950/90 p-0.5 rounded-xl border border-cyber-750 text-[11px] font-tech font-bold">
             {(['cel', 'pbr', 'clay', 'wire', 'xray'] as ShaderMode[]).map((sh) => (
               <button
                 key={sh}
                 onClick={() => setActiveShader(sh)}
                 className={`px-2.5 py-1 rounded-lg transition-all capitalize ${
-                  activeShader === sh ? 'bg-amber-500 text-slate-950 shadow-md font-bold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  activeShader === sh ? 'bg-cyber-gold text-black shadow-gold-glow font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 {sh}
@@ -739,11 +739,11 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
           </div>
 
           {/* HDRi Environment Lighting Selector */}
-          <div className="flex bg-white/95 dark:bg-cyber-950/90 p-0.5 rounded-xl border border-slate-200 dark:border-cyber-800 text-[11px] font-tech shadow-sm">
+          <div className="flex bg-cyber-950/90 p-0.5 rounded-xl border border-cyber-800 text-[11px] font-tech">
             <button
               onClick={() => setActiveHDRI('tokyo_cyberpunk')}
               className={`p-1.5 rounded-lg transition-all ${
-                activeHDRI === 'tokyo_cyberpunk' ? 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/50' : 'text-slate-500 dark:text-slate-400'
+                activeHDRI === 'tokyo_cyberpunk' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50' : 'text-slate-400'
               }`}
               title="Iluminación Tokyo Cyberpunk"
             >
@@ -752,7 +752,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             <button
               onClick={() => setActiveHDRI('nordic_daylight')}
               className={`p-1.5 rounded-lg transition-all ${
-                activeHDRI === 'nordic_daylight' ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/50' : 'text-slate-500 dark:text-slate-400'
+                activeHDRI === 'nordic_daylight' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' : 'text-slate-400'
               }`}
               title="Iluminación Nordic Daylight (Luz Natural)"
             >
@@ -761,7 +761,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             <button
               onClick={() => setActiveHDRI('golden_hour')}
               className={`p-1.5 rounded-lg transition-all ${
-                activeHDRI === 'golden_hour' ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/50' : 'text-slate-500 dark:text-slate-400'
+                activeHDRI === 'golden_hour' ? 'bg-orange-500/20 text-orange-300 border border-orange-500/50' : 'text-slate-400'
               }`}
               title="Iluminación Golden Hour (Atardecer Dorado)"
             >
@@ -770,7 +770,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             <button
               onClick={() => setActiveHDRI('industrial')}
               className={`p-1.5 rounded-lg transition-all ${
-                activeHDRI === 'industrial' ? 'bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/50' : 'text-slate-500 dark:text-slate-400'
+                activeHDRI === 'industrial' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/50' : 'text-slate-400'
               }`}
               title="Iluminación Industrial Warehouse"
             >
@@ -782,21 +782,19 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
         {/* Action Buttons */}
         <div className="flex items-center gap-1.5 pointer-events-auto">
           {/* Eyedropper Button */}
-          {'EyeDropper' in window && onPrimaryColorChange && (
-            <button
-              onClick={handleOpenEyedropper}
-              className="p-2 rounded-xl bg-white/95 dark:bg-cyber-950/90 hover:bg-slate-100 dark:hover:bg-cyber-800 border border-slate-200 dark:border-cyber-700 text-slate-700 dark:text-slate-300 transition-all shadow-sm"
-              title="Cuentagotas de Color (Muestrear pantalla)"
-            >
-              <Pipette className="w-4 h-4" />
-            </button>
-          )}
+          <button
+            onClick={handleOpenEyedropper}
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-cyber-gold transition-all shadow-md"
+            title="Cuentagotas de Color (Muestrear pantalla)"
+          >
+            <Pipette className="w-4 h-4" />
+          </button>
 
           {/* Floor Grid Toggle */}
           <button
             onClick={() => setShowGridFloor(!showGridFloor)}
-            className={`p-2 rounded-xl border transition-all shadow-sm ${
-              showGridFloor ? 'bg-amber-500/20 text-amber-700 dark:text-cyber-gold border-amber-500/50' : 'bg-white/95 dark:bg-cyber-950/90 border-slate-200 dark:border-cyber-700 text-slate-500 dark:text-slate-400'
+            className={`p-2 rounded-xl border transition-all shadow-md ${
+              showGridFloor ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-950/90 border-cyber-700 text-slate-500'
             }`}
             title="Mostrar / Ocultar Rejilla de Piso"
           >
@@ -806,7 +804,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
           {/* Keyboard Shortcuts Info */}
           <button
             onClick={() => setShowKeyboardHelp(!showKeyboardHelp)}
-            className="p-2 rounded-xl bg-white/95 dark:bg-cyber-950/90 hover:bg-slate-100 dark:hover:bg-cyber-800 border border-slate-200 dark:border-cyber-700 text-slate-700 dark:text-slate-300 transition-all shadow-sm"
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 text-slate-300 transition-all shadow-md"
             title="Ver Atajos de Teclado (R, S, G, Space, F, T)"
           >
             <Keyboard className="w-4 h-4" />
@@ -815,7 +813,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
           {/* Import File */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="p-2 rounded-xl bg-white/95 dark:bg-cyber-950/90 hover:bg-slate-100 dark:hover:bg-cyber-800 border border-slate-200 dark:border-cyber-700 hover:border-amber-500 text-amber-700 dark:text-cyber-gold transition-all shadow-sm"
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-cyber-gold transition-all shadow-md"
             title="Importar archivo 3D (.GLB / .OBJ)"
           >
             <Upload className="w-4 h-4" />
@@ -824,7 +822,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
           {/* 4K Transparent Snapshot */}
           <button
             onClick={handleSnapshotTransparent}
-            className="p-2 rounded-xl bg-white/95 dark:bg-cyber-950/90 hover:bg-slate-100 dark:hover:bg-cyber-800 border border-slate-200 dark:border-cyber-700 hover:border-emerald-500 text-emerald-600 dark:text-emerald-400 transition-all shadow-sm"
+            className="p-2 rounded-xl bg-cyber-950/90 hover:bg-cyber-800 border border-cyber-700 hover:border-emerald-400 text-emerald-400 transition-all shadow-md"
             title="Descargar Captura 4K PNG Transparente"
           >
             <Download className="w-4 h-4" />
@@ -835,25 +833,25 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
       {/* Bottom HUD: Camera Angle Shortcuts & Exploded View Slider */}
       <div className="relative z-10 p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs pointer-events-none">
         {/* Quick Camera Presets */}
-        <div className="flex items-center gap-1 pointer-events-auto bg-white/95 dark:bg-cyber-950/90 backdrop-blur-md p-1 rounded-2xl border border-slate-200 dark:border-cyber-800 shadow-sm">
+        <div className="flex items-center gap-1 pointer-events-auto bg-cyber-950/90 backdrop-blur-md p-1 rounded-2xl border border-cyber-800 shadow-lg">
           <button
             onClick={() => setIsRotating(!isRotating)}
             className={`px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 transition-all ${
-              isRotating ? 'bg-amber-500 text-slate-950 shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              isRotating ? 'bg-cyber-gold text-black shadow-gold-glow' : 'text-slate-400 hover:text-white'
             }`}
           >
             <RotateCw className={`w-3 h-3 ${isRotating ? 'animate-spin' : ''}`} />
             <span>360°</span>
           </button>
 
-          <span className="text-slate-300 dark:text-slate-600 px-1">|</span>
+          <span className="text-slate-600 px-1">|</span>
 
           {(['front', 'side', 'top', 'isometric'] as CameraPreset[]).map((cam) => (
             <button
               key={cam}
               onClick={() => setCameraPreset(cam)}
               className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase transition-all ${
-                activeCamera === cam ? 'bg-amber-500/20 text-amber-700 dark:text-cyber-gold border border-amber-500/40' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                activeCamera === cam ? 'bg-cyber-gold/20 text-cyber-gold border border-cyber-gold/40' : 'text-slate-400 hover:text-white'
               }`}
             >
               {cam}
@@ -862,8 +860,8 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
         </div>
 
         {/* Exploded View Slider */}
-        <div className="flex items-center gap-2 pointer-events-auto bg-white/95 dark:bg-cyber-950/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-slate-200 dark:border-cyber-800 shadow-sm">
-          <span className="text-[10px] font-tech font-extrabold uppercase text-slate-800 dark:text-slate-300">
+        <div className="flex items-center gap-2 pointer-events-auto bg-cyber-950/90 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-cyber-800 shadow-lg">
+          <span className="text-[10px] font-tech font-bold uppercase text-slate-300">
             Despiece 3D ({explodedFactor}%):
           </span>
           <input
@@ -872,7 +870,7 @@ const Model3DCanvasBase: React.FC<Model3DCanvasProps> = ({
             max="100"
             value={explodedFactor}
             onChange={(e) => setExplodedFactor(Number(e.target.value))}
-            className="w-24 sm:w-32 accent-amber-500 cursor-pointer"
+            className="w-24 sm:w-32 accent-cyber-gold cursor-pointer"
           />
         </div>
       </div>
