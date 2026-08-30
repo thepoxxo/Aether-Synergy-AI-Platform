@@ -49,33 +49,33 @@ const MainLayout: React.FC = () => {
         <UpgradeModal />
         <UserProfileModal />
 
-        {/* Floating Quick Demo Access Pill for Direct Testing */}
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 p-2 rounded-2xl bg-cyber-900/90 backdrop-blur-xl border border-cyber-gold/50 shadow-gold-glow-lg text-xs">
-          <span className="text-cyber-gold font-tech font-bold uppercase hidden sm:inline px-1">
+        {/* Floating Quick Demo Access Pill for Direct Testing (Mobile Optimized) */}
+        <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-50 flex items-center gap-1.5 p-1.5 sm:p-2 rounded-2xl bg-cyber-900/90 backdrop-blur-xl border border-cyber-gold/50 shadow-gold-glow-lg text-[11px] sm:text-xs max-w-[95vw]">
+          <span className="text-cyber-gold font-tech font-bold uppercase hidden md:inline px-1">
             Probar Demo:
           </span>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
             <button
               onClick={() => switchRole('free')}
-              className="px-2.5 py-1 rounded-xl font-bold uppercase bg-cyber-950 text-slate-300 hover:text-white hover:border-cyan-400 border border-transparent transition-all"
+              className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-bold uppercase bg-cyber-950 text-slate-300 hover:text-white hover:border-cyan-400 border border-transparent transition-all shrink-0"
             >
               Free
             </button>
             <button
               onClick={() => switchRole('pro')}
-              className="px-2.5 py-1 rounded-xl font-bold uppercase bg-cyber-gold text-black shadow-gold-glow transition-all"
+              className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-bold uppercase bg-cyber-gold text-black shadow-gold-glow transition-all shrink-0"
             >
               Pro ($49)
             </button>
             <button
               onClick={() => switchRole('agency')}
-              className="px-2.5 py-1 rounded-xl font-bold uppercase bg-purple-500 text-white shadow-lg transition-all"
+              className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-bold uppercase bg-purple-500 text-white shadow-lg transition-all shrink-0"
             >
-              Agencia ($149)
+              Agencia
             </button>
             <button
               onClick={() => switchRole('admin')}
-              className="px-2.5 py-1 rounded-xl font-bold uppercase bg-rose-500 text-white shadow-lg transition-all"
+              className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-bold uppercase bg-rose-500 text-white shadow-lg transition-all shrink-0"
             >
               Admin
             </button>
