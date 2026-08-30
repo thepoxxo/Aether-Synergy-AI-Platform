@@ -472,7 +472,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: 0,
         baseRadius: radius,
         angle: angle,
-        speed: Math.random() * 0.00009 + 0.00004, // Pleasantly faster smooth motion
+        speed: Math.random() * 0.00009 + 0.00004,
         color: activeColors[i % activeColors.length],
         size: (Math.random() * 2.4 + 0.8) * scaleFactor,
         sparklePhase: Math.random() * Math.PI * 2,
@@ -649,6 +649,9 @@ export const ShootingStarsBackground: React.FC = () => {
       { p: '#F43F5E', s: '#FB7185' }
     ];
 
+    let lastAbductionTimestamp = Date.now() + 25000; // Rare occasional event (not constant)
+    const ABDUCTION_COOLDOWN_MS = 65000; // 65 seconds minimum cooldown between abductions
+
     const createShip = (customX?: number, customY?: number, forceDesign?: ShipDesign): SpaceShip => {
       const fromLeft = customX !== undefined ? customX < width / 2 : Math.random() > 0.5;
       const design = forceDesign || shipDesigns[Math.floor(Math.random() * shipDesigns.length)];
@@ -660,7 +663,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: customY !== undefined ? customY : Math.random() * (height * 0.6) + 50,
         speed: (Math.random() * 1.5 + 1.2) * (fromLeft ? 1 : -1),
         design: design,
-        size: (Math.random() * 4 + 14) * scaleFactor, // REDUCED, SLEEK & COMPACT
+        size: (Math.random() * 4 + 14) * scaleFactor,
         primaryColor: color.p,
         secondaryColor: color.s,
         beamActive: true,
@@ -672,10 +675,10 @@ export const ShootingStarsBackground: React.FC = () => {
         hoverTimer: 0,
         targetCardX: 0,
         targetCardY: 0,
-        beamParticles: Array.from({ length: 16 }, () => ({
-          y: Math.random() * 160,
-          xOffset: (Math.random() - 0.5) * 30,
-          size: Math.random() * 2 + 1,
+        beamParticles: Array.from({ length: 14 }, () => ({
+          y: Math.random() * 140,
+          xOffset: (Math.random() - 0.5) * 28,
+          size: Math.random() * 1.8 + 0.8,
           alpha: Math.random()
         }))
       };
@@ -802,7 +805,7 @@ export const ShootingStarsBackground: React.FC = () => {
         lastShootingStarSpawn = now;
       }
 
-      galaxyRotation += 0.00008; // Pleasant and noticeable gentle orbital rotation
+      galaxyRotation += 0.00008;
       blackHolePulse += 0.008;
       radiantSun.pulsePhase += 0.008;
       radiantSun.flarePhase += 0.012;
@@ -1353,7 +1356,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 12. DRAW 5 SLEEK ALIEN CRAFTS & CUTE BOUNCING QUESTION MARKS
+      // 12. DRAW 5 SLEEK ALIEN CRAFTS (ETHEREAL LIGHT & RARE ABDUCTION)
       // ===========================================================
       const numberElements = Array.from(
         document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"], [class*="font-mono"]')
@@ -1399,7 +1402,15 @@ export const ShootingStarsBackground: React.FC = () => {
           ship.x += ship.speed;
           ship.y += Math.sin(ship.x * 0.015) * 0.8;
 
-          if (numberElements.length > 0 && !ship.stolenDigit && Math.random() < 0.03) {
+          // RARE OCCASIONAL ABDUCTION CHECK (Cooldown of 65 seconds)
+          if (
+            numberElements.length > 0 &&
+            !ship.stolenDigit &&
+            now - lastAbductionTimestamp > ABDUCTION_COOLDOWN_MS &&
+            !spaceShips.some(s => s.state === 'targeting' || s.state === 'hover_sucking') &&
+            Math.random() < 0.005
+          ) {
+            lastAbductionTimestamp = now;
             const targetEl = numberElements[Math.floor(Math.random() * numberElements.length)] as HTMLElement;
             const rect = targetEl.getBoundingClientRect();
             ship.state = 'targeting';
@@ -1418,35 +1429,57 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.save();
         ctx.translate(ship.x, ship.y);
 
-        // Volumetric Sucking Beam
-        const beamLen = ship.state === 'hover_sucking' ? 180 : 130;
-        const beamGrad = ctx.createRadialGradient(0, 4, 2, 0, beamLen * 0.6, beamLen);
+        // -------------------------------------------------------------
+        // SOFT, ETHEREAL, DEEP-SPACE BLENDED LIGHT CONE
+        // -------------------------------------------------------------
+        const isHoverSucking = ship.state === 'hover_sucking';
+        const beamLen = isHoverSucking ? 170 * scaleFactor : 85 * scaleFactor;
+        const beamSpread = isHoverSucking ? ship.size * 2.2 : ship.size * 1.2;
+        const beamOpacity = isHoverSucking ? 0.28 : 0.09;
+
+        ctx.save();
+        const beamGrad = ctx.createLinearGradient(0, 0, 0, beamLen);
         beamGrad.addColorStop(0, ship.primaryColor);
-        beamGrad.addColorStop(0.5, ship.secondaryColor);
+        beamGrad.addColorStop(0.3, ship.secondaryColor);
+        beamGrad.addColorStop(0.7, 'rgba(56, 189, 248, 0.12)');
         beamGrad.addColorStop(1, 'transparent');
 
+        // Smooth parabolic/curved soft cone that merges naturally into the background
         ctx.beginPath();
-        ctx.moveTo(-ship.size * 0.45, 4);
-        ctx.lineTo(-ship.size * 2.4, beamLen);
-        ctx.lineTo(ship.size * 2.4, beamLen);
-        ctx.lineTo(ship.size * 0.45, 4);
-        ctx.fillStyle = beamGrad;
-        ctx.globalAlpha = 0.45;
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
+        ctx.moveTo(-ship.size * 0.35, 2);
+        ctx.quadraticCurveTo(-beamSpread * 0.55, beamLen * 0.5, -beamSpread, beamLen);
+        ctx.quadraticCurveTo(0, beamLen * 1.06, beamSpread, beamLen);
+        ctx.quadraticCurveTo(beamSpread * 0.55, beamLen * 0.5, ship.size * 0.35, 2);
+        ctx.closePath();
 
-        // Upward Beam Particles
-        ship.beamParticles.forEach((bp) => {
-          bp.y -= 2.4;
-          if (bp.y < 4) bp.y = beamLen;
-          const bWidth = (bp.y / beamLen) * (ship.size * 2.0);
+        ctx.fillStyle = beamGrad;
+        ctx.globalAlpha = beamOpacity;
+        ctx.fill();
+
+        // Subtle scanning ring wave only during active abduction
+        if (isHoverSucking) {
+          const scanRingY = (now * 0.04) % beamLen;
+          const scanWidth = (scanRingY / beamLen) * beamSpread;
           ctx.beginPath();
-          ctx.arc((bp.xOffset / 35) * bWidth, bp.y, bp.size, 0, Math.PI * 2);
-          ctx.fillStyle = '#F59E0B';
-          ctx.globalAlpha = bp.alpha * (1 - bp.y / beamLen + 0.3);
+          ctx.ellipse(0, scanRingY, scanWidth, 3 * scaleFactor, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = '#F59E0B';
+          ctx.lineWidth = 1.2 * scaleFactor;
+          ctx.globalAlpha = 0.4 * (1 - scanRingY / beamLen);
+          ctx.stroke();
+        }
+
+        // Soft stardust particle shimmer
+        ship.beamParticles.forEach((bp) => {
+          bp.y -= isHoverSucking ? 2.0 : 0.7;
+          if (bp.y < 4) bp.y = beamLen;
+          const bWidth = (bp.y / beamLen) * beamSpread;
+          ctx.beginPath();
+          ctx.arc((bp.xOffset / 28) * bWidth, bp.y, bp.size * 0.7, 0, Math.PI * 2);
+          ctx.fillStyle = isHoverSucking ? '#F59E0B' : '#E0F2FE';
+          ctx.globalAlpha = bp.alpha * (1 - bp.y / beamLen) * (isHoverSucking ? 0.45 : 0.18);
           ctx.fill();
         });
-        ctx.globalAlpha = 1.0;
+        ctx.restore();
 
         // -------------------------------------------------------------
         // RENDER 5 SLEEK COMPACT SPACESHIP DESIGNS
@@ -1553,7 +1586,6 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.fill();
         }
 
-        // Stolen Digit HUD on Craft
         if (ship.stolenDigit) {
           ctx.fillStyle = '#F59E0B';
           ctx.font = 'bold 11px monospace';
@@ -1562,7 +1594,7 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.fillText(ship.stolenDigit, -10, 2);
         }
 
-        // PHYSICAL ABDUCTION: REPLACE WITH CUTE BOUNCING QUESTION MARKS
+        // PHYSICAL ABDUCTION
         if (ship.state === 'hover_sucking') {
           numberElements.forEach((el) => {
             const htmlEl = el as HTMLElement;
@@ -1579,7 +1611,6 @@ export const ShootingStarsBackground: React.FC = () => {
 
                 ship.stolenDigit = rawText.substring(0, 4);
 
-                // INSERT VISIBLE, CUTE BOUNCING QUESTION MARKS
                 htmlEl.style.opacity = '1';
                 htmlEl.style.transform = 'scale(1)';
                 htmlEl.innerHTML = `<span class="inline-flex items-center gap-1 text-amber-400 font-mono text-3xl sm:text-4xl animate-bounce drop-shadow-[0_0_15px_rgba(245,158,11,0.9)] cursor-pointer select-none" title="¡Número abducido! Haz clic para restaurarlo o espera al guardián...">❓❓</span>`;
