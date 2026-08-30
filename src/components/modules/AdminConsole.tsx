@@ -119,7 +119,7 @@ export const AdminConsole: React.FC = () => {
       color: 'text-cyber-gold'
     },
     {
-      category: 'API Generación Video Ads (9:16 Shorts)',
+      category: 'API Generación Video Ads & Turntables 4K',
       provider: 'Runway Gen-3 / Luma Dream Machine API',
       usage: '1,450 clips de 15 segundos',
       unitCost: '$0.25 / clip 4K',
@@ -128,16 +128,43 @@ export const AdminConsole: React.FC = () => {
       color: 'text-cyan-400'
     },
     {
-      category: 'Cloud Storage & CDN (Mallas 3D & Texturas)',
+      category: 'Cloud Baking Unreal Engine 5 Nanite & USD',
+      provider: 'AWS EC2 G5 GPU Cluster',
+      usage: '95 compilaciones cinemáticas',
+      unitCost: '$1.50 / bake 8K',
+      totalCost: 142.50,
+      icon: Layers,
+      color: 'text-indigo-400'
+    },
+    {
+      category: 'Orquestador Swarm 6 Agentes IA 24/7',
+      provider: 'OpenAI GPT-4o / Gemini 1.5 Pro Interconnect',
+      usage: '1.2M tokens / mes',
+      unitCost: '$0.10 / 1K tokens',
+      totalCost: 120.00,
+      icon: Sparkles,
+      color: 'text-purple-400'
+    },
+    {
+      category: 'Cloud Storage & CDN (Mallas 3D & Texturas 8K)',
       provider: 'Cloudflare R2 + AWS S3 Global CDN',
       usage: '4.8 TB tráfico transferido',
       unitCost: '$0.015 / GB',
       totalCost: 72.00,
       icon: HardDrive,
-      color: 'text-purple-400'
+      color: 'text-blue-400'
     },
     {
-      category: 'Base de Datos Transaccional',
+      category: 'Locuciones IA Multilingües & Voiceover',
+      provider: 'ElevenLabs Enterprise Voice API',
+      usage: '850 locuciones publicitarias',
+      unitCost: '$0.08 / locución',
+      totalCost: 68.00,
+      icon: Activity,
+      color: 'text-amber-400'
+    },
+    {
+      category: 'Base de Datos Transaccional & Webhooks',
       provider: 'Supabase / PostgreSQL Enterprise HA',
       usage: 'Instancia gestionada 8 vCPU, 32 GB RAM',
       unitCost: 'Tarifa mensual fija',
@@ -472,6 +499,75 @@ export const AdminConsole: React.FC = () => {
               <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800">
                 <span className="text-[11px] text-slate-400 block">Margen Operativo</span>
                 <span className="text-xl font-tech font-bold text-cyber-gold">{simulatedMarginPercent}%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Statistical Visual Bar Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Chart 1: API & GPU Cost Distribution */}
+            <div className="p-6 rounded-3xl bg-cyber-900 border border-cyber-800 space-y-4 shadow-cyber-card font-mono text-xs">
+              <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
+                <h4 className="font-tech font-bold text-sm text-white flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-rose-400" /> Distribución de Costos de APIs ($1,887.00 USD/m)
+                </h4>
+                <span className="text-[10px] text-slate-400">Consumo Real</span>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { name: 'Inferencia GPU H100 (Aurora 3D)', cost: 576, pct: 30.5, color: 'bg-emerald-400' },
+                  { name: 'API Generación 3D (Tripo3D/Meshy)', cost: 456, pct: 24.2, color: 'bg-amber-400' },
+                  { name: 'Video Ads & Turntables 4K (Runway)', cost: 362.5, pct: 19.2, color: 'bg-cyan-400' },
+                  { name: 'Cloud Baking Unreal Engine 5 Nanite', cost: 142.5, pct: 7.5, color: 'bg-indigo-400' },
+                  { name: 'Orquestador Swarm 6 Agentes IA', cost: 120, pct: 6.4, color: 'bg-purple-400' },
+                  { name: 'Cloud Storage & CDN (Cloudflare R2)', cost: 72, pct: 3.8, color: 'bg-blue-400' },
+                  { name: 'Locuciones IA ElevenLabs Multilingüe', cost: 68, pct: 3.6, color: 'bg-pink-400' },
+                  { name: 'Supabase Database & Webhooks', cost: 45, pct: 2.4, color: 'bg-rose-400' }
+                ].map((bar, idx) => (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-300">{bar.name}</span>
+                      <span className="text-white font-bold">${bar.cost.toFixed(2)} ({bar.pct}%)</span>
+                    </div>
+                    <div className="w-full h-2 bg-cyber-950 rounded-full overflow-hidden border border-white/5">
+                      <div className={`h-full ${bar.color} rounded-full transition-all duration-500`} style={{ width: `${bar.pct * 2.8}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Chart 2: Monthly MRR & Client Growth */}
+            <div className="p-6 rounded-3xl bg-cyber-900 border border-cyber-800 space-y-4 shadow-cyber-card font-mono text-xs">
+              <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
+                <h4 className="font-tech font-bold text-sm text-white flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-emerald-400" /> Crecimiento de Facturación MRR (Ene - Ago 2026)
+                </h4>
+                <span className="text-[10px] text-emerald-400 font-bold">+3,343% ARR</span>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { month: 'Enero 2026', mrr: '$1,420 USD', clients: '32 clientes', pct: 8 },
+                  { month: 'Febrero 2026', mrr: '$2,890 USD', clients: '64 clientes', pct: 15 },
+                  { month: 'Marzo 2026', mrr: '$4,980 USD', clients: '112 clientes', pct: 24 },
+                  { month: 'Abril 2026', mrr: '$8,450 USD', clients: '190 clientes', pct: 36 },
+                  { month: 'Mayo 2026', mrr: '$14,200 USD', clients: '320 clientes', pct: 52 },
+                  { month: 'Junio 2026', mrr: '$22,800 USD', clients: '510 clientes', pct: 68 },
+                  { month: 'Julio 2026', mrr: '$34,600 USD', clients: '780 clientes', pct: 84 },
+                  { month: 'Agosto 2026 (Actual)', mrr: '$48,900 USD', clients: '1,100 clientes', pct: 100 }
+                ].map((bar, idx) => (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-300">{bar.month}</span>
+                      <span className="text-emerald-400 font-bold">{bar.mrr} <span className="text-slate-500 font-normal">({bar.clients})</span></span>
+                    </div>
+                    <div className="w-full h-2 bg-cyber-950 rounded-full overflow-hidden border border-white/5">
+                      <div className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full transition-all duration-500" style={{ width: `${bar.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

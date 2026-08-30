@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { UserRole } from '../../types/auth';
@@ -68,6 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { role, hasAccess, promptUpgrade } = useAuth();
   const { t } = useLanguage();
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [filterMyPlanOnly, setFilterMyPlanOnly] = useState(false);
 
   const categories: NavCategory[] = [
     {
@@ -177,41 +178,60 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div className="space-y-4 overflow-y-auto flex-1">
-              {categories.map((category) => (
-                <div key={category.id} className="space-y-1.5">
-                  <div className="px-2 py-1 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                    <span>{category.icon}</span>
-                    <span>{category.title}</span>
-                  </div>
-                  {category.items.map((item) => {
-                    const Icon = item.icon;
-                    const active = currentView === item.id;
-                    const allowed = hasAccess(item.requiredRole);
+              <button
+                onClick={() => setFilterMyPlanOnly(!filterMyPlanOnly)}
+                className={`w-full py-2 px-3 rounded-xl border text-[10px] font-tech font-bold uppercase tracking-wider flex items-center justify-between transition-all mb-2 ${
+                  filterMyPlanOnly
+                    ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold/50 shadow-gold-glow'
+                    : 'bg-cyber-900 text-slate-400 border-cyber-800'
+                }`}
+              >
+                <span>{filterMyPlanOnly ? `Solo Plan ${role.toUpperCase()}` : 'Todos los Módulos'}</span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/50 font-mono">
+                  {filterMyPlanOnly ? 'Filtrado' : 'Ver Todos'}
+                </span>
+              </button>
 
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => handleNavClick(item)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                          active
-                            ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
-                            : 'text-slate-300 hover:text-white hover:bg-cyber-900'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <Icon className="w-4 h-4" />
-                          <span>{item.isLiteralLabel ? item.nameKey : t(item.nameKey)}</span>
-                        </div>
-                        {item.badge && (
-                          <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
-                            {item.badge}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
+              {categories.map((category) => {
+                const visibleItems = category.items.filter((item) => !filterMyPlanOnly || hasAccess(item.requiredRole));
+                if (visibleItems.length === 0) return null;
+
+                return (
+                  <div key={category.id} className="space-y-1.5">
+                    <div className="px-2 py-1 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                      <span>{category.icon}</span>
+                      <span>{category.title}</span>
+                    </div>
+                    {visibleItems.map((item) => {
+                      const Icon = item.icon;
+                      const active = currentView === item.id;
+                      const allowed = hasAccess(item.requiredRole);
+
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => handleNavClick(item)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                            active
+                              ? 'bg-cyber-gold text-black shadow-gold-glow font-bold'
+                              : 'text-slate-300 hover:text-white hover:bg-cyber-900'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <Icon className="w-4 h-4" />
+                            <span>{item.isLiteralLabel ? item.nameKey : t(item.nameKey)}</span>
+                          </div>
+                          {item.badge && (
+                            <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
+                              {item.badge}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -224,7 +244,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }`}
       >
         {/* Top Header with Collapse Button */}
-        <div className="w-full flex items-center justify-between px-2 mb-3">
+        <div className="w-full flex items-center justify-between px-2 mb-2">
           {!isCollapsed && (
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
               <span>MÓDULOS DE LA PLATAFORMA</span>
@@ -242,27 +262,50 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
+        {/* Plan Filter Toggle (Desktop) */}
+        {!isCollapsed && (
+          <div className="w-full px-1 mb-3">
+            <button
+              onClick={() => setFilterMyPlanOnly(!filterMyPlanOnly)}
+              className={`w-full py-1.5 px-2.5 rounded-xl border text-[10px] font-tech font-bold uppercase tracking-wider flex items-center justify-between transition-all ${
+                filterMyPlanOnly
+                  ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold/50 shadow-gold-glow'
+                  : 'bg-cyber-900 text-slate-400 border-cyber-800 hover:text-white'
+              }`}
+            >
+              <span>{filterMyPlanOnly ? `Solo Plan ${role.toUpperCase()}` : 'Todos los Módulos'}</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/50 font-mono">
+                {filterMyPlanOnly ? 'Activo' : 'Ver Todos'}
+              </span>
+            </button>
+          </div>
+        )}
+
         {/* Categorized Navigation Stack */}
         <div className="space-y-4 flex-1 w-full overflow-y-auto pr-1">
-          {categories.map((category) => (
-            <div key={category.id} className="space-y-1">
-              {!isCollapsed && (
-                <div className="px-2.5 py-1 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span>{category.icon}</span>
-                    <span>{category.title}</span>
-                  </div>
-                  <span className="text-[9px] font-mono text-slate-400 bg-cyber-900 px-1.5 py-0.2 rounded-md">
-                    {category.items.length}
-                  </span>
-                </div>
-              )}
+          {categories.map((category) => {
+            const visibleItems = category.items.filter((item) => !filterMyPlanOnly || hasAccess(item.requiredRole));
+            if (visibleItems.length === 0) return null;
 
-              <div className="space-y-1">
-                {category.items.map((item) => {
-                  const Icon = item.icon;
-                  const allowed = hasAccess(item.requiredRole);
-                  const active = currentView === item.id;
+            return (
+              <div key={category.id} className="space-y-1">
+                {!isCollapsed && (
+                  <div className="px-2.5 py-1 text-[10px] font-tech font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span>{category.icon}</span>
+                      <span>{category.title}</span>
+                    </div>
+                    <span className="text-[9px] font-mono text-slate-400 bg-cyber-900 px-1.5 py-0.2 rounded-md">
+                      {visibleItems.length}
+                    </span>
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  {visibleItems.map((item) => {
+                    const Icon = item.icon;
+                    const allowed = hasAccess(item.requiredRole);
+                    const active = currentView === item.id;
 
                   return (
                     <button
@@ -315,7 +358,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 })}
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </aside>
     </>
