@@ -18,7 +18,10 @@ import {
   Download,
   Printer,
   X,
-  Leaf
+  Leaf,
+  Ruler,
+  Tag,
+  Barcode
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -28,7 +31,7 @@ export interface Supplier {
   country: string;
   flag: string;
   city: string;
-  moq: number; // Minimum Order Quantity
+  moq: number;
   leadTime: string;
   pricePerUnit: number;
   rating: number;
@@ -46,6 +49,7 @@ export const GlobalSuppliers: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState('all');
   const [selectedCert, setSelectedCert] = useState('all');
   const [isTechPackModalOpen, setIsTechPackModalOpen] = useState(false);
+  const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
 
   const suppliers: Supplier[] = [
     {
@@ -163,7 +167,7 @@ export const GlobalSuppliers: React.FC = () => {
           className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
         >
           <FileText className="w-4 h-4" />
-          <span>Generar Tech Pack PDF</span>
+          <span>Generar Tech Pack PDF (Dual CM / IN)</span>
         </button>
       </div>
 
@@ -251,7 +255,7 @@ export const GlobalSuppliers: React.FC = () => {
 
                 <p className="text-xs text-slate-300 font-sans leading-relaxed">{sup.specialty}</p>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-cyber-850 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-cyber-855 text-xs">
                   <div className="flex flex-wrap gap-1.5">
                     {sup.certifications.map((cert) => (
                       <span
@@ -348,117 +352,226 @@ export const GlobalSuppliers: React.FC = () => {
                 className="w-full py-3 rounded-2xl bg-cyber-950 hover:bg-cyber-850 border border-cyber-700 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
               >
                 <FileText className="w-4 h-4 text-cyber-gold" />
-                <span>Ver Ficha Técnica Tech Pack</span>
+                <span>Ver Ficha Técnica Tech Pack (CM / IN)</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* TECH PACK MODAL */}
+      {/* INDUSTRIAL TECH PACK MODAL WITH WATERMARK & DUAL CM / INCH MEASUREMENTS */}
       {isTechPackModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="bg-white text-slate-900 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            {/* Header */}
-            <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 block">
-                  AETHER SYNERGY • SPECIFICATION SHEET
-                </span>
-                <h3 className="font-tech font-bold text-xl">FICHA TÉCNICA DE PRODUCCIÓN (TECH PACK)</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+          <div className="relative bg-white text-slate-900 rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            {/* Elegant Background Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] rotate-[-25deg] select-none z-0">
+              <div className="text-center font-tech font-extrabold text-7xl text-slate-900 tracking-widest leading-none">
+                AETHER SYNERGY <br />
+                CONFIDENTIAL TECH PACK <br />
+                B2B OFFICIAL SPECIFICATION
               </div>
-              <button
-                onClick={() => setIsTechPackModalOpen(false)}
-                className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
 
-            {/* Body */}
-            <div className="p-6 overflow-y-auto space-y-6 text-xs font-sans">
-              <div className="grid grid-cols-3 gap-4 p-4 bg-slate-100 rounded-2xl">
+            {/* Modal Header */}
+            <div className="relative z-10 p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-amber-500/20 border border-amber-500 text-amber-400">
+                  <FileText className="w-6 h-6" />
+                </div>
                 <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Producto:</span>
-                  <span className="font-bold text-slate-800">Chaqueta Techwear Modular v1</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                      DOC: TP-2026-X49
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">REV 3.2</span>
+                  </div>
+                  <h3 className="font-tech font-bold text-xl mt-0.5">
+                    FICHA TÉCNICA DE PRODUCCIÓN INDUSTRIAL (TECH PACK)
+                  </h3>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Unit Switcher */}
+                <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-mono">
+                  <button
+                    onClick={() => setUnitSystem('both')}
+                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                      unitSystem === 'both' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Dual (CM & IN)
+                  </button>
+                  <button
+                    onClick={() => setUnitSystem('cm')}
+                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                      unitSystem === 'cm' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Métrico (CM)
+                  </button>
+                  <button
+                    onClick={() => setUnitSystem('in')}
+                    className={`px-2.5 py-1 rounded-lg transition-all ${
+                      unitSystem === 'in' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    Imperial (IN)
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setIsTechPackModalOpen(false)}
+                  className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="relative z-10 p-6 overflow-y-auto space-y-6 text-xs font-sans">
+              {/* Product & Factory Header Info */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+                <div>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Estilo / Prenda:</span>
+                  <span className="font-bold text-slate-900 text-sm">Chaqueta Techwear Modular X-1</span>
                 </div>
                 <div>
                   <span className="text-slate-500 font-bold uppercase block text-[10px]">Fábrica Asignada:</span>
-                  <span className="font-bold text-slate-800">{activeSupplier.name}</span>
+                  <span className="font-bold text-slate-900 text-sm">{activeSupplier.name}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Lote / Cantidad:</span>
-                  <span className="font-bold text-slate-800">{orderQuantity} unidades</span>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Volumen / Cantidad:</span>
+                  <span className="font-bold text-slate-900 text-sm">{orderQuantity} unidades</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 font-bold uppercase block text-[10px]">Colores Pantone:</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#1E293B] border border-slate-400" title="19-4007 TCX" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#E5A93C] border border-slate-400" title="14-0848 TCX" />
+                    <span className="text-[11px] font-mono font-bold text-slate-700">19-4007 / 14-0848</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Size Chart Table */}
-              <div>
-                <h4 className="font-bold text-sm text-slate-800 uppercase tracking-wider mb-2">
-                  1. Tabla de Medidas (Grading Chart en cm):
-                </h4>
-                <table className="w-full text-left border border-slate-200 rounded-xl overflow-hidden">
-                  <thead className="bg-slate-200 text-slate-700 font-bold">
-                    <tr>
-                      <th className="p-2.5">Punto de Medida</th>
-                      <th className="p-2.5 text-center">S</th>
-                      <th className="p-2.5 text-center">M</th>
-                      <th className="p-2.5 text-center">L</th>
-                      <th className="p-2.5 text-center">XL</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    <tr>
-                      <td className="p-2">Ancho de Pecho (Chest Width)</td>
-                      <td className="p-2 text-center">56 cm</td>
-                      <td className="p-2 text-center">58 cm</td>
-                      <td className="p-2 text-center">61 cm</td>
-                      <td className="p-2 text-center">64 cm</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2">Largo Total (Body Length)</td>
-                      <td className="p-2 text-center">68 cm</td>
-                      <td className="p-2 text-center">70 cm</td>
-                      <td className="p-2 text-center">73 cm</td>
-                      <td className="p-2 text-center">76 cm</td>
-                    </tr>
-                    <tr>
-                      <td className="p-2">Largo de Manga (Sleeve Length)</td>
-                      <td className="p-2 text-center">64 cm</td>
-                      <td className="p-2 text-center">66 cm</td>
-                      <td className="p-2 text-center">68 cm</td>
-                      <td className="p-2 text-center">70 cm</td>
-                    </tr>
-                  </tbody>
-                </table>
+              {/* 1. Complete Sizing Table with Dual Units (cm and inches) */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <Ruler className="w-4 h-4 text-amber-600" /> 1. TABLA DE MEDIDAS & GRADACIÓN INDUSTRIAL
+                  </h4>
+                  <span className="text-[10px] font-mono text-slate-500">Tolerancia: +/- 0.5 cm (0.2 in)</span>
+                </div>
+
+                <div className="overflow-x-auto border border-slate-300 rounded-2xl shadow-sm">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-900 text-white font-tech uppercase text-[11px]">
+                      <tr>
+                        <th className="p-3">Punto de Medida (POM)</th>
+                        <th className="p-3 text-center">S</th>
+                        <th className="p-3 text-center">M (Muestra)</th>
+                        <th className="p-3 text-center">L</th>
+                        <th className="p-3 text-center">XL</th>
+                        <th className="p-3 text-center">XXL</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 text-slate-800">
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-semibold">Ancho de Pecho (Chest Width 2.5cm below armhole)</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '22.0 in' : unitSystem === 'cm' ? '56.0 cm' : '56 cm / 22.0"'}</td>
+                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '22.8 in' : unitSystem === 'cm' ? '58.0 cm' : '58 cm / 22.8"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '24.0 in' : unitSystem === 'cm' ? '61.0 cm' : '61 cm / 24.0"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '25.2 in' : unitSystem === 'cm' ? '64.0 cm' : '64 cm / 25.2"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '26.4 in' : unitSystem === 'cm' ? '67.0 cm' : '67 cm / 26.4"'}</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-semibold">Largo Total Prenda (Body Length from HPS)</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '26.8 in' : unitSystem === 'cm' ? '68.0 cm' : '68 cm / 26.8"'}</td>
+                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '27.5 in' : unitSystem === 'cm' ? '70.0 cm' : '70 cm / 27.5"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '28.7 in' : unitSystem === 'cm' ? '73.0 cm' : '73 cm / 28.7"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '29.9 in' : unitSystem === 'cm' ? '76.0 cm' : '76 cm / 29.9"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '31.1 in' : unitSystem === 'cm' ? '79.0 cm' : '79 cm / 31.1"'}</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-semibold">Largo de Manga Raglán (Sleeve Length from CB)</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '25.2 in' : unitSystem === 'cm' ? '64.0 cm' : '64 cm / 25.2"'}</td>
+                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '26.0 in' : unitSystem === 'cm' ? '66.0 cm' : '66 cm / 26.0"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '26.8 in' : unitSystem === 'cm' ? '68.0 cm' : '68 cm / 26.8"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '27.5 in' : unitSystem === 'cm' ? '70.0 cm' : '70 cm / 27.5"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '28.3 in' : unitSystem === 'cm' ? '72.0 cm' : '72 cm / 28.3"'}</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-semibold">Ancho de Ruedo / Cintura (Bottom Hem Opening)</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '20.5 in' : unitSystem === 'cm' ? '52.0 cm' : '52 cm / 20.5"'}</td>
+                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '21.2 in' : unitSystem === 'cm' ? '54.0 cm' : '54 cm / 21.2"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '22.4 in' : unitSystem === 'cm' ? '57.0 cm' : '57 cm / 22.4"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '23.6 in' : unitSystem === 'cm' ? '60.0 cm' : '60 cm / 23.6"'}</td>
+                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '24.8 in' : unitSystem === 'cm' ? '63.0 cm' : '63 cm / 24.8"'}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              {/* Bill of Materials (BOM) */}
-              <div>
-                <h4 className="font-bold text-sm text-slate-800 uppercase tracking-wider mb-2">
-                  2. Lista de Materiales & Avíos (BOM):
+              {/* 2. Bill of Materials (BOM) & Stitching */}
+              <div className="space-y-2">
+                <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Tag className="w-4 h-4 text-amber-600" /> 2. LISTA DETALLADA DE MATERIALES, HILOS Y AVÍOS (BOM)
                 </h4>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-3 bg-slate-50 border rounded-xl">
-                    <span className="font-bold block">Tela Principal:</span>
-                    <span>100% Nylon Ripstop 240 GSM con tratamiento DWR repelente al agua.</span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Tejido Exterior Principal:</span>
+                    <p className="text-slate-600">100% Nylon Ripstop 240 GSM con recubrimiento DWR hidrófugo y acabado mate anti-abrasión.</p>
                   </div>
-                  <div className="p-3 bg-slate-50 border rounded-xl">
-                    <span className="font-bold block">Cremalleras:</span>
-                    <span>YKK Aquaguard #5 impermeables con tiradores engomados.</span>
+
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Forro Interno y Bolsillos:</span>
+                    <p className="text-slate-600">Malla técnica CoolMax 120 GSM transpirable y micro-polar en bolsillos calientamanos.</p>
+                  </div>
+
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Cremalleras y Herrajes:</span>
+                    <p className="text-slate-600">YKK Aquaguard #5 impermeables con costuras termoselladas y tiradores de cordón reflectivo.</p>
+                  </div>
+
+                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+                    <span className="font-bold text-slate-900 block">Hilos y Costuras (Stitching SPI):</span>
+                    <p className="text-slate-600">Hilo de nylon 60/2 reforzado con 12 puntadas por pulgada (12 SPI) y presillas Bar-Tack en bolsillos.</p>
                   </div>
                 </div>
+              </div>
+
+              {/* 3. Packaging & Labeling Specifications */}
+              <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-tech font-bold text-amber-400 uppercase">3. Instrucciones de Empaque y Etiquetado:</span>
+                  <span className="font-mono text-[10px] text-slate-400 flex items-center gap-1">
+                    <Barcode className="w-3.5 h-3.5" /> SKU: AET-JKT-2026-01
+                  </span>
+                </div>
+                <p className="text-slate-300 leading-relaxed">
+                  Cada prenda debe doblarse individualmente en bolsa biodegradable compostable de 40 micras con orificios de ventilación, sobre desecante de gel de sílice y etiqueta de código de barras exterior visible. Cajas maestras de 25 unidades debidamente zunchadas.
+                </p>
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 bg-slate-100 border-t flex justify-end gap-2">
-              <button
-                onClick={() => window.print()}
-                className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5"
-              >
-                <Printer className="w-4 h-4" /> Imprimir / Guardar PDF
-              </button>
+            <div className="relative z-10 p-4 bg-slate-100 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-slate-500 text-[11px] font-mono">
+                Documento generado por Aether Synergy B2B Engine • Válido para producción en {activeSupplier.country}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => window.print()}
+                  className="px-5 py-2.5 rounded-2xl bg-slate-950 hover:bg-slate-800 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all"
+                >
+                  <Printer className="w-4 h-4 text-amber-400" />
+                  <span>Imprimir / Guardar PDF Oficial</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

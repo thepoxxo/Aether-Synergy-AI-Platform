@@ -18,7 +18,10 @@ import {
   SlidersHorizontal,
   Coffee,
   Wand2,
-  Brush
+  Brush,
+  RotateCcw,
+  Pipette,
+  Hash
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -29,8 +32,16 @@ export const Aurora3DStudio: React.FC = () => {
 
   const [activeNicheTab, setActiveNicheTab] = useState<'fashion' | 'interior' | 'instrumentation' | 'merch'>('fashion');
   const [productType, setProductType] = useState<ModelType>('jacket');
+
+  // Custom Colors & Hex Code
   const [primaryColor, setPrimaryColor] = useState('#1e293b');
   const [accentColor, setAccentColor] = useState('#e5a93c');
+  const [primaryHexInput, setPrimaryHexInput] = useState('#1E293B');
+  const [accentHexInput, setAccentHexInput] = useState('#E5A93C');
+
+  // Active AI Version
+  const [activeVersion, setActiveVersion] = useState<string>('original');
+
   const [outlineWidth, setOutlineWidth] = useState(2.5);
   const [intensity, setIntensity] = useState('High');
   const [shadingMode, setShadingMode] = useState('Sharp');
@@ -38,13 +49,85 @@ export const Aurora3DStudio: React.FC = () => {
   const [activeFrame, setActiveFrame] = useState(45);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // 4 AI Harmonic Color Palettes Presets
-  const harmonicPalettes = [
-    { name: 'Cyberpunk Neon', primary: '#0A0D14', accent: '#06B6D4' },
-    { name: 'Nordic Pastel', primary: '#F1F5F9', accent: '#E5A93C' },
-    { name: 'Earthy Techwear', primary: '#1C1917', accent: '#15803D' },
-    { name: 'Monochrome Luxury', primary: '#000000', accent: '#F59E0B' },
+  // AI Product Variations & Versions
+  const productVersions = [
+    {
+      id: 'original',
+      name: 'Original (Diseño Base)',
+      tag: 'Diseño Base',
+      primary: '#1E293B',
+      accent: '#E5A93C',
+      emoji: '🎨'
+    },
+    {
+      id: 'cyberpunk',
+      name: 'Variante 1: Cyberpunk Neon',
+      tag: 'Cian & Negro',
+      primary: '#0A0D14',
+      accent: '#06B6D4',
+      emoji: '⚡'
+    },
+    {
+      id: 'nordic',
+      name: 'Variante 2: Nordic Minimal',
+      tag: 'Gris Ártico',
+      primary: '#F1F5F9',
+      accent: '#E5A93C',
+      emoji: '❄️'
+    },
+    {
+      id: 'techwear',
+      name: 'Variante 3: Earthy Techwear',
+      tag: 'Oliva & Grafito',
+      primary: '#1C1917',
+      accent: '#15803D',
+      emoji: '🌲'
+    },
+    {
+      id: 'luxury',
+      name: 'Variante 4: Monochrome Luxury',
+      tag: 'Oro & Obsidiana',
+      primary: '#000000',
+      accent: '#F59E0B',
+      emoji: '👑'
+    }
   ];
+
+  const handleApplyVersion = (v: typeof productVersions[0]) => {
+    setActiveVersion(v.id);
+    setPrimaryColor(v.primary);
+    setAccentColor(v.accent);
+    setPrimaryHexInput(v.primary.toUpperCase());
+    setAccentHexInput(v.accent.toUpperCase());
+  };
+
+  const handlePrimaryHexChange = (val: string) => {
+    setPrimaryHexInput(val);
+    if (/^#[0-9A-F]{6}$/i.test(val)) {
+      setPrimaryColor(val);
+      setActiveVersion('custom');
+    }
+  };
+
+  const handleAccentHexChange = (val: string) => {
+    setAccentHexInput(val);
+    if (/^#[0-9A-F]{6}$/i.test(val)) {
+      setAccentColor(val);
+      setActiveVersion('custom');
+    }
+  };
+
+  const handlePrimaryPickerChange = (val: string) => {
+    setPrimaryColor(val);
+    setPrimaryHexInput(val.toUpperCase());
+    setActiveVersion('custom');
+  };
+
+  const handleAccentPickerChange = (val: string) => {
+    setAccentColor(val);
+    setAccentHexInput(val.toUpperCase());
+    setActiveVersion('custom');
+  };
 
   const [layers, setLayers] = useState([
     { id: 'graphic', name: 'Graphic Decal [Active]', visible: true },
@@ -69,7 +152,7 @@ export const Aurora3DStudio: React.FC = () => {
       {/* Studio Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-cyber-900 p-4 rounded-2xl border border-cyber-700/80 shadow-cyber-card">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyber-gold/20 border border-cyber-gold text-cyber-gold">
+          <div className="p-2.5 rounded-xl bg-cyber-gold/20 border border-cyber-gold text-cyber-gold shadow-gold-glow">
             <Layers className="w-5 h-5" />
           </div>
           <div>
@@ -78,11 +161,11 @@ export const Aurora3DStudio: React.FC = () => {
                 AURORA 3D MULTI-INDUSTRY STUDIO
               </h2>
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyber-800 text-cyber-gold border border-cyber-700">
-                PRO ENGINE v3.2 • ATADOS & HDRI
+                PRO ENGINE v3.2 • COLOR LIBRE & VERSIONES IA
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Diseño, texturizado PBR/Anime y simulación 3D para Moda, Interiores e Instrumentalización
+              Diseño, texturizado libre, círculo cromático, y simulación 3D para Moda, Interiores e Instrumentalización
             </p>
           </div>
         </div>
@@ -146,204 +229,149 @@ export const Aurora3DStudio: React.FC = () => {
         </div>
       </div>
 
-      {/* Model Sub-Selector Pill Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
-        <span className="text-xs font-tech font-bold uppercase text-slate-400 shrink-0">Modelos 3D Disponibles:</span>
-        {activeNicheTab === 'fashion' && (
-          <div className="flex gap-1.5">
-            <button
-              onClick={() => setProductType('jacket')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'jacket' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              🧥 Chaqueta Techwear
-            </button>
-            <button
-              onClick={() => setProductType('hoodie')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'hoodie' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              👕 Hoodie Oversized
-            </button>
-            <button
-              onClick={() => setProductType('sneaker')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'sneaker' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              👟 Sneaker Cyberpunk X-1
-            </button>
-          </div>
-        )}
-
-        {activeNicheTab === 'interior' && (
-          <div className="flex gap-1.5">
-            <button
-              onClick={() => setProductType('chair')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'chair' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              🛋️ Sillón Lounge Escandinavo
-            </button>
-            <button
-              onClick={() => setProductType('table')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'table' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              🪵 Mesa de Centro Minimalista
-            </button>
-          </div>
-        )}
-
-        {activeNicheTab === 'instrumentation' && (
-          <div className="flex gap-1.5">
-            <button
-              onClick={() => setProductType('synth')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'synth' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              🎛️ Sintetizador Modular OLED
-            </button>
-            <button
-              onClick={() => setProductType('speaker')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'speaker' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              🔊 Monitor de Estudio Audio
-            </button>
-          </div>
-        )}
-
-        {activeNicheTab === 'merch' && (
-          <div className="flex gap-1.5">
-            <button
-              onClick={() => setProductType('tumbler')}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                productType === 'tumbler' ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
-              }`}
-            >
-              ☕ Termo Térmico Merch
-            </button>
-          </div>
-        )}
-      </div>
-
       {/* Main Studio Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Layer Stack, Colors & AI Palette Generator */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-cyber-gold" /> {t('aurora.layerStack')}
+        {/* Left Column: Color Wheel & AI Product Versions */}
+        <div className="lg:col-span-4 space-y-4">
+          {/* Total Color Freedom: Color Wheel & Hex Input */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/50 shadow-cyber-card space-y-4">
+            <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Palette className="w-4 h-4 text-cyber-gold" /> CÍRCULO CROMÁTICO & COLOR LIBRE
               </span>
-              <span className="text-[10px] text-cyber-gold font-mono">{t('aurora.layersCount')}</span>
+              <span className="text-[10px] text-cyber-gold font-mono uppercase">{activeVersion}</span>
             </div>
 
-            <div className="space-y-1.5">
-              {layers.map((layer) => (
-                <div
-                  key={layer.id}
-                  className="flex items-center justify-between p-2.5 rounded-xl bg-cyber-950 border border-cyber-800 text-xs hover:border-cyber-gold/40 transition-colors shadow-sm"
-                >
-                  <span className={layer.visible ? 'text-slate-200' : 'text-slate-600 line-through'}>
-                    {layer.name}
-                  </span>
+            {/* Primary Fabric Color */}
+            <div className="space-y-2">
+              <label className="text-slate-300 font-tech font-bold text-xs flex items-center justify-between">
+                <span>Color Base Prenda / Objeto:</span>
+                <span className="font-mono text-[11px] text-cyber-gold">{primaryColor.toUpperCase()}</span>
+              </label>
+
+              <div className="flex items-center gap-2">
+                {/* Visual Color Wheel Picker Input */}
+                <div className="relative w-12 h-10 rounded-xl overflow-hidden border-2 border-cyber-gold shadow-md shrink-0 cursor-pointer">
+                  <input
+                    type="color"
+                    value={primaryColor}
+                    onChange={(e) => handlePrimaryPickerChange(e.target.value)}
+                    className="absolute -inset-2 w-16 h-16 cursor-pointer opacity-100"
+                    title="Abrir Círculo Cromático"
+                  />
+                </div>
+
+                {/* Hex Code Input Box */}
+                <div className="relative flex-1">
+                  <Hash className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={primaryHexInput}
+                    onChange={(e) => handlePrimaryHexChange(e.target.value)}
+                    placeholder="#1E293B"
+                    maxLength={7}
+                    className="w-full bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-xl pl-8 pr-3 py-2 text-xs font-mono text-white uppercase focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Accent & Trims Color */}
+            <div className="space-y-2 pt-2 border-t border-cyber-800">
+              <label className="text-slate-300 font-tech font-bold text-xs flex items-center justify-between">
+                <span>Color Acento, Bolsillos & Avíos:</span>
+                <span className="font-mono text-[11px] text-cyber-gold">{accentColor.toUpperCase()}</span>
+              </label>
+
+              <div className="flex items-center gap-2">
+                {/* Visual Color Wheel Picker Input */}
+                <div className="relative w-12 h-10 rounded-xl overflow-hidden border-2 border-white shadow-md shrink-0 cursor-pointer">
+                  <input
+                    type="color"
+                    value={accentColor}
+                    onChange={(e) => handleAccentPickerChange(e.target.value)}
+                    className="absolute -inset-2 w-16 h-16 cursor-pointer opacity-100"
+                    title="Abrir Círculo Cromático"
+                  />
+                </div>
+
+                {/* Hex Code Input Box */}
+                <div className="relative flex-1">
+                  <Hash className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={accentHexInput}
+                    onChange={(e) => handleAccentHexChange(e.target.value)}
+                    placeholder="#E5A93C"
+                    maxLength={7}
+                    className="w-full bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-xl pl-8 pr-3 py-2 text-xs font-mono text-white uppercase focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Product Versions & Variants */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Wand2 className="w-3.5 h-3.5 text-cyber-gold" /> VARIACIONES & VERSIONES IA
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">1 Clic</span>
+            </div>
+
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Genera variantes estilísticas instantáneas de tu prenda o vuelve a la versión original:
+            </p>
+
+            <div className="space-y-2">
+              {productVersions.map((v) => {
+                const isSelected = activeVersion === v.id;
+
+                return (
                   <button
-                    onClick={() => toggleLayer(layer.id)}
-                    className="p-1 text-slate-400 hover:text-cyber-gold transition-colors"
+                    key={v.id}
+                    onClick={() => handleApplyVersion(v)}
+                    className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between transition-all group ${
+                      isSelected
+                        ? 'bg-cyber-gold/20 border-cyber-gold text-white shadow-gold-glow'
+                        : 'bg-cyber-950 border-cyber-800 hover:border-cyber-gold/40 text-slate-300 hover:text-white'
+                    }`}
                   >
-                    {layer.visible ? <Eye className="w-3.5 h-3.5 text-cyber-gold" /> : <EyeOff className="w-3.5 h-3.5 text-slate-600" />}
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-base">{v.emoji}</span>
+                      <div>
+                        <div className="font-tech font-bold text-xs group-hover:text-cyber-gold transition-colors">
+                          {v.name}
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-mono">{v.tag}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <div className="w-3.5 h-3.5 rounded-full border border-cyber-700" style={{ backgroundColor: v.primary }} />
+                      <div className="w-3.5 h-3.5 rounded-full border border-cyber-700" style={{ backgroundColor: v.accent }} />
+                      {isSelected && <Check className="w-4 h-4 text-cyber-gold ml-1.5" />}
+                    </div>
                   </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* AI Harmonic Palettes Generator */}
-          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/40 shadow-cyber-card space-y-2.5">
-            <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
-              <Wand2 className="w-3.5 h-3.5 text-cyber-gold" /> Paletas Armónicas con IA
-            </span>
-
-            <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-              {harmonicPalettes.map((pal) => (
-                <button
-                  key={pal.name}
-                  onClick={() => {
-                    setPrimaryColor(pal.primary);
-                    setAccentColor(pal.accent);
-                  }}
-                  className="p-2 rounded-xl bg-cyber-950 border border-cyber-800 hover:border-cyber-gold text-left space-y-1.5 transition-all group"
-                >
-                  <div className="flex gap-1">
-                    <div className="w-4 h-4 rounded-md border border-cyber-700" style={{ backgroundColor: pal.primary }} />
-                    <div className="w-4 h-4 rounded-md border border-cyber-700" style={{ backgroundColor: pal.accent }} />
-                  </div>
-                  <span className="text-[10px] text-slate-300 font-tech font-semibold block truncate group-hover:text-cyber-gold">
-                    {pal.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color Selectors */}
-          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
-            <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 block mb-3 flex items-center gap-1.5">
-              <Palette className="w-3.5 h-3.5 text-cyber-gold" /> {t('aurora.colors')}
-            </span>
-
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="text-slate-400 block mb-1">{t('aurora.baseColor')}</label>
-                <div className="flex items-center gap-2">
-                  {['#171E2E', '#0F172A', '#27272A', '#831843', '#14532D', '#78350F'].map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setPrimaryColor(c)}
-                      style={{ backgroundColor: c }}
-                      className={`w-6 h-6 rounded-lg border transition-all ${
-                        primaryColor === c ? 'border-cyber-gold scale-110 shadow-gold-glow' : 'border-cyber-700'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-slate-400 block mb-1">{t('aurora.accentColor')}</label>
-                <div className="flex items-center gap-2">
-                  {['#E5A93C', '#F59E0B', '#06B6D4', '#A855F7', '#EF4444', '#10B981'].map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setAccentColor(c)}
-                      style={{ backgroundColor: c }}
-                      className={`w-6 h-6 rounded-lg border transition-all ${
-                        accentColor === c ? 'border-white scale-110 shadow-gold-glow' : 'border-cyber-700'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
         {/* Center Column: 3D Viewport with Multi-Touch & Exploded View */}
-        <div className="lg:col-span-6 flex flex-col space-y-4">
+        <div className="lg:col-span-5 flex flex-col space-y-4">
           <div className="h-[490px] w-full">
             <Model3DCanvas
               type={productType}
               primaryColor={primaryColor}
               accentColor={accentColor}
-              onPrimaryColorChange={setPrimaryColor}
+              onPrimaryColorChange={(newCol) => {
+                setPrimaryColor(newCol);
+                setPrimaryHexInput(newCol.toUpperCase());
+                setActiveVersion('custom');
+              }}
               celShaded={true}
               showDecal={layers.find((l) => l.id === 'graphic')?.visible}
             />
@@ -390,13 +418,13 @@ export const Aurora3DStudio: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 font-mono text-[11px] text-slate-400">
-                <span>Atajos: R (Rotar) • S (Shader) • G (Rejilla) • F (Front)</span>
+                <span>Atajos: R (Giro) • S (Shader) • G (Rejilla) • F (Frontal)</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Material & Decal Properties */}
+        {/* Right Column: Layer Stack & Shader Properties */}
         <div className="lg:col-span-3 space-y-4">
           <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
             <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 block mb-3 flex items-center gap-1.5">
@@ -404,13 +432,6 @@ export const Aurora3DStudio: React.FC = () => {
             </span>
 
             <div className="space-y-4 text-xs">
-              <div>
-                <label className="text-slate-400 block mb-1">Motor de Render</label>
-                <div className="p-2 rounded-xl bg-cyber-950 border border-cyber-gold/40 text-cyber-gold font-bold font-mono">
-                  Three.js v0.170 + Shader Multi-Nicho
-                </div>
-              </div>
-
               <div>
                 <div className="flex justify-between text-slate-400 mb-1">
                   <span>{t('aurora.outlineThickness')}</span>

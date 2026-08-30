@@ -33,6 +33,7 @@ import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
 import { dbService } from '../../services/db';
 import { StoredUser } from '../../types/database';
+import { generateExecutiveExcelReport } from '../../services/excelReportGenerator';
 
 export const AdminConsole: React.FC = () => {
   const { user } = useAuth();
@@ -174,11 +175,22 @@ export const AdminConsole: React.FC = () => {
           </div>
         </div>
 
-        {/* Live Online Badge */}
-        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-cyber-950 border border-emerald-500/40 shadow-md">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-          <span className="text-xs font-tech font-bold text-white uppercase">Usuarios Online Ahora:</span>
-          <span className="font-mono font-extrabold text-base text-emerald-400">{onlineUsers}</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => generateExecutiveExcelReport(usersList)}
+            className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-tech font-extrabold text-xs uppercase tracking-wider shadow-lg transition-all"
+            title="Descargar Reporte Completo en Excel (.xlsx)"
+          >
+            <Download className="w-4 h-4 stroke-[2.5]" />
+            <span>Descargar Reporte Excel (.xlsx)</span>
+          </button>
+
+          {/* Live Online Badge */}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-cyber-950 border border-emerald-500/40 shadow-md">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-xs font-mono font-bold text-white">ONLINE AHORA:</span>
+            <span className="text-sm font-mono font-extrabold text-emerald-400">~{onlineUsers}</span>
+          </div>
         </div>
       </div>
 
@@ -514,33 +526,11 @@ export const AdminConsole: React.FC = () => {
             </div>
 
             <button
-              onClick={() => {
-                const headers = ['ID', 'Nombre', 'Email', 'Empresa', 'Nicho', 'Pais', 'Telefono', 'Rol', 'Plan', 'Creditos Usados'];
-                const rows = usersList.map((u) => [
-                  u.id,
-                  `"${u.name}"`,
-                  `"${u.email}"`,
-                  `"${u.company}"`,
-                  `"${u.niche || ''}"`,
-                  `"${u.country || ''}"`,
-                  `"${u.phone || ''}"`,
-                  u.role,
-                  `"${u.planName}"`,
-                  u.aiCredits?.used || 0
-                ]);
-                const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', `Aether_Clients_Report_${Date.now()}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 hover:border-cyber-gold text-cyber-gold text-xs font-tech font-bold transition-all shadow-sm"
+              onClick={() => generateExecutiveExcelReport(usersList)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/60 text-emerald-300 text-xs font-tech font-bold transition-all shadow-sm"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Exportar Reporte CSV</span>
+              <span>Exportar Excel Empresarial (.xlsx)</span>
             </button>
           </div>
 
