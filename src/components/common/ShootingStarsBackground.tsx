@@ -191,6 +191,7 @@ interface CelestialWatcher {
   spinAngle: number;
   isTickled: boolean;
   warpDest: { x: number; y: number };
+  pomPomWobble: number;
 }
 
 interface WhiteGuardian {
@@ -260,7 +261,7 @@ export const ShootingStarsBackground: React.FC = () => {
 
     const isMobile = width < 768;
     const isTablet = width >= 768 && width < 1024;
-    const scaleFactor = isMobile ? 0.65 : isTablet ? 0.85 : 1.0;
+    const scaleFactor = isMobile ? 0.7 : isTablet ? 0.85 : 1.0;
 
     const darkColors = ['#FFFFFF', '#FDE68A', '#F59E0B', '#38BDF8', '#E0F2FE', '#C084FC', '#F43F5E', '#10B981', '#EC4899'];
     const lightColors = ['#F59E0B', '#0284C7', '#D946EF', '#10B981', '#F43F5E', '#8B5CF6', '#E11D48', '#059669', '#2563EB'];
@@ -342,7 +343,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
     ];
 
-    // 2. DENSE FIELD OF MULTI-SPEED TWINKLE STARS (Optimized for Mobile/Desktop)
+    // 2. DENSE FIELD OF MULTI-SPEED TWINKLE STARS
     const starCount = isMobile ? 65 : isTablet ? 120 : isUltra ? 220 : 110;
     const twinkleStars: TwinkleStar[] = Array.from({ length: starCount }, () => {
       const pRand = Math.random();
@@ -367,7 +368,7 @@ export const ShootingStarsBackground: React.FC = () => {
       };
     });
 
-    // 3. EXTRA-SLOW MAJESTIC COMETS WITH GRADIENT AURAS
+    // 3. EXTRA-SLOW MAJESTIC COMETS
     const comets: MajesticComet[] = [
       {
         id: 'comet-halley',
@@ -432,7 +433,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }))
     };
 
-    // 6. ULTRA-SLOW GALAXY & MASSIVE EXPANSION WAVE (UP TO 4.6X SCALE)
+    // 6. ULTRA-SLOW GALAXY & 10X MASSIVE EXPANSION SHOCKWAVE
     let galaxyState: 'expanding' | 'exploding' | 'reforming' = 'expanding';
     let galaxyScale = 1.0;
     let galaxyRotation = 0;
@@ -450,7 +451,7 @@ export const ShootingStarsBackground: React.FC = () => {
         y: 0,
         baseRadius: radius,
         angle: angle,
-        speed: Math.random() * 0.000015 + 0.000006, // TIMELESS CELESTIAL DRIFT
+        speed: Math.random() * 0.000015 + 0.000006,
         color: activeColors[i % activeColors.length],
         size: (Math.random() * 2.4 + 0.8) * scaleFactor,
         sparklePhase: Math.random() * Math.PI * 2,
@@ -617,17 +618,64 @@ export const ShootingStarsBackground: React.FC = () => {
     let blackHoleY = height * 0.72;
     let blackHolePulse = 0;
 
-    const spaceShips: SpaceShip[] = [];
+    // 10. ACTIVE PROMINENT FLEET OF 5 ALIEN SHIPS (SEEDED ON MOUNT)
+    const shipDesigns: ShipDesign[] = ['classic_saucer', 'cyber_cruiser', 'bio_scout', 'plasma_orb', 'golden_mothership'];
+    const shipColors = [
+      { p: '#06B6D4', s: '#38BDF8' },
+      { p: '#8B5CF6', s: '#EC4899' },
+      { p: '#10B981', s: '#34D399' },
+      { p: '#F59E0B', s: '#FDE68A' },
+      { p: '#F43F5E', s: '#FB7185' }
+    ];
+
+    const createShip = (customX?: number, customY?: number, forceDesign?: ShipDesign): SpaceShip => {
+      const fromLeft = customX !== undefined ? customX < width / 2 : Math.random() > 0.5;
+      const design = forceDesign || shipDesigns[Math.floor(Math.random() * shipDesigns.length)];
+      const color = shipColors[Math.floor(Math.random() * shipColors.length)];
+
+      return {
+        id: 'ship-' + Math.random(),
+        x: customX !== undefined ? customX : fromLeft ? -100 : width + 100,
+        y: customY !== undefined ? customY : Math.random() * (height * 0.6) + 50,
+        speed: (Math.random() * 1.5 + 1.2) * (fromLeft ? 1 : -1),
+        design: design,
+        size: (Math.random() * 8 + 22) * scaleFactor, // Big, bold & highly visible
+        primaryColor: color.p,
+        secondaryColor: color.s,
+        beamActive: true,
+        lightPhase: Math.random() * Math.PI * 2,
+        scared: false,
+        scareVelocity: 0,
+        stolenDigit: null,
+        state: 'flying',
+        hoverTimer: 0,
+        targetCardX: 0,
+        targetCardY: 0,
+        beamParticles: Array.from({ length: 18 }, () => ({
+          y: Math.random() * 180,
+          xOffset: (Math.random() - 0.5) * 35,
+          size: Math.random() * 2.5 + 1,
+          alpha: Math.random()
+        }))
+      };
+    };
+
+    const spaceShips: SpaceShip[] = [
+      createShip(width * 0.25, height * 0.18, 'classic_saucer'),
+      createShip(width * 0.7, height * 0.35, 'cyber_cruiser'),
+      createShip(width * 0.45, height * 0.6, 'bio_scout')
+    ];
+
     const shootingStars: ShootingStar[] = [];
 
-    // 10. Celestial Watcher Spirit
+    // 11. CELESTIAL WATCHER WITH KAWAII HOODIE/BEANIE HAT & EXPRESSIVE FACE
     const watcher: CelestialWatcher = {
-      active: false,
-      x: -50,
-      y: height * 0.5,
-      targetX: 65,
-      targetY: height * 0.5,
-      phase: 'peeking',
+      active: true,
+      x: 75,
+      y: height * 0.48,
+      targetX: 75,
+      targetY: height * 0.48,
+      phase: 'happy',
       progress: 0,
       eyeX: 0,
       eyeY: 0,
@@ -635,17 +683,18 @@ export const ShootingStarsBackground: React.FC = () => {
       jumpOffset: 0,
       spinAngle: 0,
       isTickled: false,
-      warpDest: { x: width * 0.5, y: height * 0.45 }
+      warpDest: { x: width * 0.5, y: height * 0.45 },
+      pomPomWobble: 0
     };
 
-    // 11. White Guardian Runner
+    // 12. WHITE GUARDIAN RUNNER (ACTIVE PATROL & ABDUCTION RESTORATION)
     const guardian: WhiteGuardian = {
-      active: false,
-      x: -60,
-      y: height * 0.55,
-      targetX: width * 0.5,
-      targetY: height * 0.55,
-      state: 'sprinting',
+      active: true,
+      x: width * 0.2,
+      y: height * 0.58,
+      targetX: width * 0.8,
+      targetY: height * 0.58,
+      state: 'patrolling',
       progress: 0,
       legPhase: 0,
       spineAngle: 0,
@@ -658,71 +707,32 @@ export const ShootingStarsBackground: React.FC = () => {
       magicSparkles: []
     };
 
-    const scheduleWatcher = () => {
+    // Periodic Guardian Re-Patrol
+    const scheduleGuardianPatrol = () => {
       setTimeout(() => {
-        watcher.active = true;
-        watcher.phase = 'peeking';
-        watcher.progress = 0;
-        watcher.hearts = [];
-        watcher.spinAngle = 0;
-        watcher.isTickled = false;
-        watcher.x = Math.random() > 0.5 ? -45 : width + 45;
-        watcher.targetX = watcher.x < 0 ? 65 : width - 65;
-        watcher.y = Math.random() * (height * 0.5) + height * 0.2;
-        watcher.targetY = watcher.y;
-        watcher.warpDest = { x: width * 0.5, y: height * 0.45 };
-        scheduleWatcher();
-      }, Math.random() * 15000 + 16000);
+        if (!guardian.active || guardian.state === 'peeking_corner') {
+          guardian.active = true;
+          guardian.state = 'sprinting';
+          guardian.x = -80;
+          guardian.targetX = width + 80;
+          guardian.targetY = Math.random() * (height * 0.4) + height * 0.4;
+          guardian.progress = 0;
+          guardian.legPhase = 0;
+        }
+        scheduleGuardianPatrol();
+      }, Math.random() * 12000 + 14000);
     };
-    scheduleWatcher();
+    scheduleGuardianPatrol();
 
-    const shipDesigns: ShipDesign[] = ['classic_saucer', 'cyber_cruiser', 'bio_scout', 'plasma_orb', 'golden_mothership'];
-    const shipColors = [
-      { p: '#06B6D4', s: '#38BDF8' },
-      { p: '#8B5CF6', s: '#EC4899' },
-      { p: '#10B981', s: '#34D399' },
-      { p: '#F59E0B', s: '#FDE68A' },
-      { p: '#F43F5E', s: '#FB7185' }
-    ];
-
-    const maxShips = isMobile ? 1 : 2;
-
+    // Periodic Ship Spawner
     const scheduleShip = () => {
       setTimeout(() => {
+        const maxShips = isMobile ? 2 : 4;
         if (spaceShips.length < maxShips) {
-          const fromLeft = Math.random() > 0.5;
-          const chosenDesign = shipDesigns[Math.floor(Math.random() * shipDesigns.length)];
-          const chosenColor = shipColors[Math.floor(Math.random() * shipColors.length)];
-
-          const newShip: SpaceShip = {
-            id: 'ship-' + Date.now(),
-            x: fromLeft ? -80 : width + 80,
-            y: Math.random() * (height * 0.5) + 60,
-            speed: (Math.random() * 1.2 + 1.0) * (fromLeft ? 1 : -1),
-            design: chosenDesign,
-            size: (Math.random() * 6 + 14) * scaleFactor,
-            primaryColor: chosenColor.p,
-            secondaryColor: chosenColor.s,
-            beamActive: true,
-            lightPhase: 0,
-            scared: false,
-            scareVelocity: 0,
-            stolenDigit: null,
-            state: 'flying',
-            hoverTimer: 0,
-            targetCardX: 0,
-            targetCardY: 0,
-            beamParticles: Array.from({ length: 16 }, () => ({
-              y: Math.random() * 160,
-              xOffset: (Math.random() - 0.5) * 30,
-              size: Math.random() * 2 + 1,
-              alpha: Math.random()
-            }))
-          };
-          spaceShips.push(newShip);
+          spaceShips.push(createShip());
         }
         scheduleShip();
-      }, Math.random() * 6000 + 5000);
+      }, Math.random() * 4000 + 3000);
     };
     scheduleShip();
 
@@ -773,11 +783,12 @@ export const ShootingStarsBackground: React.FC = () => {
         lastShootingStarSpawn = now;
       }
 
-      galaxyRotation += 0.000004; // EXTRA TIMELESS SLOW
+      galaxyRotation += 0.000004; // Timeless slow
       blackHolePulse += 0.008;
       radiantSun.pulsePhase += 0.008;
       radiantSun.flarePhase += 0.012;
       whiteHole.pulsePhase += 0.012;
+      watcher.pomPomWobble += 0.04;
 
       // ===========================================================
       // 1. DRAW FAMOUS REAL CONSTELLATIONS
@@ -833,7 +844,7 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 2. DRAW EXTRA-SLOW MAJESTIC COMETS WITH GRADIENT AURAS
+      // 2. DRAW EXTRA-SLOW MAJESTIC COMETS
       // ===========================================================
       comets.forEach((cmt) => {
         cmt.x += cmt.vx;
@@ -1005,31 +1016,31 @@ export const ShootingStarsBackground: React.FC = () => {
       });
 
       // ===========================================================
-      // 7. ULTRA-SLOW GALAXY & MASSIVE EXPANSION WAVE (UP TO 4.6X)
+      // 7. ULTRA-SLOW GALAXY & 10X PANORAMIC SUPERNOVA WAVE
       // ===========================================================
       const centerX = width * 0.5;
       const centerY = height * 0.45;
 
       if (galaxyState === 'expanding') {
-        galaxyScale += 0.000015; // Slow, breathing epic expansion
-        if (galaxyScale > 4.6) {
+        galaxyScale += 0.000015;
+        if (galaxyScale > 4.5) {
           galaxyState = 'exploding';
           supernovaProgress = 0;
-          shockwaveRadius = 25;
+          shockwaveRadius = 30;
           shockwaveAlpha = 1.0;
           const patterns: ExplosionPattern[] = ['omni_burst', 'polar_jets', 'pinwheel_spiral', 'quad_cross'];
           currentExplosionPattern = patterns[Math.floor(Math.random() * patterns.length)];
         }
       } else if (galaxyState === 'exploding') {
         supernovaProgress += 0.006;
-        shockwaveRadius += 12; // Sweeps across entire viewport
-        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.3);
+        shockwaveRadius += 32; // 10X MASSIVE EXPANSION SWEEP
+        shockwaveAlpha = Math.max(0, 1.0 - supernovaProgress * 0.25);
 
-        if (supernovaProgress > 3.4) {
+        if (supernovaProgress > 3.8) {
           galaxyState = 'reforming';
         }
       } else if (galaxyState === 'reforming') {
-        galaxyScale -= 0.004;
+        galaxyScale -= 0.005;
         if (galaxyScale <= 1.0) {
           galaxyScale = 1.0;
           galaxyState = 'expanding';
@@ -1044,32 +1055,34 @@ export const ShootingStarsBackground: React.FC = () => {
       ctx.translate(centerX, centerY);
       ctx.rotate(galaxyRotation);
 
-      // Massive Multi-Front Shockwave Sweep across the entire screen
+      // 10X Massive Panoramic Concentric Shockwave Fronts
       if (galaxyState === 'exploding' && shockwaveAlpha > 0.01) {
         ctx.save();
-        // 1. Primary Gold Plasma Ring
+        // 1. Primary Giant Golden Plasma Blast Wave (10X Scale)
         ctx.beginPath();
         ctx.arc(0, 0, shockwaveRadius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(245, 158, 11, ${shockwaveAlpha})`;
-        ctx.lineWidth = 8 * scaleFactor;
-        ctx.shadowBlur = 40;
+        ctx.lineWidth = 14 * scaleFactor;
+        ctx.shadowBlur = 60;
         ctx.shadowColor = '#F59E0B';
         ctx.stroke();
 
-        // 2. Secondary Cyan Ion Displacement Wave
+        // 2. Secondary Cyan Ion Ring
         ctx.beginPath();
-        ctx.arc(0, 0, shockwaveRadius * 0.88, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(6, 182, 212, ${shockwaveAlpha * 0.85})`;
-        ctx.lineWidth = 4 * scaleFactor;
-        ctx.shadowBlur = 20;
+        ctx.arc(0, 0, shockwaveRadius * 0.85, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(6, 182, 212, ${shockwaveAlpha * 0.9})`;
+        ctx.lineWidth = 8 * scaleFactor;
+        ctx.shadowBlur = 35;
         ctx.shadowColor = '#38BDF8';
         ctx.stroke();
 
-        // 3. Outer Relativistic Violet Wave
+        // 3. Relativistic Purple Shock Ring
         ctx.beginPath();
-        ctx.arc(0, 0, shockwaveRadius * 1.12, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(168, 85, 247, ${shockwaveAlpha * 0.65})`;
-        ctx.lineWidth = 3 * scaleFactor;
+        ctx.arc(0, 0, shockwaveRadius * 1.15, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(217, 70, 239, ${shockwaveAlpha * 0.75})`;
+        ctx.lineWidth = 5 * scaleFactor;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#D946EF';
         ctx.stroke();
         ctx.restore();
       }
@@ -1093,7 +1106,7 @@ export const ShootingStarsBackground: React.FC = () => {
         let py = 0;
 
         if (galaxyState === 'exploding') {
-          p.distFromCenter += 3.5;
+          p.distFromCenter += 4.2;
 
           if (currentExplosionPattern === 'polar_jets') {
             const jetDir = idx % 2 === 0 ? 1 : -1;
@@ -1324,7 +1337,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 12. 5 DIVERSE SPACESHIP DESIGNS & NUMBER ABDUCTION
+      // 12. DRAW 5 HIGHLY VISIBLE ALIEN CRAFTS & REAL NUMBER ABDUCTION
       // ===========================================================
       const numberElements = Array.from(
         document.querySelectorAll('[class*="text-5xl"], [class*="text-6xl"], [class*="font-mono"]')
@@ -1345,20 +1358,20 @@ export const ShootingStarsBackground: React.FC = () => {
 
         if (ship.scared) {
           ship.x += ship.scareVelocity;
-          ship.y -= 4.5;
+          ship.y -= 5.0;
         } else if (ship.state === 'targeting') {
           const dx = ship.targetCardX - ship.x;
-          const dy = (ship.targetCardY - 120) - ship.y;
+          const dy = (ship.targetCardY - 130) - ship.y;
           ship.x += dx * 0.08;
           ship.y += dy * 0.08;
 
-          if (Math.hypot(dx, dy) < 15) {
+          if (Math.hypot(dx, dy) < 18) {
             ship.state = 'hover_sucking';
             ship.hoverTimer = 0;
           }
         } else if (ship.state === 'hover_sucking') {
           ship.hoverTimer += 0.025;
-          ship.y = ship.targetCardY - 120 + Math.sin(ship.hoverTimer * 4) * 3;
+          ship.y = ship.targetCardY - 130 + Math.sin(ship.hoverTimer * 4) * 3;
 
           if (ship.hoverTimer > 3.2) {
             ship.state = 'departing';
@@ -1368,7 +1381,7 @@ export const ShootingStarsBackground: React.FC = () => {
           ship.y -= 2.0;
         } else {
           ship.x += ship.speed;
-          ship.y += Math.sin(ship.x * 0.015) * 0.6;
+          ship.y += Math.sin(ship.x * 0.015) * 0.8;
 
           if (numberElements.length > 0 && !ship.stolenDigit && Math.random() < 0.03) {
             const targetEl = numberElements[Math.floor(Math.random() * numberElements.length)] as HTMLElement;
@@ -1381,7 +1394,7 @@ export const ShootingStarsBackground: React.FC = () => {
 
         ship.lightPhase += 0.08;
 
-        if (ship.x > width + 180 || ship.x < -180 || ship.y < -150) {
+        if (ship.x > width + 200 || ship.x < -200 || ship.y < -200) {
           spaceShips.splice(i, 1);
           continue;
         }
@@ -1389,134 +1402,157 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.save();
         ctx.translate(ship.x, ship.y);
 
-        // Render Tractor Beam for all abduction states
-        const beamLen = ship.state === 'hover_sucking' ? 160 : 120;
+        // Volumetric Sucking Beam
+        const beamLen = ship.state === 'hover_sucking' ? 180 : 130;
         const beamGrad = ctx.createRadialGradient(0, 4, 2, 0, beamLen * 0.6, beamLen);
         beamGrad.addColorStop(0, ship.primaryColor);
         beamGrad.addColorStop(0.5, ship.secondaryColor);
         beamGrad.addColorStop(1, 'transparent');
 
         ctx.beginPath();
-        ctx.moveTo(-ship.size * 0.4, 4);
-        ctx.lineTo(-ship.size * 2.2, beamLen);
-        ctx.lineTo(ship.size * 2.2, beamLen);
-        ctx.lineTo(ship.size * 0.4, 4);
+        ctx.moveTo(-ship.size * 0.45, 4);
+        ctx.lineTo(-ship.size * 2.4, beamLen);
+        ctx.lineTo(ship.size * 2.4, beamLen);
+        ctx.lineTo(ship.size * 0.45, 4);
         ctx.fillStyle = beamGrad;
-        ctx.globalAlpha = 0.4;
+        ctx.globalAlpha = 0.45;
         ctx.fill();
         ctx.globalAlpha = 1.0;
 
-        // Render Specific Alien Craft Designs:
-        if (ship.design === 'classic_saucer') {
-          // 1. Classic Saucer
+        // Upward Beam Dust Particles
+        ship.beamParticles.forEach((bp) => {
+          bp.y -= 2.4;
+          if (bp.y < 4) bp.y = beamLen;
+          const bWidth = (bp.y / beamLen) * (ship.size * 2.0);
           ctx.beginPath();
-          ctx.arc(0, -5, ship.size * 0.48, Math.PI, 0);
+          ctx.arc((bp.xOffset / 35) * bWidth, bp.y, bp.size, 0, Math.PI * 2);
+          ctx.fillStyle = '#F59E0B';
+          ctx.globalAlpha = bp.alpha * (1 - bp.y / beamLen + 0.3);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1.0;
+
+        // -------------------------------------------------------------
+        // RENDER 5 UNIQUE SPACESHIP DESIGNS
+        // -------------------------------------------------------------
+        if (ship.design === 'classic_saucer') {
+          // 1. Classic Neon Flying Saucer
+          ctx.beginPath();
+          ctx.arc(0, -6, ship.size * 0.5, Math.PI, 0);
           ctx.fillStyle = ship.secondaryColor;
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 18;
           ctx.shadowColor = ship.primaryColor;
           ctx.fill();
 
           ctx.beginPath();
-          ctx.ellipse(0, 0, ship.size, ship.size * 0.38, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, ship.size, ship.size * 0.4, 0, 0, Math.PI * 2);
           ctx.fillStyle = '#0F172A';
           ctx.strokeStyle = ship.primaryColor;
-          ctx.lineWidth = 2.0;
+          ctx.lineWidth = 2.5;
           ctx.fill();
           ctx.stroke();
 
-          for (let l = 0; l < 5; l++) {
-            const lX = ((l - 2) / 2.5) * (ship.size * 0.7);
+          for (let l = 0; l < 6; l++) {
+            const lX = ((l - 2.5) / 2.8) * (ship.size * 0.75);
             const lPhase = (Math.sin(ship.lightPhase + l) + 1) / 2;
             ctx.beginPath();
-            ctx.arc(lX, 2, 2, 0, Math.PI * 2);
+            ctx.arc(lX, 2, 2.5, 0, Math.PI * 2);
             ctx.fillStyle = lPhase > 0.5 ? ship.primaryColor : '#FFFFFF';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = ship.primaryColor;
             ctx.fill();
           }
         } else if (ship.design === 'cyber_cruiser') {
-          // 2. Stealth Arrow Cruiser
+          // 2. Triangular Stealth Plasma Cruiser
           ctx.beginPath();
-          ctx.moveTo(ship.size * 1.3, 0);
-          ctx.lineTo(-ship.size * 0.9, -ship.size * 0.65);
+          ctx.moveTo(ship.size * 1.35, 0);
+          ctx.lineTo(-ship.size * 0.95, -ship.size * 0.7);
           ctx.lineTo(-ship.size * 0.5, 0);
-          ctx.lineTo(-ship.size * 0.9, ship.size * 0.65);
+          ctx.lineTo(-ship.size * 0.95, ship.size * 0.7);
           ctx.closePath();
           ctx.fillStyle = '#1E293B';
           ctx.strokeStyle = ship.primaryColor;
-          ctx.lineWidth = 2.2;
+          ctx.lineWidth = 2.6;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = ship.primaryColor;
           ctx.fill();
           ctx.stroke();
 
-          // Dual Plasma Thrusters
+          // Twin Fiery Plasma Rocket Exhaust
           ctx.beginPath();
-          ctx.arc(-ship.size * 0.8, -ship.size * 0.35, 3, 0, Math.PI * 2);
-          ctx.arc(-ship.size * 0.8, ship.size * 0.35, 3, 0, Math.PI * 2);
+          ctx.arc(-ship.size * 0.85, -ship.size * 0.38, 3.5, 0, Math.PI * 2);
+          ctx.arc(-ship.size * 0.85, ship.size * 0.38, 3.5, 0, Math.PI * 2);
           ctx.fillStyle = '#38BDF8';
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 14;
           ctx.shadowColor = '#38BDF8';
           ctx.fill();
         } else if (ship.design === 'bio_scout') {
-          // 3. Organic Manta Bio-Scout
+          // 3. Organic Manta-Ray Bio-Vessel
           ctx.beginPath();
-          ctx.moveTo(0, -ship.size * 0.6);
-          ctx.quadraticCurveTo(ship.size * 1.2, 0, 0, ship.size * 0.6);
-          ctx.quadraticCurveTo(-ship.size * 1.2, 0, 0, -ship.size * 0.6);
+          ctx.moveTo(0, -ship.size * 0.7);
+          ctx.quadraticCurveTo(ship.size * 1.3, 0, 0, ship.size * 0.7);
+          ctx.quadraticCurveTo(-ship.size * 1.3, 0, 0, -ship.size * 0.7);
           ctx.fillStyle = '#4A044E';
           ctx.strokeStyle = '#D946EF';
-          ctx.lineWidth = 2.0;
+          ctx.lineWidth = 2.4;
+          ctx.shadowBlur = 18;
+          ctx.shadowColor = '#D946EF';
           ctx.fill();
           ctx.stroke();
 
           // Pulsing Cyclopean Bio-Eye
           ctx.beginPath();
-          ctx.arc(0, 0, ship.size * 0.35, 0, Math.PI * 2);
+          ctx.arc(0, 0, ship.size * 0.38, 0, Math.PI * 2);
           ctx.fillStyle = '#F43F5E';
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 18;
           ctx.shadowColor = '#F43F5E';
           ctx.fill();
         } else if (ship.design === 'plasma_orb') {
-          // 4. Gyroscopic Plasma Orb Drone
+          // 4. Gyroscopic Plasma Drone
           ctx.beginPath();
-          ctx.arc(0, 0, ship.size * 0.55, 0, Math.PI * 2);
+          ctx.arc(0, 0, ship.size * 0.58, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
-          ctx.shadowBlur = 20;
+          ctx.shadowBlur = 24;
           ctx.shadowColor = ship.primaryColor;
           ctx.fill();
 
           ctx.beginPath();
-          ctx.ellipse(0, 0, ship.size * 1.1, ship.size * 0.35, ship.lightPhase, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, ship.size * 1.15, ship.size * 0.4, ship.lightPhase, 0, Math.PI * 2);
           ctx.strokeStyle = ship.primaryColor;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 2.5;
           ctx.stroke();
         } else {
-          // 5. Golden Hexagonal Mothership
+          // 5. Golden Hexagonal Imperial Mothership
           ctx.beginPath();
           for (let h = 0; h < 6; h++) {
             const hAngle = (h * Math.PI) / 3;
-            const hx = Math.cos(hAngle) * ship.size * 0.9;
-            const hy = Math.sin(hAngle) * ship.size * 0.55;
+            const hx = Math.cos(hAngle) * ship.size * 0.95;
+            const hy = Math.sin(hAngle) * ship.size * 0.6;
             if (h === 0) ctx.moveTo(hx, hy);
             else ctx.lineTo(hx, hy);
           }
           ctx.closePath();
           ctx.fillStyle = '#78350F';
           ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 2.8;
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = '#F59E0B';
           ctx.fill();
           ctx.stroke();
 
           ctx.beginPath();
-          ctx.arc(0, 0, ship.size * 0.3, 0, Math.PI * 2);
+          ctx.arc(0, 0, ship.size * 0.32, 0, Math.PI * 2);
           ctx.fillStyle = '#FBBF24';
           ctx.fill();
         }
 
-        // Stolen Digit Display on Craft
+        // Stolen Digit HUD on Craft
         if (ship.stolenDigit) {
           ctx.fillStyle = '#F59E0B';
-          ctx.font = 'bold 11px monospace';
-          ctx.shadowBlur = 8;
+          ctx.font = 'bold 12px monospace';
+          ctx.shadowBlur = 10;
           ctx.shadowColor = '#F59E0B';
-          ctx.fillText(ship.stolenDigit, -10, 2);
+          ctx.fillText(ship.stolenDigit, -12, 3);
         }
 
         // Physical Number Abduction
@@ -1526,7 +1562,7 @@ export const ShootingStarsBackground: React.FC = () => {
             const rect = htmlEl.getBoundingClientRect();
             const elCenterX = rect.left + rect.width / 2;
 
-            if (Math.abs(ship.x - elCenterX) < 65 && Math.abs(ship.y - (rect.top - 120)) < 45) {
+            if (Math.abs(ship.x - elCenterX) < 70 && Math.abs(ship.y - (rect.top - 130)) < 55) {
               const rawText = htmlEl.getAttribute('data-original-val') || htmlEl.textContent || '$49';
               if (!htmlEl.getAttribute('data-original-val')) {
                 htmlEl.setAttribute('data-original-val', rawText);
@@ -1569,8 +1605,12 @@ export const ShootingStarsBackground: React.FC = () => {
           guardian.x += gDistX * 0.16;
           guardian.spineAngle = gDistX > 0 ? 0.25 : -0.25;
 
-          if (Math.abs(gDistX) < 22) {
-            guardian.state = 'restoring_numbers';
+          if (Math.abs(gDistX) < 25) {
+            if (guardian.targetElement) {
+              guardian.state = 'restoring_numbers';
+            } else {
+              guardian.state = 'patrolling';
+            }
             guardian.progress = 0;
           }
         } else if (guardian.state === 'restoring_numbers') {
@@ -1607,7 +1647,8 @@ export const ShootingStarsBackground: React.FC = () => {
             guardian.progress = 0;
           }
         } else if (guardian.state === 'patrolling') {
-          guardian.spineAngle = 0;
+          guardian.x += 1.2;
+          guardian.spineAngle = 0.05;
           guardian.lookAngle = Math.sin(guardian.progress * 4) * 0.8;
           guardian.flashlightAngle = Math.sin(guardian.progress * 3) * 0.6;
 
@@ -1619,7 +1660,7 @@ export const ShootingStarsBackground: React.FC = () => {
             }
           });
 
-          if (guardian.progress > 3.0) {
+          if (guardian.progress > 4.0 || guardian.x > width + 50) {
             guardian.state = 'stealth_exit';
             guardian.progress = 0;
           }
@@ -1637,8 +1678,8 @@ export const ShootingStarsBackground: React.FC = () => {
             guardian.peekTimer = 0;
           }
         } else if (guardian.state === 'peeking_corner') {
-          guardian.x = 26;
-          guardian.y = height - 26;
+          guardian.x = 28;
+          guardian.y = height - 28;
           guardian.peekTimer += 0.01;
           if (guardian.peekTimer > 8.0) {
             guardian.active = false;
@@ -1687,7 +1728,7 @@ export const ShootingStarsBackground: React.FC = () => {
 
         if (guardian.state === 'peeking_corner') {
           ctx.beginPath();
-          ctx.arc(0, 0, 15 * scaleFactor, 0, Math.PI * 2);
+          ctx.arc(0, 0, 16 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
           ctx.shadowBlur = 14;
           ctx.shadowColor = '#06B6D4';
@@ -1700,14 +1741,14 @@ export const ShootingStarsBackground: React.FC = () => {
           ctx.fill();
         } else {
           ctx.beginPath();
-          ctx.arc(0, -20 * scaleFactor, 10 * scaleFactor, 0, Math.PI * 2);
+          ctx.arc(0, -22 * scaleFactor, 11 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#FFFFFF';
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 14;
           ctx.shadowColor = '#FFFFFF';
           ctx.fill();
 
           ctx.beginPath();
-          ctx.arc(3 * scaleFactor, -20 * scaleFactor, 4.5 * scaleFactor, 0, Math.PI * 2);
+          ctx.arc(3 * scaleFactor, -22 * scaleFactor, 5 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#06B6D4';
           ctx.fill();
 
@@ -1715,71 +1756,71 @@ export const ShootingStarsBackground: React.FC = () => {
             ctx.save();
             ctx.rotate(guardian.flashlightAngle);
             const flashGrad = ctx.createRadialGradient(10 * scaleFactor, 0, 2, 90 * scaleFactor, 0, 80 * scaleFactor);
-            flashGrad.addColorStop(0, 'rgba(245, 158, 11, 0.7)');
+            flashGrad.addColorStop(0, 'rgba(245, 158, 11, 0.75)');
             flashGrad.addColorStop(1, 'transparent');
             ctx.fillStyle = flashGrad;
             ctx.beginPath();
             ctx.moveTo(10 * scaleFactor, -5 * scaleFactor);
-            ctx.lineTo(100 * scaleFactor, -40 * scaleFactor);
-            ctx.lineTo(100 * scaleFactor, 40 * scaleFactor);
+            ctx.lineTo(110 * scaleFactor, -45 * scaleFactor);
+            ctx.lineTo(110 * scaleFactor, 45 * scaleFactor);
             ctx.lineTo(10 * scaleFactor, 5 * scaleFactor);
             ctx.fill();
             ctx.restore();
           }
 
           ctx.beginPath();
-          ctx.moveTo(0, -10 * scaleFactor);
-          ctx.quadraticCurveTo(2 * scaleFactor, 0, 0, 10 * scaleFactor);
+          ctx.moveTo(0, -11 * scaleFactor);
+          ctx.quadraticCurveTo(2 * scaleFactor, 0, 0, 11 * scaleFactor);
           ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 4.0 * scaleFactor;
+          ctx.lineWidth = 4.5 * scaleFactor;
           ctx.lineCap = 'round';
           ctx.stroke();
 
-          const leg1Hip = Math.sin(guardian.legPhase) * 12 * scaleFactor;
-          const leg1Knee = Math.max(0, Math.sin(guardian.legPhase + 0.5) * 9 * scaleFactor);
+          const leg1Hip = Math.sin(guardian.legPhase) * 13 * scaleFactor;
+          const leg1Knee = Math.max(0, Math.sin(guardian.legPhase + 0.5) * 10 * scaleFactor);
           const leg2Hip = -leg1Hip;
-          const leg2Knee = Math.max(0, Math.sin(guardian.legPhase + Math.PI + 0.5) * 9 * scaleFactor);
+          const leg2Knee = Math.max(0, Math.sin(guardian.legPhase + Math.PI + 0.5) * 10 * scaleFactor);
 
           ctx.beginPath();
-          ctx.moveTo(0, 10 * scaleFactor);
-          ctx.lineTo(leg1Hip * 0.6, 17 * scaleFactor + leg1Knee * 0.3);
-          ctx.lineTo(leg1Hip, 26 * scaleFactor);
+          ctx.moveTo(0, 11 * scaleFactor);
+          ctx.lineTo(leg1Hip * 0.6, 18 * scaleFactor + leg1Knee * 0.3);
+          ctx.lineTo(leg1Hip, 28 * scaleFactor);
           ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 3.2 * scaleFactor;
+          ctx.lineWidth = 3.5 * scaleFactor;
           ctx.stroke();
 
           ctx.beginPath();
-          ctx.moveTo(0, 10 * scaleFactor);
-          ctx.lineTo(leg2Hip * 0.6, 17 * scaleFactor + leg2Knee * 0.3);
-          ctx.lineTo(leg2Hip, 26 * scaleFactor);
+          ctx.moveTo(0, 11 * scaleFactor);
+          ctx.lineTo(leg2Hip * 0.6, 18 * scaleFactor + leg2Knee * 0.3);
+          ctx.lineTo(leg2Hip, 28 * scaleFactor);
           ctx.stroke();
 
           ctx.beginPath();
           if (guardian.state === 'restoring_numbers') {
             ctx.moveTo(0, -5 * scaleFactor);
-            ctx.quadraticCurveTo(12 * scaleFactor, -12 * scaleFactor, 22 * scaleFactor, -16 * scaleFactor);
+            ctx.quadraticCurveTo(12 * scaleFactor, -12 * scaleFactor, 24 * scaleFactor, -18 * scaleFactor);
             ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 3.5 * scaleFactor;
+            ctx.lineWidth = 3.8 * scaleFactor;
             ctx.stroke();
 
             ctx.fillStyle = '#FFFFFF';
-            ctx.font = `${12 * scaleFactor}px sans-serif`;
-            ctx.fillText('✨', 22 * scaleFactor, -20 * scaleFactor);
+            ctx.font = `${13 * scaleFactor}px sans-serif`;
+            ctx.fillText('✨', 24 * scaleFactor, -22 * scaleFactor);
           } else if (guardian.state === 'shooing') {
             ctx.moveTo(0, -5 * scaleFactor);
-            ctx.lineTo(20 * scaleFactor, -20 * scaleFactor);
-            ctx.moveTo(20 * scaleFactor, -20 * scaleFactor);
-            ctx.lineTo(140 * scaleFactor, -100 * scaleFactor);
+            ctx.lineTo(22 * scaleFactor, -22 * scaleFactor);
+            ctx.moveTo(22 * scaleFactor, -22 * scaleFactor);
+            ctx.lineTo(150 * scaleFactor, -110 * scaleFactor);
             ctx.strokeStyle = '#F43F5E';
-            ctx.lineWidth = 3.0 * scaleFactor;
+            ctx.lineWidth = 3.5 * scaleFactor;
             ctx.stroke();
           } else {
             ctx.moveTo(0, -5 * scaleFactor);
-            ctx.quadraticCurveTo(leg2Hip * 0.4, 0, leg2Hip * 0.8, 8 * scaleFactor);
+            ctx.quadraticCurveTo(leg2Hip * 0.4, 0, leg2Hip * 0.8, 9 * scaleFactor);
             ctx.moveTo(0, -5 * scaleFactor);
-            ctx.quadraticCurveTo(leg1Hip * 0.4, 0, leg1Hip * 0.8, 8 * scaleFactor);
+            ctx.quadraticCurveTo(leg1Hip * 0.4, 0, leg1Hip * 0.8, 9 * scaleFactor);
             ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2.8 * scaleFactor;
+            ctx.lineWidth = 3.0 * scaleFactor;
             ctx.stroke();
           }
         }
@@ -1787,7 +1828,7 @@ export const ShootingStarsBackground: React.FC = () => {
       }
 
       // ===========================================================
-      // 14. INTERACTIVE CELESTIAL WATCHER
+      // 14. CELESTIAL WATCHER: KAWAII HOODIE/BEANIE + ULTRA-EXPRESSIVE FACE
       // ===========================================================
       if (watcher.active) {
         watcher.progress += 0.012;
@@ -1797,14 +1838,14 @@ export const ShootingStarsBackground: React.FC = () => {
         const distToMouse = Math.hypot(dMouseX, dMouseY);
 
         const eyeAngle = Math.atan2(dMouseY, dMouseX);
-        watcher.eyeX = Math.cos(eyeAngle) * 2.2;
-        watcher.eyeY = Math.sin(eyeAngle) * 2.2;
+        watcher.eyeX = Math.cos(eyeAngle) * 2.5;
+        watcher.eyeY = Math.sin(eyeAngle) * 2.5;
 
-        if (distToMouse < 70 && watcher.phase !== 'warping') {
+        if (distToMouse < 80 && watcher.phase !== 'warping') {
           watcher.phase = 'giggling';
           watcher.isTickled = true;
-          watcher.jumpOffset = Math.sin(now * 0.03) * 6;
-          watcher.spinAngle += 0.08;
+          watcher.jumpOffset = Math.sin(now * 0.03) * 7;
+          watcher.spinAngle = Math.sin(now * 0.02) * 0.15;
         }
 
         if (watcher.phase === 'peeking') {
@@ -1814,22 +1855,22 @@ export const ShootingStarsBackground: React.FC = () => {
             watcher.progress = 0;
           }
         } else if (watcher.phase === 'happy') {
-          watcher.jumpOffset = Math.sin(watcher.progress * 6) * 4;
-          if (watcher.progress > 2.5) {
+          watcher.jumpOffset = Math.sin(watcher.progress * 5) * 5;
+          if (watcher.progress > 3.0) {
             watcher.phase = 'kissing';
             watcher.progress = 0;
             watcher.hearts = [
-              { x: 0, y: 0, vx: (Math.random() - 0.5) * 1.5, vy: -1.5, size: 10 * scaleFactor, opacity: 1 },
-              { x: 0, y: 0, vx: (Math.random() - 0.5) * 1.5, vy: -2.0, size: 12 * scaleFactor, opacity: 1 },
-              { x: 0, y: 0, vx: (Math.random() - 0.5) * 1.5, vy: -1.2, size: 8 * scaleFactor, opacity: 1 }
+              { x: 0, y: 0, vx: (Math.random() - 0.5) * 1.5, vy: -1.6, size: 12 * scaleFactor, opacity: 1 },
+              { x: 0, y: 0, vx: (Math.random() - 0.5) * 1.5, vy: -2.2, size: 14 * scaleFactor, opacity: 1 },
+              { x: 0, y: 0, vx: (Math.random() - 0.5) * 1.5, vy: -1.4, size: 10 * scaleFactor, opacity: 1 }
             ];
           }
         } else if (watcher.phase === 'kissing') {
-          if (watcher.progress > 3.0) {
+          if (watcher.progress > 3.2) {
             watcher.phase = 'warping';
           }
         } else if (watcher.phase === 'giggling') {
-          if (distToMouse >= 80) {
+          if (distToMouse >= 90) {
             watcher.phase = 'warping';
           }
         } else if (watcher.phase === 'warping') {
@@ -1846,6 +1887,16 @@ export const ShootingStarsBackground: React.FC = () => {
 
           if (Math.hypot(dx, dy) < 25) {
             watcher.active = false;
+            // Respawn after short while
+            setTimeout(() => {
+              watcher.active = true;
+              watcher.phase = 'peeking';
+              watcher.progress = 0;
+              watcher.x = Math.random() > 0.5 ? -45 : width + 45;
+              watcher.targetX = watcher.x < 0 ? 75 : width - 75;
+              watcher.y = Math.random() * (height * 0.5) + height * 0.2;
+              watcher.targetY = watcher.y;
+            }, 10000);
           }
         }
 
@@ -1866,69 +1917,173 @@ export const ShootingStarsBackground: React.FC = () => {
         ctx.translate(watcher.x, watcher.y + watcher.jumpOffset);
         ctx.rotate(watcher.spinAngle);
 
-        const aura = ctx.createRadialGradient(0, 0, 5, 0, 0, 36 * scaleFactor);
+        // Glowing Aura
+        const aura = ctx.createRadialGradient(0, 0, 5, 0, 0, 42 * scaleFactor);
         aura.addColorStop(0, 'rgba(245, 158, 11, 0.45)');
         aura.addColorStop(0.7, 'rgba(56, 189, 248, 0.25)');
         aura.addColorStop(1, 'transparent');
         ctx.fillStyle = aura;
         ctx.beginPath();
-        ctx.arc(0, 0, 36 * scaleFactor, 0, Math.PI * 2);
+        ctx.arc(0, 0, 42 * scaleFactor, 0, Math.PI * 2);
         ctx.fill();
 
+        // Round Kawaii Head/Body
         ctx.beginPath();
-        ctx.arc(0, 0, 19 * scaleFactor, 0, Math.PI * 2);
+        ctx.arc(0, 2 * scaleFactor, 22 * scaleFactor, 0, Math.PI * 2);
         ctx.fillStyle = isLight ? '#0F172A' : '#FFFFFF';
-        ctx.shadowBlur = 18;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = '#F59E0B';
         ctx.fill();
 
+        // -------------------------------------------------------------
+        // CUTE ASTRONAUT / BEANIE HOODIE CAP (GORRITO TIERNO)
+        // -------------------------------------------------------------
+        const pomPomX = Math.sin(watcher.pomPomWobble) * 4 * scaleFactor;
+        const pomPomY = -34 * scaleFactor + Math.cos(watcher.pomPomWobble) * 2 * scaleFactor;
+
+        // Beanie Dome (Tejido cálido)
         ctx.beginPath();
-        ctx.moveTo(-12 * scaleFactor, -10 * scaleFactor);
-        ctx.lineTo(-19 * scaleFactor, -28 * scaleFactor);
-        ctx.lineTo(-4 * scaleFactor, -17 * scaleFactor);
+        ctx.arc(0, -6 * scaleFactor, 22 * scaleFactor, Math.PI * 0.9, Math.PI * 2.1);
         ctx.fillStyle = '#F59E0B';
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = '#F59E0B';
         ctx.fill();
 
+        // Beanie Brim (Dobleces del gorrito)
         ctx.beginPath();
-        ctx.moveTo(12 * scaleFactor, -10 * scaleFactor);
-        ctx.lineTo(19 * scaleFactor, -28 * scaleFactor);
-        ctx.lineTo(4 * scaleFactor, -17 * scaleFactor);
-        ctx.fillStyle = '#F59E0B';
+        ctx.roundRect(-20 * scaleFactor, -10 * scaleFactor, 40 * scaleFactor, 8 * scaleFactor, 4 * scaleFactor);
+        ctx.fillStyle = '#FDE68A';
         ctx.fill();
 
-        const eyeColor = isLight ? '#F59E0B' : '#0F172A';
-        ctx.beginPath();
-        ctx.arc(-6 * scaleFactor + watcher.eyeX, -3 * scaleFactor + watcher.eyeY, 3 * scaleFactor, 0, Math.PI * 2);
-        ctx.arc(6 * scaleFactor + watcher.eyeX, -3 * scaleFactor + watcher.eyeY, 3 * scaleFactor, 0, Math.PI * 2);
-        ctx.fillStyle = eyeColor;
-        ctx.fill();
-
-        if (watcher.phase === 'kissing') {
+        // Beanie String Lines
+        for (let b = -12; b <= 12; b += 6) {
           ctx.beginPath();
-          ctx.arc(0, 4 * scaleFactor, 3 * scaleFactor, 0, Math.PI * 2);
-          ctx.fillStyle = '#F43F5E';
-          ctx.fill();
-        } else if (watcher.phase === 'giggling') {
-          ctx.beginPath();
-          ctx.arc(0, 3 * scaleFactor, 6 * scaleFactor, 0, Math.PI);
-          ctx.fillStyle = '#F59E0B';
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.arc(0, 3 * scaleFactor, 6 * scaleFactor, 0.2, Math.PI - 0.2);
-          ctx.strokeStyle = eyeColor;
-          ctx.lineWidth = 2 * scaleFactor;
+          ctx.moveTo(b * scaleFactor, -10 * scaleFactor);
+          ctx.lineTo(b * scaleFactor, -2 * scaleFactor);
+          ctx.strokeStyle = '#D97706';
+          ctx.lineWidth = 1.2 * scaleFactor;
           ctx.stroke();
         }
 
+        // Fluffy Glowing Pom-Pom on top (Pompón tierno que se balancea)
+        ctx.beginPath();
+        ctx.arc(pomPomX, pomPomY, 7 * scaleFactor, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#FDE68A';
+        ctx.fill();
+
+        // -------------------------------------------------------------
+        // ULTRA-EXPRESSIVE KAWAII FACE & ROSY BLUSH CHEEKS
+        // -------------------------------------------------------------
+        // Rosy Blushing Cheeks (Mejillas sonrosadas tiernas)
+        ctx.beginPath();
+        ctx.ellipse(-12 * scaleFactor, 6 * scaleFactor, 4.5 * scaleFactor, 2.8 * scaleFactor, 0, 0, Math.PI * 2);
+        ctx.ellipse(12 * scaleFactor, 6 * scaleFactor, 4.5 * scaleFactor, 2.8 * scaleFactor, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.5)';
+        ctx.fill();
+
+        const eyeColor = isLight ? '#F59E0B' : '#0F172A';
+
+        if (watcher.phase === 'giggling') {
+          // Closed joyful laughing eyes (^ _ ^)
+          ctx.beginPath();
+          ctx.arc(-7 * scaleFactor, 1 * scaleFactor, 4 * scaleFactor, Math.PI * 0.2, Math.PI * 0.8, true);
+          ctx.arc(7 * scaleFactor, 1 * scaleFactor, 4 * scaleFactor, Math.PI * 0.2, Math.PI * 0.8, true);
+          ctx.strokeStyle = eyeColor;
+          ctx.lineWidth = 2.5 * scaleFactor;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+
+          // Big Open Laughing Mouth
+          ctx.beginPath();
+          ctx.arc(0, 7 * scaleFactor, 6 * scaleFactor, 0, Math.PI);
+          ctx.fillStyle = '#F43F5E';
+          ctx.fill();
+        } else if (watcher.phase === 'kissing') {
+          // Winking Anime Eye (> . <)
+          ctx.beginPath();
+          ctx.moveTo(-11 * scaleFactor, -1 * scaleFactor);
+          ctx.lineTo(-7 * scaleFactor, 2 * scaleFactor);
+          ctx.lineTo(-11 * scaleFactor, 5 * scaleFactor);
+          ctx.strokeStyle = eyeColor;
+          ctx.lineWidth = 2.2 * scaleFactor;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+
+          // Sparkling Open Star Eye on other side
+          ctx.beginPath();
+          ctx.arc(7 * scaleFactor + watcher.eyeX, 2 * scaleFactor + watcher.eyeY, 3.8 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = eyeColor;
+          ctx.fill();
+          // Star Reflection Catchlight
+          ctx.beginPath();
+          ctx.arc(6 * scaleFactor + watcher.eyeX, 0.5 * scaleFactor + watcher.eyeY, 1.5 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fill();
+
+          // Cute Kissy Lips (Pucker "3")
+          ctx.beginPath();
+          ctx.arc(0, 8 * scaleFactor, 2.5 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = '#F43F5E';
+          ctx.fill();
+        } else {
+          // Big Sparkling Anime Eyes with dual catchlight reflections
+          // Left Eye
+          ctx.beginPath();
+          ctx.arc(-7 * scaleFactor + watcher.eyeX, 1 * scaleFactor + watcher.eyeY, 4 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = eyeColor;
+          ctx.fill();
+
+          // Left Catchlights
+          ctx.beginPath();
+          ctx.arc(-8.5 * scaleFactor + watcher.eyeX, -0.5 * scaleFactor + watcher.eyeY, 1.6 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(-5.8 * scaleFactor + watcher.eyeX, 2.2 * scaleFactor + watcher.eyeY, 0.9 * scaleFactor, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Right Eye
+          ctx.beginPath();
+          ctx.arc(7 * scaleFactor + watcher.eyeX, 1 * scaleFactor + watcher.eyeY, 4 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = eyeColor;
+          ctx.fill();
+
+          // Right Catchlights
+          ctx.beginPath();
+          ctx.arc(5.5 * scaleFactor + watcher.eyeX, -0.5 * scaleFactor + watcher.eyeY, 1.6 * scaleFactor, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(8.2 * scaleFactor + watcher.eyeX, 2.2 * scaleFactor + watcher.eyeY, 0.9 * scaleFactor, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Sweet Kawaii Smile with Little Tongue
+          ctx.beginPath();
+          ctx.arc(0, 6 * scaleFactor, 5 * scaleFactor, 0.1, Math.PI - 0.1);
+          ctx.strokeStyle = eyeColor;
+          ctx.lineWidth = 2.2 * scaleFactor;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(0, 8.5 * scaleFactor, 2.5 * scaleFactor, 0, Math.PI);
+          ctx.fillStyle = '#F43F5E';
+          ctx.fill();
+        }
+
+        // Cute Waving Hand
         if (watcher.phase === 'happy' || watcher.phase === 'kissing') {
-          const waveAngle = Math.sin(now * 0.01) * 0.4;
+          const waveAngle = Math.sin(now * 0.012) * 0.5;
           ctx.save();
-          ctx.translate(14 * scaleFactor, 4 * scaleFactor);
+          ctx.translate(18 * scaleFactor, 6 * scaleFactor);
           ctx.rotate(waveAngle);
           ctx.beginPath();
-          ctx.arc(0, 0, 5 * scaleFactor, 0, Math.PI * 2);
+          ctx.arc(0, 0, 6 * scaleFactor, 0, Math.PI * 2);
           ctx.fillStyle = '#F59E0B';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#F59E0B';
           ctx.fill();
           ctx.restore();
         }
