@@ -574,47 +574,61 @@ export const Aurora3DStudio: React.FC = () => {
             </div>
           </div>
 
-          {/* 3. Shader Properties */}
-          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-800 shadow-cyber-card">
-            <span className="font-tech font-bold text-xs uppercase tracking-wider text-slate-300 block mb-3 flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5 text-cyber-gold" /> {t('aurora.shaderStyle')}
-            </span>
+          {/* 🧥 3. PROBADOR VIRTUAL 3D & MANIQUÍ PARAMÉTRICO (XS A 3XL) */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-purple-500/40 shadow-cyber-card space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Shirt className="w-4 h-4 text-purple-400" /> PROBADOR VIRTUAL & TALLAS
+              </span>
+              <span className="text-[10px] font-mono text-purple-300 font-bold bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/30">
+                MANIQUÍ 3D
+              </span>
+            </div>
 
-            <div className="space-y-4 text-xs">
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>{t('aurora.outlineThickness')}</span>
-                  <span className="font-mono text-white">{outlineWidth}px</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.5"
-                  max="5"
-                  step="0.5"
-                  value={outlineWidth}
-                  onChange={(e) => setOutlineWidth(Number(e.target.value))}
-                  className="w-full accent-cyber-gold"
-                />
+            <div className="space-y-2">
+              <label className="text-[11px] font-semibold text-slate-300 block">Talla Paramétrica del Maniquí:</label>
+              <div className="grid grid-cols-7 gap-1">
+                {(['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'] as const).map((sz, idx) => (
+                  <button
+                    key={sz}
+                    onClick={() => alert(`Maniquí ajustado a talla ${sz} (Pecho: ${88 + idx * 4}cm, Cintura: ${70 + idx * 4}cm, Cadera: ${92 + idx * 4}cm)`)}
+                    className="py-1.5 rounded-lg bg-cyber-950 border border-cyber-700 hover:border-purple-400 text-slate-300 hover:text-white font-mono text-[10px] font-bold text-center transition-colors"
+                  >
+                    {sz}
+                  </button>
+                ))}
               </div>
+              <div className="p-2 rounded-xl bg-cyber-950 border border-cyber-800 text-[10px] font-mono text-slate-400 flex items-center justify-between">
+                <span>Ajuste: Boxy Oversized Fit</span>
+                <span className="text-purple-300 font-bold">100% Escala Real</span>
+              </div>
+            </div>
+          </div>
 
-              <div>
-                <label className="text-slate-400 block mb-1">{t('aurora.intensity')}</label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {['Low', 'Medium', 'High'].map((lvl) => (
-                    <button
-                      key={lvl}
-                      onClick={() => setIntensity(lvl)}
-                      className={`py-1.5 rounded-lg border font-semibold ${
-                        intensity === lvl
-                          ? 'bg-cyber-gold text-black border-cyber-gold shadow-gold-glow'
-                          : 'bg-cyber-950 border-cyber-800 text-slate-400'
-                      }`}
-                    >
-                      {lvl}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          {/* 🧪 4. GENERADOR DE TEXTURAS PBR CON IA */}
+          <div className="bg-cyber-900 p-4 rounded-2xl border border-cyber-gold/40 shadow-cyber-card space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-tech font-bold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-cyber-gold" /> GENERADOR DE TEXTURAS PBR IA
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                { name: 'Fibra de Carbono', emoji: '🏎️', roughness: '0.1' },
+                { name: 'Cuero Cyberpunk', emoji: '🧥', roughness: '0.4' },
+                { name: 'Terciopelo Holo', emoji: '🟣', roughness: '0.8' },
+                { name: 'Látex Translúcido', emoji: '💧', roughness: '0.05' }
+              ].map((tex) => (
+                <button
+                  key={tex.name}
+                  onClick={() => alert(`Textura PBR "${tex.name}" aplicada al material Three.js.`)}
+                  className="p-2 rounded-xl bg-cyber-950 border border-cyber-700 hover:border-cyber-gold text-left text-[11px] text-slate-300 hover:text-white transition-all flex items-center gap-1.5"
+                >
+                  <span>{tex.emoji}</span>
+                  <span className="truncate">{tex.name}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>

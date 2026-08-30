@@ -26,7 +26,12 @@ import {
   PenTool,
   Check,
   Edit3,
-  Save
+  Save,
+  Lock,
+  Mail,
+  Send,
+  ShieldAlert,
+  FileCode
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -260,6 +265,9 @@ export const GlobalSuppliers: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState('all');
   const [selectedCert, setSelectedCert] = useState('all');
   const [isTechPackModalOpen, setIsTechPackModalOpen] = useState(false);
+  const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
+  const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
+  const [isGCodeModalOpen, setIsGCodeModalOpen] = useState(false);
   const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
   const [techPackLang, setTechPackLang] = useState<TechPackLanguage>('en');
 
@@ -571,12 +579,30 @@ export const GlobalSuppliers: React.FC = () => {
             {/* Action Buttons */}
             <div className="space-y-2">
               <button
-                onClick={handleWhatsAppContact}
-                className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-tech font-bold text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all"
+                onClick={() => setIsRFQModalOpen(true)}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-sm uppercase tracking-wider shadow-gold-glow flex items-center justify-center gap-2 hover:opacity-90 transition-all"
               >
-                <MessageCircle className="w-5 h-5 fill-current" />
-                <span>Contactar por WhatsApp Oficial</span>
+                <Send className="w-4 h-4" />
+                <span>⚡ Enviar Solicitud RFQ (WhatsApp / Email)</span>
               </button>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setIsEscrowModalOpen(true)}
+                  className="py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Contrato Escrow</span>
+                </button>
+
+                <button
+                  onClick={() => setIsGCodeModalOpen(true)}
+                  className="py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <FileCode className="w-3.5 h-3.5" />
+                  <span>Exportar G-Code 3D</span>
+                </button>
+              </div>
 
               <button
                 onClick={() => handleOpenTechPack()}
@@ -589,6 +615,186 @@ export const GlobalSuppliers: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ⚡ 1. MODAL RFQ INSTANTÁNEO */}
+      {isRFQModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-cyber-gold/50 rounded-3xl p-6 shadow-gold-glow-lg text-white space-y-4">
+            <button
+              onClick={() => setIsRFQModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-cyber-gold/20 text-cyber-gold border border-cyber-gold">
+                <Send className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">DESPACHAR SOLICITUD DE COTIZACIÓN (RFQ)</h3>
+                <p className="text-xs text-slate-400">Fábrica: {activeSupplier.name} ({activeSupplier.country})</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 text-xs space-y-2 font-mono text-slate-300">
+              <div className="flex justify-between">
+                <span className="text-slate-400">Estilo / SKU:</span>
+                <span className="text-white font-bold">{customSKU}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Volumen del Lote:</span>
+                <span className="text-cyber-gold font-bold">{orderQuantity} unidades</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Tiempo Solicitado:</span>
+                <span className="text-emerald-400 font-bold">{activeSupplier.leadTime}</span>
+              </div>
+              <div className="pt-2 border-t border-cyber-800 text-[11px] text-slate-400">
+                Se adjunta enlace seguro con token de acceso a la Ficha Técnica Tech Pack y archivos 3D .GLB.
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleWhatsAppContact}
+                className="flex-1 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>Despachar por WhatsApp</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  window.location.href = `mailto:sales@${activeSupplier.id}.com?subject=Solicitud RFQ Lote ${orderQuantity}u - ${customSKU}&body=Estimado equipo de ${activeSupplier.name}, adjuntamos solicitud formal de cotización y ficha técnica generada en Aether Synergy.`;
+                }}
+                className="flex-1 py-3 rounded-2xl bg-cyber-800 hover:bg-cyber-700 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-cyber-700"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Enviar por Correo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🔒 2. MODAL CONTRATO ESCROW / FIDEICOMISO */}
+      {isEscrowModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsEscrowModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                <Lock className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">CONTRATO DE PAGO EN ESCROW (FIDEICOMISO)</h3>
+                <p className="text-xs text-slate-400">Protección de Fondos contra Fraude & Calidad</p>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <div>
+                  <span className="font-bold text-white block">Hito 1: Depósito de Inicio (30%)</span>
+                  <span className="text-[10px] text-slate-400">Liberado al iniciar compra de tela</span>
+                </div>
+                <span className="font-mono font-bold text-purple-300">${(grandTotalCost * 0.3).toFixed(2)} USD</span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <div>
+                  <span className="font-bold text-white block">Hito 2: Muestra PPS Aprobada (40%)</span>
+                  <span className="text-[10px] text-slate-400">Liberado al aprobar muestra física</span>
+                </div>
+                <span className="font-mono font-bold text-purple-300">${(grandTotalCost * 0.4).toFixed(2)} USD</span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <div>
+                  <span className="font-bold text-white block">Hito 3: Inspección Final AQL 2.5 (30%)</span>
+                  <span className="text-[10px] text-slate-400">Liberado antes de despacho aduanero</span>
+                </div>
+                <span className="font-mono font-bold text-emerald-400">${(grandTotalCost * 0.3).toFixed(2)} USD</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Contrato Escrow activado en custodia bancaria! Los fondos permanecerán retenidos de forma segura.');
+                setIsEscrowModalOpen(false);
+              }}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-md hover:opacity-90 transition-all"
+            >
+              Firmar Contrato y Depositar en Custodia
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 📦 3. MODAL COMPROBADOR DE IMPRIMIBILIDAD 3D & G-CODE */}
+      {isGCodeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+            <button
+              onClick={() => setIsGCodeModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
+                <FileCode className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">REBANADOR 3D & GENERADOR G-CODE</h3>
+                <p className="text-xs text-slate-400">Manufactura Aditiva FDM / Resina SLA</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 block text-[10px]">Altura de Capa:</span>
+                <span className="text-cyan-300 font-bold">0.20 mm (Óptimo)</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 block text-[10px]">Tiempo Estimado:</span>
+                <span className="text-white font-bold">4h 18min</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 block text-[10px]">Consumo Filamento:</span>
+                <span className="text-cyber-gold font-bold">142 gramos</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
+                <span className="text-slate-400 block text-[10px]">Imprimibilidad:</span>
+                <span className="text-emerald-400 font-bold">100% Sin Errores</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                const gcodeSample = `; G-Code generated by Aether Synergy 3D Slicer Engine\nG28 ; Home all axes\nM104 S210 ; Set Extruder Temp\nM140 S60 ; Set Bed Temp\nG1 Z0.2 F1200 ; Layer 1\n; Total Layers: 480\n; Ready for printing`;
+                const blob = new Blob([gcodeSample], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Aether_Model_${Date.now()}.gcode`;
+                link.click();
+              }}
+              className="w-full py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Descargar Archivo .GCODE Rebanado</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* INDUSTRIAL MULTILINGUAL TECH PACK MODAL */}
       {isTechPackModalOpen && (

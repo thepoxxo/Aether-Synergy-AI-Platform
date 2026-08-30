@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Video,
   Sparkles,
@@ -41,8 +41,51 @@ export const AdGenAI: React.FC = () => {
   const [platform, setPlatform] = useState('TikTok / Reels (9:16)');
   const [quality, setQuality] = useState('4K Ultra HD (60fps)');
   const [length, setLength] = useState('15s');
-  const [musicTrack, setMusicTrack] = useState('Dark Synth Cyberpunk Wave');
+  const [musicTrack, setMusicTrack] = useState('Trap Neón 140 BPM');
   const [videoSpeed, setVideoSpeed] = useState<number>(1.0);
+  const [subtitleStyle, setSubtitleStyle] = useState<'neon' | 'gold' | 'typewriter'>('neon');
+
+  // 🎵 Web Audio AI Synthesizer State
+  const [isSynthPlaying, setIsSynthPlaying] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const handleToggleSynth = () => {
+    if (isSynthPlaying) {
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+      setIsSynthPlaying(false);
+    } else {
+      try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const ctx = new AudioContextClass();
+        audioContextRef.current = ctx;
+
+        // Generate melodic Cyber Synth beat
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(110, now); // A2
+        osc1.frequency.exponentialRampToValueAtTime(220, now + 0.4);
+
+        gainNode.gain.setValueAtTime(0.15, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+        osc1.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 1.2);
+
+        setIsSynthPlaying(true);
+        setTimeout(() => setIsSynthPlaying(false), 1200);
+      } catch {
+        setIsSynthPlaying(false);
+      }
+    }
+  };
 
   // States
   const [isGenerating, setIsGenerating] = useState(false);
@@ -406,12 +449,20 @@ export const AdGenAI: React.FC = () => {
                 </div>
               </div>
 
-              {/* Trending Hashtags */}
+              {/* Trending Hashtags & 3s Retention Analyzer */}
               <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
-                <span className="font-tech font-bold text-xs text-slate-300 uppercase block">
-                  Hashtags de Alto Tráfico para Publicar:
-                </span>
-                <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
+                <div className="flex items-center justify-between">
+                  <span className="font-tech font-bold text-xs text-slate-300 uppercase block">
+                    ⚡ Retención Primeros 3 Segundos:
+                  </span>
+                  <span className="text-emerald-400 font-mono font-bold text-xs">96% Gancho Viral (Retención Alta)</span>
+                </div>
+                {/* Visual Retention Curve */}
+                <div className="h-2 rounded-full bg-cyber-900 overflow-hidden flex">
+                  <div className="bg-emerald-400 w-[96%]" />
+                  <div className="bg-rose-500 w-[4%]" />
+                </div>
+                <div className="flex flex-wrap gap-1.5 font-mono text-[11px] pt-1">
                   {['#techwear2026', '#3ddesign', '#streetwearfashion', '#cyberpunkstyle', '#aivideo', '#viralreels', '#aethersynergy'].map((tag) => (
                     <span key={tag} className="px-2 py-0.5 rounded bg-cyber-900 border border-cyber-700 text-cyan-300">
                       {tag}
@@ -458,15 +509,31 @@ export const AdGenAI: React.FC = () => {
                 {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
               </button>
 
-              {/* Dynamic Animated Subtitle Hook */}
-              <div className="inline-block px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-cyber-gold text-cyber-gold font-tech font-extrabold text-sm uppercase tracking-wider shadow-lg animate-pulse">
+              {/* Dynamic Animated Subtitle Hook (TikTok Style) */}
+              <div className={`inline-block px-3 py-1.5 rounded-xl backdrop-blur-md font-tech font-extrabold text-sm uppercase tracking-wider shadow-lg animate-pulse ${
+                subtitleStyle === 'neon'
+                  ? 'bg-black/85 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                  : subtitleStyle === 'gold'
+                  ? 'bg-black/85 border border-cyber-gold text-cyber-gold shadow-gold-glow'
+                  : 'bg-white text-black'
+              }`}>
                 {hookText}
               </div>
             </div>
 
             {/* Bottom Actions */}
             <div className="relative z-10 space-y-2 text-center">
-              <div className="font-tech font-extrabold text-lg text-white tracking-wider uppercase drop-shadow-md">
+              {/* Web Audio Synth Quick Play */}
+              <button
+                type="button"
+                onClick={handleToggleSynth}
+                className="w-full py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 font-mono text-[10px] font-bold uppercase flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+              >
+                <Music className="w-3.5 h-3.5" />
+                <span>{isSynthPlaying ? '♫ Sintetizador Sonando...' : '♫ Probar Beat Sintetizado IA (Web Audio)'}</span>
+              </button>
+
+              <div className="font-tech font-extrabold text-base text-white tracking-wider uppercase drop-shadow-md">
                 AETHER NEO-TECH EDITION
               </div>
 

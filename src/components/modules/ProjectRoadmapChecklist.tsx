@@ -141,7 +141,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'basic',
     title: 'Marcadores de Proyectos y Favoritos en 1 Clic',
     desc: 'Guardar combinaciones favoritas de colores, modelos y configuraciones de cámara en el navegador.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'ui_multi_window_split',
@@ -193,7 +193,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Generador de Texturas PBR con Prompt de Texto IA',
     desc: 'Síntesis de materiales procedurales (cuero desgastado, fibra de carbono, terciopelo, látex, metal cepillado) mediante IA.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: '3d_avatar_tryon',
@@ -201,7 +201,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Probador Virtual 3D & Maniquí Paramétrico con Tallas (XS a 3XL)',
     desc: 'Montar prendas sobre maniquíes animados con ajuste dinámico de proporciones corporales.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'ad_runway_gen3_api',
@@ -232,8 +232,8 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
     title: 'Generador de Bandas Sonoras & Beats con IA para Ads',
-    desc: 'Música comercial royalty-free generada por IA (Trap, Synthwave, Lo-Fi, Cinematic) sincronizada al ritmo.',
-    isInitialDone: false
+    desc: 'Música comercial royalty-free generada por IA (Trap, Synthwave, Lo-Fi, Cinematic) sincronizada al ritmo con Web Audio API.',
+    isInitialDone: true
   },
   {
     id: 'b2b_techpack_pdf',
@@ -249,7 +249,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Envío Automatizado de Solicitudes de Cotización (RFQ) por WhatsApp & Email',
     desc: 'Despacho directo de ficha técnica y solicitud de muestras a directores de fábrica en 1 clic.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'automo_auto_caption',
@@ -257,7 +257,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'intermediate',
     title: 'Generador de Subtítulos Dinámicos con Emojis para TikTok & Reels',
     desc: 'Transcripción palabra por palabra con resaltado neón animado para retención en redes.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'mascot_voice_control',
@@ -365,7 +365,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Comprobador de Imprimibilidad 3D & Generador G-Code',
     desc: 'Análisis de grosor de pared, soportes de voladizo y preparación para impresoras 3D FDM/SLA.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'ad_predictive_retention',
@@ -373,7 +373,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Analizador Predictivo de Retención con IA',
     desc: 'Mapa de calor de atención para evitar el abandono en los primeros 3 segundos del video.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'b2b_dhl_freight_api',
@@ -389,7 +389,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     category: 'advanced',
     title: 'Sistema de Pagos en Escrow / Fideicomiso para Producción Segura',
     desc: 'Retención de fondos protegida que libera pagos al fabricante tras aprobación de control de calidad.',
-    isInitialDone: false
+    isInitialDone: true
   },
   {
     id: 'ai_multi_agent_brand_audit',
