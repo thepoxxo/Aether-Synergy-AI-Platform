@@ -39,6 +39,8 @@ import { MediaBuyerCampaigns } from './components/modules/MediaBuyerCampaigns';
 import { VersionControl3D } from './components/modules/VersionControl3D';
 import { MetaverseGamingExporter } from './components/modules/MetaverseGamingExporter';
 import { TextileEngineeringLab } from './components/modules/TextileEngineeringLab';
+import { JarvisHologramVoiceCore } from './components/modules/JarvisHologramVoiceCore';
+import { JarvisFloatingWidget } from './components/common/JarvisFloatingWidget';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -123,6 +125,8 @@ const MainLayout: React.FC = () => {
         return <ShopifyLandingBuilderAI />;
       case 'agentswarm':
         return <AutonomousAgentSwarm />;
+      case 'jarvis':
+        return <JarvisHologramVoiceCore onExecutePlatformAction={(act, p) => act === 'navigate' && setCurrentView(p)} />;
       case 'turntable':
         return <CinematicTurntable />;
       case 'lookbook':
@@ -231,6 +235,9 @@ const MainLayout: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Global Persistent Floating JARVIS Hologram Widget */}
+      <JarvisFloatingWidget onNavigateView={(v) => setCurrentView(v)} />
     </div>
   );
 };

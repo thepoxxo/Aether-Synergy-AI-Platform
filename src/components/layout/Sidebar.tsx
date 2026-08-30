@@ -33,7 +33,8 @@ import {
   Gamepad2,
   History,
   Activity,
-  ChevronDown
+  ChevronDown,
+  Zap
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -114,6 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       title: 'Agentes IA & Agencias',
       icon: '🤖',
       items: [
+        { id: 'jarvis', nameKey: 'J.A.R.V.I.S. Voz & Arc Core', icon: Zap, requiredRole: 'free', badge: 'JARVIS', isLiteralLabel: true },
         { id: 'agentswarm', nameKey: 'Enjambre Agentes IA', icon: Cpu, requiredRole: 'free', badge: 'SWARM', isLiteralLabel: true },
         { id: 'workspaces', nameKey: 'Espacios Multi-Marca', icon: Building2, requiredRole: 'agency', badge: 'TEAMS', isLiteralLabel: true },
         { id: 'runway', nameKey: 'Pasarela en Vivo 3D', icon: Radio, requiredRole: 'pro', badge: 'LIVE', isLiteralLabel: true }
