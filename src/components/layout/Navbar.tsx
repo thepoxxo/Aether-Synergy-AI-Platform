@@ -16,6 +16,7 @@ import {
   Check,
   LayoutDashboard
 } from 'lucide-react';
+import { AmbientSoundPlayer } from '../common/AmbientSoundPlayer';
 
 interface NavbarProps {
   currentView: string;
@@ -126,8 +127,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
           </nav>
         )}
 
-        {/* Right Controls: Theme + Language + Role Switcher + Auth */}
+        {/* Right Controls: Ambient 444Hz + Theme + Language + Role Switcher + Auth */}
         <div className="flex items-center gap-2.5">
+          {/* Ambient 444Hz Soundscape Player */}
+          <AmbientSoundPlayer />
+
           {/* 1. Language Selector Dropdown */}
           <div className="relative">
             <button

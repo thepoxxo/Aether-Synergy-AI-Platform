@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { ChevronDown, Moon, Sun, Zap, Check, Globe } from 'lucide-react';
+import { AmbientSoundPlayer } from '../common/AmbientSoundPlayer';
 
 interface LandingNavbarProps {
   onOpenLogin: (initialMode?: 'login' | 'register') => void;
@@ -183,20 +184,24 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => 
             )}
           </div>
 
-          {/* Action Buttons */}
-          <button
-            onClick={() => onOpenLogin('login')}
-            className="hidden sm:block px-4 py-2 rounded-xl bg-cyber-900 hover:bg-cyber-850 border border-cyber-700 text-xs font-tech font-bold text-slate-200 hover:text-white transition-all shadow-sm"
-          >
-            Iniciar Sesión
-          </button>
+          {/* 444Hz Ambient Music Player */}
+          <AmbientSoundPlayer />
 
-          <button
-            onClick={() => onOpenLogin('register')}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
-          >
-            Registrarse
-          </button>
+          {/* Auth Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onOpenLogin('login')}
+              className="px-3.5 py-1.5 rounded-xl border border-cyber-700 hover:border-cyber-gold text-slate-200 hover:text-white text-xs font-semibold transition-all"
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              onClick={() => onOpenLogin('register')}
+              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-cyber-gold to-amber-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
+            >
+              Registrarse
+            </button>
+          </div>
         </div>
       </div>
     </header>
