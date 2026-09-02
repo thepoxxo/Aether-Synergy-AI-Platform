@@ -32,13 +32,22 @@ import {
   Newspaper,
   Flame,
   Target,
-  Trophy
+  Trophy,
+  Trash2,
+  CreditCard,
+  Receipt,
+  AlertTriangle,
+  RotateCw,
+  X,
+  FileText,
+  Mail
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
 import { dbService } from '../../services/db';
-import { StoredUser } from '../../types/database';
+import { StoredUser, BillingInvoice } from '../../types/database';
 import { generateExecutiveExcelReport } from '../../services/excelReportGenerator';
+import { billingService, AutoBillingResult } from '../../services/billingService';
 
 export const AdminConsole: React.FC = () => {
   const { user } = useAuth();
@@ -47,6 +56,13 @@ export const AdminConsole: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterNiche, setFilterNiche] = useState('all');
   const [simulatedUsers, setSimulatedUsers] = useState<number>(500);
+
+  // User Deletion & Billing Action States
+  const [userToDelete, setUserToDelete] = useState<StoredUser | null>(null);
+  const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [autoBillingSummary, setAutoBillingSummary] = useState<AutoBillingResult | null>(null);
+  const [showInvoicesModal, setShowInvoicesModal] = useState<boolean>(false);
+  const [invoicesList, setInvoicesList] = useState<BillingInvoice[]>(() => billingService.getInvoices());
 
   // Live real-time online counter fluctuation simulator
   const [onlineUsers, setOnlineUsers] = useState(84);
@@ -69,7 +85,43 @@ export const AdminConsole: React.FC = () => {
     const updated = dbService.updateUserRole(userId, newRole);
     if (updated) {
       setUsersList(dbService.getAllUsers());
+      showToast('Rol de usuario actualizado con éxito.', 'success');
     }
+  };
+
+  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
+    setToastMessage({ text, type });
+    setTimeout(() => setToastMessage(null), 4500);
+  };
+
+  const confirmDeleteUser = () => {
+    if (!userToDelete) return;
+    const res = billingService.deleteUser(userToDelete.id);
+    if (res.success) {
+      setUsersList(dbService.getAllUsers());
+      showToast(res.message, 'success');
+    } else {
+      showToast(res.message, 'error');
+    }
+    setUserToDelete(null);
+  };
+
+  const handleChargeUser = (userId: string) => {
+    const res = billingService.chargeUser(userId);
+    if (res.success) {
+      setUsersList(dbService.getAllUsers());
+      setInvoicesList(billingService.getInvoices());
+      showToast(res.message, 'success');
+    } else {
+      showToast(res.message, 'error');
+    }
+  };
+
+  const handleRunAutoBillingSweep = () => {
+    const res = billingService.runAutoBillingSweep();
+    setUsersList(dbService.getAllUsers());
+    setInvoicesList(billingService.getInvoices());
+    setAutoBillingSummary(res);
   };
 
   const getNicheLabel = (niche?: string) => {
@@ -620,21 +672,57 @@ export const AdminConsole: React.FC = () => {
       )}
 
       {/* =========================================================
-          TAB 4: CLIENT DATABASE DIRECTORY
+          TAB 4: CLIENT DATABASE & RECURRING AUTO-BILLING HUB
           ========================================================= */}
       {activeTab === 'users' && (
-        <div className="bg-cyber-900 rounded-3xl border border-cyber-800 shadow-cyber-card overflow-hidden space-y-4 p-5 animate-fadeIn">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-cyber-900 rounded-3xl border border-cyber-800 shadow-cyber-card overflow-hidden space-y-5 p-5 sm:p-6 animate-fadeIn">
+          {/* Header & Main Auto-Billing Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-cyber-800 pb-5">
             <div>
-              <h3 className="font-tech font-bold text-base text-white">
-                Directorio de Clientes en Base de Datos ({filteredUsers.length})
-              </h3>
-              <p className="text-xs text-slate-400">
-                Búsqueda en tiempo real por nombre, estudio, nicho o país
+              <div className="flex items-center gap-2.5">
+                <h3 className="font-tech font-bold text-lg text-white">
+                  Directorio de Clientes, Suscripciones & Cobros Automáticos
+                </h3>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  STRIPE & RECURRENTE v2.4
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Control de licencias, pasarela de cobro recurrente al vencimiento y eliminación de usuarios
               </p>
             </div>
 
-            {/* Search & Niche Filter Controls */}
+            {/* Top Auto-Billing & Invoices Action Buttons */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={handleRunAutoBillingSweep}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-cyber-gold text-black text-xs font-tech font-bold uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
+                title="Escanea todas las cuentas vencidas y ejecuta el cobro a sus tarjetas registradas"
+              >
+                <Zap className="w-4 h-4" />
+                <span>Ejecutar Barrido de Cobros Recurrentes</span>
+              </button>
+
+              <button
+                onClick={() => setShowInvoicesModal(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 text-slate-200 text-xs font-mono font-bold transition-all shadow-sm"
+              >
+                <Receipt className="w-3.5 h-3.5 text-cyber-gold" />
+                <span>Facturas / Invoices ({invoicesList.length})</span>
+              </button>
+
+              <button
+                onClick={() => generateExecutiveExcelReport(usersList)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/60 text-emerald-300 text-xs font-tech font-bold transition-all shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Excel (.xlsx)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Search & Niche Filter Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -642,15 +730,15 @@ export const AdminConsole: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar cliente..."
-                  className="bg-cyber-950 border border-cyber-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyber-gold"
+                  placeholder="Buscar por nombre, correo o estudio..."
+                  className="bg-cyber-950 border border-cyber-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-cyber-gold w-72"
                 />
               </div>
 
               <select
                 value={filterNiche}
                 onChange={(e) => setFilterNiche(e.target.value)}
-                className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+                className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
               >
                 <option value="all">Todos los Nichos</option>
                 <option value="fashion_streetwear">Moda & Streetwear</option>
@@ -659,103 +747,161 @@ export const AdminConsole: React.FC = () => {
               </select>
             </div>
 
-            <button
-              onClick={() => generateExecutiveExcelReport(usersList)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/60 text-emerald-300 text-xs font-tech font-bold transition-all shadow-sm"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Exportar Excel Empresarial (.xlsx)</span>
-            </button>
+            <div className="text-xs font-mono text-slate-400">
+              Mostrando <strong className="text-white">{filteredUsers.length}</strong> de <strong className="text-white">{usersList.length}</strong> clientes registrados
+            </div>
           </div>
 
+          {/* Comprehensive Users Table */}
           <div className="overflow-x-auto rounded-2xl border border-cyber-800">
             <table className="w-full text-left text-xs">
               <thead className="bg-cyber-950 text-slate-400 uppercase tracking-wider font-tech border-b border-cyber-800">
                 <tr>
                   <th className="py-3 px-4">Cliente / Estudio</th>
                   <th className="py-3 px-4">Nicho & Contacto</th>
-                  <th className="py-3 px-4">Plan Actual</th>
+                  <th className="py-3 px-4">Suscripción & Estado</th>
+                  <th className="py-3 px-4">Método de Pago</th>
                   <th className="py-3 px-4">Uso de IA</th>
-                  <th className="py-3 px-4">Tipo Registro</th>
-                  <th className="py-3 px-4">Admin Override</th>
+                  <th className="py-3 px-4">Rol & Permisos</th>
+                  <th className="py-3 px-4 text-center">Acciones de Cobro & Baja</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-cyber-800 text-slate-200">
-                {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-cyber-850/50 transition-colors">
-                    <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-2.5">
-                        <img
-                          src={u.avatar}
-                          alt={u.name}
-                          className="w-8 h-8 rounded-xl object-cover border border-cyber-gold shrink-0"
-                        />
-                        <div>
-                          <div className="font-tech font-bold text-sm text-white">{u.name}</div>
-                          <div className="text-[11px] text-slate-400 font-mono">{u.email}</div>
-                          <div className="text-[10px] text-cyber-gold font-semibold">{u.company}</div>
-                        </div>
-                      </div>
-                    </td>
+                {filteredUsers.map((u) => {
+                  const hasCard = !!u.paymentCard;
+                  const isPaidPlan = u.role !== 'free' && u.planPrice > 0;
+                  const isExpired = u.subscriptionStatus === 'expired' || u.subscriptionStatus === 'past_due';
 
-                    <td className="py-3.5 px-4 space-y-0.5">
-                      <div className="text-[11px] font-semibold text-slate-200">{getNicheLabel(u.niche)}</div>
-                      <div className="text-[10px] text-slate-400 flex items-center gap-1">
-                        <Globe className="w-3 h-3 text-slate-500" /> {u.country || 'Global'}
-                      </div>
-                      {u.phone && (
+                  return (
+                    <tr key={u.id} className="hover:bg-cyber-850/50 transition-colors">
+                      {/* 1. Cliente / Estudio */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            src={u.avatar}
+                            alt={u.name}
+                            className="w-9 h-9 rounded-xl object-cover border border-cyber-gold shrink-0"
+                          />
+                          <div>
+                            <div className="font-tech font-bold text-sm text-white">{u.name}</div>
+                            <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                              <Mail className="w-3 h-3 text-slate-500" /> {u.email}
+                            </div>
+                            <div className="text-[10px] text-cyber-gold font-semibold">{u.company}</div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* 2. Nicho & Contacto */}
+                      <td className="py-3.5 px-4 space-y-0.5">
+                        <div className="text-[11px] font-semibold text-slate-200">{getNicheLabel(u.niche)}</div>
                         <div className="text-[10px] text-slate-400 flex items-center gap-1">
-                          <Phone className="w-3 h-3 text-slate-500" /> {u.phone}
+                          <Globe className="w-3 h-3 text-slate-500" /> {u.country || 'Global'}
                         </div>
-                      )}
-                    </td>
+                        {u.phone && (
+                          <div className="text-[10px] text-slate-400 flex items-center gap-1 font-mono">
+                            <Phone className="w-3 h-3 text-slate-500" /> {u.phone}
+                          </div>
+                        )}
+                      </td>
 
-                    <td className="py-3.5 px-4">
-                      <span
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase ${
-                          u.role === 'admin'
-                            ? 'bg-rose-500/20 text-rose-300 border-rose-500'
-                            : u.role === 'agency'
-                            ? 'bg-purple-500/20 text-purple-300 border-purple-500'
-                            : u.role === 'pro'
-                            ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold'
-                            : 'bg-cyan-500/20 text-cyan-300 border-cyan-500'
-                        }`}
-                      >
-                        {u.planName}
-                      </span>
-                    </td>
+                      {/* 3. Suscripción & Estado */}
+                      <td className="py-3.5 px-4 space-y-1">
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase ${
+                              u.role === 'admin'
+                                ? 'bg-rose-500/20 text-rose-300 border-rose-500'
+                                : u.role === 'agency'
+                                ? 'bg-purple-500/20 text-purple-300 border-purple-500'
+                                : u.role === 'pro'
+                                ? 'bg-cyber-gold/20 text-cyber-gold border-cyber-gold'
+                                : 'bg-cyan-500/20 text-cyan-300 border-cyan-500'
+                            }`}
+                          >
+                            {u.planName}
+                          </span>
+                        </div>
 
-                    <td className="py-3.5 px-4 font-mono text-cyber-gold">
-                      {u.aiCredits?.used || 0} renders
-                    </td>
+                        <div className="text-[10px] font-mono">
+                          {isPaidPlan ? (
+                            isExpired ? (
+                              <span className="text-amber-400 font-bold block">⚠️ Cobro Vencido</span>
+                            ) : (
+                              <span className="text-emerald-400 block">
+                                🟢 Activa (Renueva: {u.subscriptionRenewalDate || '2026-09-30'})
+                              </span>
+                            )
+                          ) : (
+                            <span className="text-slate-400">Plan Gratuito Permanente</span>
+                          )}
+                        </div>
+                      </td>
 
-                    <td className="py-3.5 px-4">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          u.registrationType === 'complete'
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                            : 'bg-slate-700/30 text-slate-400 border border-slate-700'
-                        }`}
-                      >
-                        {u.registrationType === 'complete' ? 'Completo' : 'Básico'}
-                      </span>
-                    </td>
+                      {/* 4. Tarjeta / Método de Pago */}
+                      <td className="py-3.5 px-4">
+                        {u.paymentCard ? (
+                          <div className="p-2 rounded-xl bg-cyber-950 border border-cyber-700 font-mono text-[11px] space-y-0.5">
+                            <div className="flex items-center gap-1.5 text-white font-bold uppercase">
+                              <CreditCard className="w-3.5 h-3.5 text-cyber-gold" />
+                              <span>{u.paymentCard.brand} •••• {u.paymentCard.last4}</span>
+                            </div>
+                            <div className="text-[9px] text-slate-400 flex items-center justify-between">
+                              <span>Exp: {u.paymentCard.expMonth}/{u.paymentCard.expYear}</span>
+                              <span className="text-emerald-400">Auto-Cobro: Sí</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-[11px] text-slate-500 font-mono italic">Sin tarjeta registrada</span>
+                        )}
+                      </td>
 
-                    <td className="py-3.5 px-4">
-                      <select
-                        value={u.role}
-                        onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                        className="bg-cyber-950 border border-cyber-700 text-white rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
-                      >
-                        <option value="free">Free Starter</option>
-                        <option value="pro">Pro Designer ($49)</option>
-                        <option value="agency">Agencia ($149)</option>
-                        <option value="admin">Super Admin</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
+                      {/* 5. Uso de IA */}
+                      <td className="py-3.5 px-4 font-mono text-cyber-gold text-xs">
+                        <strong>{u.aiCredits?.used || 0}</strong> / {u.aiCredits?.total || 3} renders
+                      </td>
+
+                      {/* 6. Rol & Permisos */}
+                      <td className="py-3.5 px-4">
+                        <select
+                          value={u.role}
+                          onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
+                          className="bg-cyber-950 border border-cyber-700 text-white rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+                        >
+                          <option value="free">Free Starter</option>
+                          <option value="pro">Pro Designer ($49)</option>
+                          <option value="agency">Agencia ($149)</option>
+                          <option value="admin">Super Admin</option>
+                        </select>
+                      </td>
+
+                      {/* 7. Acciones de Cobro & Baja */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center justify-center gap-1.5">
+                          {/* Botón Cobrar Ahora (si tiene tarjeta y es de pago) */}
+                          {isPaidPlan && hasCard && (
+                            <button
+                              onClick={() => handleChargeUser(u.id)}
+                              className="px-2.5 py-1.5 rounded-lg bg-cyber-gold/20 hover:bg-cyber-gold/30 border border-cyber-gold/60 text-cyber-gold text-[10px] font-tech font-bold uppercase transition-all flex items-center gap-1"
+                              title="Ejecutar cobro recurrente inmediato con Stripe"
+                            >
+                              <Zap className="w-3 h-3" /> Cobrar
+                            </button>
+                          )}
+
+                          {/* Botón Eliminar Usuario */}
+                          <button
+                            onClick={() => setUserToDelete(u)}
+                            className="p-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 hover:text-rose-200 transition-all"
+                            title="Eliminar usuario permanentemente"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1108,6 +1254,192 @@ export const AdminConsole: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL 1: CONFIRMACIÓN DE ELIMINACIÓN DE USUARIO
+          ========================================================= */}
+      {userToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-rose-500/50 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-[0_0_50px_rgba(244,63,94,0.3)] text-center space-y-5 relative">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/50 flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-7 h-7" />
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-xl font-tech font-bold text-white">¿Eliminar Usuario Permanentemente?</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Estás a punto de dar de baja a <strong className="text-white font-tech">{userToDelete.name}</strong> ({userToDelete.email}). Se revocarán todas sus licencias, proyectos 3D y accesos de IA.
+              </p>
+            </div>
+
+            <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 text-left text-xs font-mono space-y-1">
+              <div className="text-slate-400">ID Usuario: <span className="text-white">{userToDelete.id}</span></div>
+              <div className="text-slate-400">Plan Actual: <span className="text-rose-400 font-bold">{userToDelete.planName}</span></div>
+              <div className="text-slate-400">Empresa: <span className="text-slate-300">{userToDelete.company}</span></div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setUserToDelete(null)}
+                className="flex-1 py-2.5 rounded-xl bg-cyber-800 hover:bg-cyber-700 text-slate-300 font-semibold text-xs transition-all"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDeleteUser}
+                className="flex-1 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_#f43f5e] transition-all flex items-center justify-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Confirmar Baja
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL 2: RESULTADO DE BARRIDO DE COBROS RECURRENTES
+          ========================================================= */}
+      {autoBillingSummary && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyber-gold/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-gold-glow-lg space-y-5 relative max-h-[88vh] overflow-y-auto">
+            <button
+              onClick={() => setAutoBillingSummary(null)}
+              className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyber-gold/20 text-cyber-gold border border-cyber-gold shadow-gold-glow">
+                <Zap className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">Reporte de Cobros Automáticos Recurrentes</h3>
+                <span className="text-[10px] font-mono text-emerald-400 font-bold">EJECUCIÓN CRON EXITOSA</span>
+              </div>
+            </div>
+
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3 rounded-xl bg-cyber-950 border border-emerald-500/30 text-center">
+                <span className="text-[10px] text-slate-400 block font-tech">COBRADOS</span>
+                <span className="text-lg font-tech font-extrabold text-emerald-400">{autoBillingSummary.chargedCount}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-gold/30 text-center">
+                <span className="text-[10px] text-slate-400 block font-tech">RECAUDO</span>
+                <span className="text-lg font-tech font-extrabold text-cyber-gold">${autoBillingSummary.totalCollected}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-amber-500/30 text-center">
+                <span className="text-[10px] text-slate-400 block font-tech">FALLIDOS</span>
+                <span className="text-lg font-tech font-extrabold text-amber-400">{autoBillingSummary.failedCount}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyan-500/30 text-center">
+                <span className="text-[10px] text-slate-400 block font-tech">A FREE</span>
+                <span className="text-lg font-tech font-extrabold text-cyan-400">{autoBillingSummary.downgradedCount}</span>
+              </div>
+            </div>
+
+            {/* Detailed Log List */}
+            <div className="space-y-2">
+              <span className="text-xs font-tech font-bold text-white block">Trazabilidad de Ejecución Stripe:</span>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 space-y-1.5 font-mono text-xs max-h-48 overflow-y-auto">
+                {autoBillingSummary.logs.length > 0 ? (
+                  autoBillingSummary.logs.map((log, idx) => (
+                    <div key={idx} className="text-slate-300 text-[11px] leading-relaxed border-b border-white/5 pb-1 last:border-0">
+                      {log}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-slate-500 text-[11px]">Todas las suscripciones se encuentran al día. No se requirieron cobros inmediatos.</div>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setAutoBillingSummary(null)}
+              className="w-full py-2.5 rounded-xl bg-cyber-gold text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow"
+            >
+              Cerrar Reporte
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL 3: HISTORIAL DE FACTURAS & INVOICES STRIPE
+          ========================================================= */}
+      {showInvoicesModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyber-800 rounded-3xl p-6 max-w-2xl w-full shadow-cyber-card space-y-4 relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
+              <div className="flex items-center gap-2.5">
+                <Receipt className="w-5 h-5 text-cyber-gold" />
+                <h3 className="font-tech font-bold text-base text-white">Historial de Facturación & Cobros Recurrentes</h3>
+              </div>
+              <button
+                onClick={() => setShowInvoicesModal(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-cyber-800">
+              <table className="w-full text-left text-xs font-mono">
+                <thead className="bg-cyber-950 text-slate-400 uppercase border-b border-cyber-800">
+                  <tr>
+                    <th className="py-2.5 px-3">Invoice ID</th>
+                    <th className="py-2.5 px-3">Cliente</th>
+                    <th className="py-2.5 px-3">Fecha & Hora</th>
+                    <th className="py-2.5 px-3">Tarjeta</th>
+                    <th className="py-2.5 px-3 text-right">Monto</th>
+                    <th className="py-2.5 px-3 text-center">Estado</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-cyber-800 text-slate-300">
+                  {invoicesList.map((inv) => (
+                    <tr key={inv.id} className="hover:bg-cyber-850/50">
+                      <td className="py-2.5 px-3 font-bold text-cyber-gold">{inv.id}</td>
+                      <td className="py-2.5 px-3 font-sans font-semibold text-white">{inv.userName}</td>
+                      <td className="py-2.5 px-3 text-slate-400 text-[11px]">{inv.date}</td>
+                      <td className="py-2.5 px-3">•••• {inv.cardLast4}</td>
+                      <td className="py-2.5 px-3 text-right font-bold text-emerald-400">${inv.amount} USD</td>
+                      <td className="py-2.5 px-3 text-center">
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40">
+                          PAGADO
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowInvoicesModal(false)}
+                className="px-5 py-2 rounded-xl bg-cyber-950 border border-cyber-700 hover:border-cyber-gold text-slate-200 text-xs font-semibold"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Action Toast Notification */}
+      {toastMessage && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 p-4 rounded-2xl border shadow-gold-glow max-w-sm animate-fadeIn flex items-center gap-3 font-mono text-xs ${
+            toastMessage.type === 'success'
+              ? 'bg-cyber-900/95 border-emerald-500/60 text-emerald-300'
+              : 'bg-cyber-900/95 border-rose-500/60 text-rose-300'
+          }`}
+        >
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          <span>{toastMessage.text}</span>
         </div>
       )}
     </div>

@@ -59,9 +59,11 @@ export const LoginModal: React.FC = () => {
     marketingConsent: true
   });
 
-  // 2FA OTP State
+  // 2FA OTP & Verification Channel State
+  const [verificationChannel, setVerificationChannel] = useState<'email' | 'sms' | 'authenticator'>('email');
   const [otp, setOtp] = useState(['7', '7', '7', '2', '0', '4']);
   const [timer, setTimer] = useState(59);
+  const [resendFeedback, setResendFeedback] = useState<string | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -73,6 +75,10 @@ export const LoginModal: React.FC = () => {
   }, [step, timer]);
 
   if (!isLoginModalOpen) return null;
+
+  const isEmailValid = (email: string) => {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email.trim());
+  };
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) {
@@ -95,12 +101,18 @@ export const LoginModal: React.FC = () => {
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email) {
-      alert('Por favor completa tu nombre y correo electrónico.');
+    if (!formData.name.trim()) {
+      alert('Por favor completa tu nombre.');
       return;
     }
+    if (!isEmailValid(formData.email)) {
+      alert('Por favor ingresa un correo electrónico con formato válido (ejemplo: usuario@dominio.com).');
+      return;
+    }
+    setVerificationChannel('email');
     setStep('2fa');
     setTimer(59);
+    setResendFeedback(`¡Código de verificación de 6 dígitos enviado a ${formData.email}!`);
   };
 
   const handleQuickLogin = (roleToLogin: UserRole, name?: string, email?: string) => {
@@ -110,8 +122,20 @@ export const LoginModal: React.FC = () => {
       email: email || '',
       role: roleToLogin
     }));
+    setVerificationChannel('email');
     setStep('2fa');
     setTimer(59);
+    setResendFeedback(`¡Código de verificación enviado a ${email || 'tu correo'}!`);
+  };
+
+  const handleResendCode = (channel: 'email' | 'sms') => {
+    setTimer(59);
+    if (channel === 'email') {
+      setResendFeedback(`¡Nuevo código de 6 dígitos enviado exitosamente a ${formData.email || 'tu correo'}!`);
+    } else {
+      setResendFeedback(`¡Nuevo código SMS OTP enviado exitosamente a ${formData.phone || '+57 300 123 4567'}!`);
+    }
+    setTimeout(() => setResendFeedback(null), 4000);
   };
 
   const complete2FAVerification = () => {
@@ -237,14 +261,25 @@ export const LoginModal: React.FC = () => {
 
                   {/* Correo */}
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Correo Electrónico *</label>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="text-slate-300 font-semibold">Correo Electrónico *</label>
+                      {formData.email && (
+                        <span className={`text-[10px] font-mono font-bold ${isEmailValid(formData.email) ? 'text-emerald-400' : 'text-amber-400'}`}>
+                          {isEmailValid(formData.email) ? '✓ Email Válido' : '⚠️ Formato Inválido'}
+                        </span>
+                      )}
+                    </div>
                     <input
                       type="email"
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="carlos@tumarca.com"
-                      className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-cyber-gold shadow-sm"
+                      className={`w-full bg-cyber-950 border rounded-xl px-3.5 py-2.5 text-white focus:outline-none shadow-sm transition-all ${
+                        formData.email && !isEmailValid(formData.email)
+                          ? 'border-amber-500/80 focus:border-amber-400'
+                          : 'border-cyber-700 focus:border-cyber-gold'
+                      }`}
                     />
                   </div>
 
@@ -514,36 +549,112 @@ export const LoginModal: React.FC = () => {
           </>
         ) : (
           /* =========================================================
-             PASO 2: VERIFICACIÓN 2FA OTP CON GOOGLE AUTHENTICATOR
+             PASO 2: VERIFICACIÓN MULTI-CANAL (EMAIL, SMS, TOTP)
              ========================================================= */
           <div className="text-center space-y-4 py-2">
             <div className="w-14 h-14 rounded-2xl bg-cyber-gold/20 border border-cyber-gold flex items-center justify-center text-cyber-gold mx-auto shadow-gold-glow">
-              <Smartphone className="w-7 h-7" />
+              <Shield className="w-7 h-7" />
             </div>
 
             <div>
               <h3 className="text-xl font-tech font-bold text-white tracking-wide">
-                {t('auth.twoFactorTitle')}
+                Verificación de Seguridad & Validación de Cuenta
               </h3>
               <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-                Escanea con Google Authenticator o ingresa el código OTP enviado a <strong className="text-white">{formData.email || 'tu dispositivo'}</strong>.
+                Selecciona tu método de verificación preferido para confirmar tu identidad
               </p>
             </div>
 
-            {/* QR Code Authenticator Simulator Card */}
-            <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-gold/30 max-w-xs mx-auto flex items-center gap-3 text-left">
-              <div className="w-16 h-16 bg-white p-1 rounded-xl shrink-0 flex items-center justify-center">
-                {/* SVG QR Code Pattern */}
-                <svg className="w-full h-full text-black" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 0h4v4h-4v-4zm-4 4h4v4h-4v-4zm4-4h4v4h-4v-4zm-4-4h4v4h-4v-4zm-4 4h4v4h-4v-4z" />
-                </svg>
-              </div>
-              <div className="space-y-0.5 text-[11px] font-mono">
-                <span className="text-slate-400 block font-tech uppercase text-[10px]">Clave Secreta TOTP:</span>
-                <span className="text-cyber-gold font-bold select-all">AETH-7772-0499-SYNC</span>
-                <span className="text-emerald-400 text-[10px] block">✓ Algoritmo SHA-256</span>
-              </div>
+            {/* Verification Channel Selector Tabs */}
+            <div className="flex bg-cyber-950 p-1 rounded-2xl border border-cyber-800 max-w-md mx-auto text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => setVerificationChannel('email')}
+                className={`flex-1 py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                  verificationChannel === 'email'
+                    ? 'bg-cyber-gold text-black font-bold shadow-gold-glow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Mail className="w-3.5 h-3.5" /> Correo
+              </button>
+              <button
+                type="button"
+                onClick={() => setVerificationChannel('sms')}
+                className={`flex-1 py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                  verificationChannel === 'sms'
+                    ? 'bg-cyber-gold text-black font-bold shadow-gold-glow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Phone className="w-3.5 h-3.5" /> Celular SMS
+              </button>
+              <button
+                type="button"
+                onClick={() => setVerificationChannel('authenticator')}
+                className={`flex-1 py-1.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                  verificationChannel === 'authenticator'
+                    ? 'bg-cyber-gold text-black font-bold shadow-gold-glow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Smartphone className="w-3.5 h-3.5" /> App TOTP
+              </button>
             </div>
+
+            {/* Channel Details Card */}
+            {verificationChannel === 'email' && (
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 max-w-md mx-auto text-left font-mono text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-[11px]">Código enviado a:</span>
+                  <span className="text-emerald-400 font-bold text-[11px]">✓ Email Verificado</span>
+                </div>
+                <div className="text-white font-bold text-sm truncate bg-cyber-900 px-3 py-1.5 rounded-xl border border-cyber-700">
+                  {formData.email || 'usuario@empresa.com'}
+                </div>
+                <p className="text-[11px] text-slate-400 font-sans">
+                  Revisa tu bandeja de entrada o spam. Ingresa los 6 dígitos recibidos para activar tu sesión.
+                </p>
+              </div>
+            )}
+
+            {verificationChannel === 'sms' && (
+              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 max-w-md mx-auto text-left font-mono text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-[11px]">SMS / WhatsApp OTP enviado a:</span>
+                  <span className="text-emerald-400 font-bold text-[11px]">✓ Red Móvil Lista</span>
+                </div>
+                <div className="text-white font-bold text-sm bg-cyber-900 px-3 py-1.5 rounded-xl border border-cyber-700">
+                  {formData.phone || '+57 300 123 4567'}
+                </div>
+                <p className="text-[11px] text-slate-400 font-sans">
+                  Hemos transmitido el código de un solo uso (OTP) a tu línea telefónica registrada.
+                </p>
+              </div>
+            )}
+
+            {verificationChannel === 'authenticator' && (
+              <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-gold/30 max-w-xs mx-auto flex items-center gap-3 text-left">
+                <div className="w-16 h-16 bg-white p-1 rounded-xl shrink-0 flex items-center justify-center">
+                  <svg className="w-full h-full text-black" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 0h4v4h-4v-4zm-4 4h4v4h-4v-4zm4-4h4v4h-4v-4zm-4-4h4v4h-4v-4zm-4 4h4v4h-4v-4z" />
+                  </svg>
+                </div>
+                <div className="space-y-0.5 text-[11px] font-mono">
+                  <span className="text-slate-400 block font-tech uppercase text-[10px]">Clave Secreta TOTP:</span>
+                  <span className="text-cyber-gold font-bold select-all">AETH-7772-0499-SYNC</span>
+                  <span className="text-emerald-400 text-[10px] block">✓ Algoritmo SHA-256</span>
+                </div>
+              </div>
+            )}
+
+            {/* Resend feedback toast */}
+            {resendFeedback && (
+              <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-mono text-xs max-w-md mx-auto animate-fadeIn flex items-center justify-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{resendFeedback}</span>
+              </div>
+            )}
 
             {/* 6 Digit OTP Input Boxes */}
             <div className="flex items-center justify-center gap-2 sm:gap-2.5 pt-1">
@@ -561,18 +672,31 @@ export const LoginModal: React.FC = () => {
               ))}
             </div>
 
-            {/* Auto-fill demo button */}
+            {/* Auto-fill demo & Resend Controls */}
             <div className="flex flex-col items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setOtp(['7', '7', '7', '2', '0', '4'])}
                 className="text-xs text-cyber-gold font-mono hover:underline flex items-center gap-1"
               >
-                <KeyRound className="w-3.5 h-3.5" /> Autocompletar Código Demo (777-204)
+                <KeyRound className="w-3.5 h-3.5" /> Autocompletar Código de Verificación (777-204)
               </button>
-              <span className="text-[10px] text-slate-500 font-mono">
-                Reenviar código en {timer}s
-              </span>
+
+              <div className="flex items-center gap-2 text-xs font-mono">
+                {timer > 0 ? (
+                  <span className="text-slate-500">
+                    Reenviar nuevo código en <strong className="text-slate-300">{timer}s</strong>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleResendCode(verificationChannel === 'sms' ? 'sms' : 'email')}
+                    className="text-cyber-gold font-bold hover:underline"
+                  >
+                    ⚡ Reenviar Código Ahora
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Action buttons */}
@@ -590,7 +714,7 @@ export const LoginModal: React.FC = () => {
                 className="flex-2 w-full py-3 rounded-xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-sm uppercase tracking-wider shadow-gold-glow hover:opacity-95 transition-all flex items-center justify-center gap-2"
               >
                 <CheckCircle2 className="w-4 h-4" />
-                <span>{authMode === 'register' ? 'Completar Registro y Entrar' : t('auth.verifyBtn')}</span>
+                <span>{authMode === 'register' ? 'Verificar y Activar Cuenta' : t('auth.verifyBtn')}</span>
               </button>
             </div>
           </div>

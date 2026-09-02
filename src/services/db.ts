@@ -22,7 +22,10 @@ const INITIAL_USERS: StoredUser[] = [
     licensesCount: 99,
     registrationType: 'complete',
     createdAt: '2026-08-01',
-    status: 'active'
+    status: 'active',
+    subscriptionStatus: 'active',
+    emailVerified: true,
+    phoneVerified: true
   },
   {
     id: 'usr_agency_01',
@@ -42,7 +45,22 @@ const INITIAL_USERS: StoredUser[] = [
     licensesCount: 5,
     registrationType: 'complete',
     createdAt: '2026-08-10',
-    status: 'active'
+    status: 'active',
+    paymentCard: {
+      brand: 'visa',
+      last4: '4242',
+      expMonth: 12,
+      expYear: 2028,
+      holderName: 'Jane Doe',
+      autoRenew: true
+    },
+    subscriptionStatus: 'active',
+    subscriptionRenewalDate: '2026-09-10',
+    lastPaymentDate: '2026-08-10 14:32:00',
+    lastPaymentAmount: 149,
+    billingFailuresCount: 0,
+    emailVerified: true,
+    phoneVerified: true
   },
   {
     id: 'usr_pro_01',
@@ -62,7 +80,22 @@ const INITIAL_USERS: StoredUser[] = [
     licensesCount: 1,
     registrationType: 'complete',
     createdAt: '2026-08-15',
-    status: 'active'
+    status: 'active',
+    paymentCard: {
+      brand: 'mastercard',
+      last4: '8821',
+      expMonth: 9,
+      expYear: 2027,
+      holderName: 'Sarah Connor',
+      autoRenew: true
+    },
+    subscriptionStatus: 'active',
+    subscriptionRenewalDate: '2026-09-15',
+    lastPaymentDate: '2026-08-15 09:15:00',
+    lastPaymentAmount: 49,
+    billingFailuresCount: 0,
+    emailVerified: true,
+    phoneVerified: true
   },
   {
     id: 'usr_free_01',
@@ -82,7 +115,11 @@ const INITIAL_USERS: StoredUser[] = [
     licensesCount: 1,
     registrationType: 'basic',
     createdAt: '2026-08-22',
-    status: 'active'
+    status: 'active',
+    subscriptionStatus: 'active',
+    billingFailuresCount: 0,
+    emailVerified: true,
+    phoneVerified: false
   }
 ];
 

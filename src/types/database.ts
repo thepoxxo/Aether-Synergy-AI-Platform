@@ -23,6 +23,28 @@ export interface UserRegistrationData {
   marketingConsent?: boolean;
 }
 
+export interface UserPaymentMethod {
+  brand: 'visa' | 'mastercard' | 'amex' | 'paypal';
+  last4: string;
+  expMonth: number;
+  expYear: number;
+  holderName: string;
+  autoRenew: boolean;
+}
+
+export interface BillingInvoice {
+  id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  amount: number;
+  planName: string;
+  cardLast4: string;
+  status: 'paid' | 'failed' | 'refunded';
+  date: string;
+  description: string;
+}
+
 export interface StoredUser {
   id: string;
   name: string;
@@ -45,6 +67,15 @@ export interface StoredUser {
   registrationType: 'basic' | 'complete';
   createdAt: string;
   status: 'active' | 'suspended' | 'pending_verification';
+  // Payment & Billing
+  paymentCard?: UserPaymentMethod;
+  subscriptionStatus?: 'active' | 'past_due' | 'expired' | 'canceled';
+  subscriptionRenewalDate?: string;
+  lastPaymentDate?: string;
+  lastPaymentAmount?: number;
+  billingFailuresCount?: number;
+  phoneVerified?: boolean;
+  emailVerified?: boolean;
 }
 
 export interface CloudProject {

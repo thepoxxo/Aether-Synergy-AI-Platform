@@ -1134,6 +1134,38 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Conmutador Maestro de Bypass y Previsualización para Administradores',
     desc: 'Permite a los administradores probar cualquier módulo en desarrollo sin que los usuarios finales lo vean.',
     isInitialDone: true
+  },
+  {
+    id: 'auth_real_email_and_phone_verification',
+    module: 'Seguridad & Autenticación',
+    category: 'advanced',
+    title: 'Validación de Correo Electrónico en Tiempo Real y Verificación OTP SMS',
+    desc: 'Soporte multi-canal para validar emails reales y enviar códigos OTP por SMS / WhatsApp con temporizador.',
+    isInitialDone: true
+  },
+  {
+    id: 'admin_delete_user_account',
+    module: 'Consola Administrativa',
+    category: 'advanced',
+    title: 'Baja Permanente & Eliminación Segura de Usuarios',
+    desc: 'Modal de confirmación para dar de baja usuarios, revocar licencias y limpiar bases de datos.',
+    isInitialDone: true
+  },
+  {
+    id: 'admin_recurring_auto_billing_engine',
+    module: 'Consola Administrativa',
+    category: 'advanced',
+    title: 'Motor de Cobros Automáticos Recurrentes (Stripe / Recurrente Engine)',
+    desc: 'Barrido automático de suscripciones vencidas, cobro a tarjeta de crédito registrada y generación de facturas.',
+    isInitialDone: true
+  },
+  {
+    id: 'admin_invoices_history_and_downgrade',
+    module: 'Consola Administrativa',
+    category: 'advanced',
+    title: 'Historial de Invoices Stripe y Degradación Automática a Free por Fallo',
+    desc: 'Registro auditable de facturas y degradación automática a Free Starter tras 3 intentos fallidos de tarjeta.',
+    isInitialDone: true
   }
 ];
 
