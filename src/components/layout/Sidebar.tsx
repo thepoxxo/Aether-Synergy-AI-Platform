@@ -137,6 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'community', nameKey: 'Comunidad & Remix', icon: Sparkles, requiredRole: 'free', badge: 'OPEN', isLiteralLabel: true },
         { id: 'mascot', nameKey: 'sidebar.mascot', icon: Smile, requiredRole: 'free', badge: 'HUB' },
         { id: 'admin', nameKey: 'sidebar.admin', icon: ShieldAlert, requiredRole: 'admin', badge: 'ADMIN' },
+        { id: 'apigateway', nameKey: 'Conectores & APIs de IA', icon: Cpu, requiredRole: 'admin', badge: '18 APIS', isLiteralLabel: true },
         { id: 'roadmap', nameKey: 'Roadmap & Checklist', icon: CheckSquare, requiredRole: 'free', badge: 'PLAN', isLiteralLabel: true }
       ]
     }

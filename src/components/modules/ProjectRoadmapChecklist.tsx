@@ -1006,6 +1006,70 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Exportador Contable para QuickBooks y Xero con Márgenes y Fletes',
     desc: 'Reportes de costos de producción, fletes aduaneros y balance financiero listo para contabilidad.',
     isInitialDone: true
+  },
+  {
+    id: 'api_gateway_multi_domain_hub',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Hub Maestro de 18 Motores de IA Real con Alternador Live/Demo',
+    desc: 'Conexión y orquestación con Tripo3D, Meshy, Runway, Luma, Suno, ElevenLabs, Gemini, Fal.ai y Shopify.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_clothing_3d_engine',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Conector 3D IA Especializado para Ropa, Alta Costura & Telas',
+    desc: 'Generación de prendas con micro-texturas y topología cuádruple lista para manufactura y patronaje.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_furniture_chair_engine',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Conector 3D IA para Sillas, Muebles & Mobiliario de Diseño',
+    desc: 'Generación paramétrica de estructuras ergonómicas de madera, titanio y tapicería de lujo.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_footwear_shoes_engine',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Conector 3D IA para Calzado Deportivo, Tacones & Sneakers',
+    desc: 'Modelado volumétrico de suelas amortiguadas, empeines y mallas respirables con Tripo3D / Meshy.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_bags_leather_engine',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Conector 3D IA para Bolsos, Mochilas & Artículos de Cuero',
+    desc: 'Detalle de costuras reforzadas, herrajes metálicos dorados y texturas de cuero granulado.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_restaurant_food_ads_engine',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Conector de Video 4K para Restaurantes & Anuncios Gastronómicos',
+    desc: 'Tomas cinemáticas macro con vapor, movimiento de salsas y apetitocidad hiperrealista con Runway Gen-3.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_suno_music_synthesis',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Conector de Síntesis Musical Comercial con Suno AI & Phonk 808',
+    desc: 'Generación de pistas de audio libres de regalías y bandas sonoras dinámicas para campañas de TikTok/Reels.',
+    isInitialDone: true
+  },
+  {
+    id: 'api_gateway_live_playground_tester',
+    module: 'Master API Gateway & Conectores IA',
+    category: 'advanced',
+    title: 'Laboratorio Interactivo de Prueba de Inferencia en Tiempo Real',
+    desc: 'Consola de test de latencia, medidor de COGS por llamada y descarga de mallas GLB generadas.',
+    isInitialDone: true
   }
 ];
 

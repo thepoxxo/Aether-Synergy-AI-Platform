@@ -41,6 +41,7 @@ import { MetaverseGamingExporter } from './components/modules/MetaverseGamingExp
 import { TextileEngineeringLab } from './components/modules/TextileEngineeringLab';
 import { JarvisHologramVoiceCore } from './components/modules/JarvisHologramVoiceCore';
 import { JarvisFloatingWidget } from './components/common/JarvisFloatingWidget';
+import { APIGatewayHub } from './components/modules/APIGatewayHub';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -153,6 +154,8 @@ const MainLayout: React.FC = () => {
         return <SynthetixMascot />;
       case 'admin':
         return <AdminConsole />;
+      case 'apigateway':
+        return <APIGatewayHub />;
       case 'roadmap':
         return <ProjectRoadmapChecklist />;
       default:
