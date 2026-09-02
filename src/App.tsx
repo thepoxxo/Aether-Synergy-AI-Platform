@@ -42,6 +42,7 @@ import { TextileEngineeringLab } from './components/modules/TextileEngineeringLa
 import { JarvisHologramVoiceCore } from './components/modules/JarvisHologramVoiceCore';
 import { JarvisFloatingWidget } from './components/common/JarvisFloatingWidget';
 import { APIGatewayHub } from './components/modules/APIGatewayHub';
+import { WorkflowAutomationsN8N } from './components/modules/WorkflowAutomationsN8N';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -126,6 +127,8 @@ const MainLayout: React.FC = () => {
         return <ShopifyLandingBuilderAI />;
       case 'agentswarm':
         return <AutonomousAgentSwarm />;
+      case 'automations':
+        return <WorkflowAutomationsN8N />;
       case 'jarvis':
         return <JarvisHologramVoiceCore onExecutePlatformAction={(act, p) => act === 'navigate' && setCurrentView(p)} />;
       case 'turntable':

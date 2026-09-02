@@ -1070,6 +1070,38 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Laboratorio Interactivo de Prueba de Inferencia en Tiempo Real',
     desc: 'Consola de test de latencia, medidor de COGS por llamada y descarga de mallas GLB generadas.',
     isInitialDone: true
+  },
+  {
+    id: 'n8n_visual_graph_canvas',
+    module: 'Automatizaciones & Flujos n8n',
+    category: 'advanced',
+    title: 'Lienzo Visual de Nodos Interactivos (Estilo n8n / Make)',
+    desc: 'Diseñador visual de grafos conectados con puertos de entrada/salida y estados en vivo.',
+    isInitialDone: true
+  },
+  {
+    id: 'n8n_ecommerce_viral_pipeline',
+    module: 'Automatizaciones & Flujos n8n',
+    category: 'advanced',
+    title: 'Pipeline Viral Automático (3D -> Video 4K -> Suno -> Shopify -> TikTok Ads)',
+    desc: 'Flujo completo automatizado desde el boceto hasta la pauta publicitaria en TikTok.',
+    isInitialDone: true
+  },
+  {
+    id: 'n8n_trend_scraper_cron',
+    module: 'Automatizaciones & Flujos n8n',
+    category: 'advanced',
+    title: 'Monitor Programado de Tendencias Cron 08:00 AM con Gemini & FLUX.1',
+    desc: 'Extracción diaria de micro-tendencias y generación automática de Lookbooks editoriales.',
+    isInitialDone: true
+  },
+  {
+    id: 'n8n_json_exporter_and_webhooks',
+    module: 'Automatizaciones & Flujos n8n',
+    category: 'advanced',
+    title: 'Exportador JSON Nativo para Instancias n8n & Endpoints Webhook cURL',
+    desc: 'Compatibilidad directa para importar los flujos en n8n self-hosted o dispararlos con Webhooks POST.',
+    isInitialDone: true
   }
 ];
 
