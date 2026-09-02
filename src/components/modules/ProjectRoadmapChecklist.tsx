@@ -1102,6 +1102,38 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Exportador JSON Nativo para Instancias n8n & Endpoints Webhook cURL',
     desc: 'Compatibilidad directa para importar los flujos en n8n self-hosted o dispararlos con Webhooks POST.',
     isInitialDone: true
+  },
+  {
+    id: 'staging_independent_modules',
+    module: 'Despliegue Gradual & Mantenimiento',
+    category: 'advanced',
+    title: 'Arquitectura Modular Independiente con Feature Flags por Módulo',
+    desc: 'Control individual de estado (Activo, Próximamente Fase 2, Mantenimiento, Deshabilitado) para cada módulo.',
+    isInitialDone: true
+  },
+  {
+    id: 'staging_1click_mvp_preset',
+    module: 'Despliegue Gradual & Mantenimiento',
+    category: 'advanced',
+    title: 'Preset en 1 Clic: Lanzamiento Inicial MVP (Solo Diseño 3D & JARVIS)',
+    desc: 'Permite salir a producción con solo el módulo de diseño activo y el resto programado para futuras fases.',
+    isInitialDone: true
+  },
+  {
+    id: 'staging_zero_downtime_maintenance_screen',
+    module: 'Despliegue Gradual & Mantenimiento',
+    category: 'advanced',
+    title: 'Pantalla de Mantenimiento / Próximamente con Suscripción a Avisos',
+    desc: 'Aviso elegante sin caídas globales con teaser de novedades y botón "Notificarme por Email".',
+    isInitialDone: true
+  },
+  {
+    id: 'staging_admin_bypass_override',
+    module: 'Despliegue Gradual & Mantenimiento',
+    category: 'advanced',
+    title: 'Conmutador Maestro de Bypass y Previsualización para Administradores',
+    desc: 'Permite a los administradores probar cualquier módulo en desarrollo sin que los usuarios finales lo vean.',
+    isInitialDone: true
   }
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { UserRole } from '../../types/auth';
@@ -35,8 +35,10 @@ import {
   Activity,
   ChevronDown,
   Zap,
-  Workflow
+  Workflow,
+  Sliders
 } from 'lucide-react';
+import { moduleStagingService } from '../../services/moduleStagingService';
 
 interface SidebarProps {
   currentView: string;
@@ -72,6 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [filterMyPlanOnly, setFilterMyPlanOnly] = useState(false);
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
+  const [, setStagingTick] = useState<number>(0);
+
+  useEffect(() => {
+    const handleStaging = () => setStagingTick((t) => t + 1);
+    window.addEventListener('aether_staging_updated', handleStaging);
+    return () => window.removeEventListener('aether_staging_updated', handleStaging);
+  }, []);
 
   const toggleCategory = (categoryId: string) => {
     setCollapsedCategories((prev) => ({
@@ -82,17 +91,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const categories: NavCategory[] = [
     {
-      id: 'studio',
+      id: 'design_studio',
       title: '3D & Brand Studio',
       icon: '🎨',
       items: [
-        { id: 'aurora3d', nameKey: 'sidebar.aurora3d', icon: Layers, requiredRole: 'free', badge: '3D' },
-        { id: 'brandkit', nameKey: 'Brand Kit & Identidad', icon: Palette, requiredRole: 'pro', badge: 'BRAND', isLiteralLabel: true },
-        { id: 'scanner3d', nameKey: 'sidebar.scanner3d', icon: Scan, requiredRole: 'pro', badge: 'PRO' },
-        { id: 'pattern2d', nameKey: 'Patronaje 2D (DXF)', icon: Scissors, requiredRole: 'pro', badge: 'CAD', isLiteralLabel: true },
-        { id: 'clothify', nameKey: 'sidebar.clothify', icon: Shirt, requiredRole: 'pro', badge: 'PRO' },
-        { id: 'solesmith', nameKey: 'sidebar.solesmith', icon: Footprints, requiredRole: 'pro', badge: 'PRO' },
-        { id: 'versioncontrol', nameKey: 'Control Versiones 3D', icon: History, requiredRole: 'pro', badge: 'GIT 3D', isLiteralLabel: true }
+        { id: 'aurora3d', nameKey: 'sidebar.aurora3d', icon: Box, requiredRole: 'free', badge: '3D IA' },
+        { id: 'scanner3d', nameKey: 'sidebar.scanner3d', icon: Camera, requiredRole: 'pro', badge: 'PRO' },
+        { id: 'brandkit', nameKey: 'Identidad & Brand Kit', icon: Palette, requiredRole: 'free', badge: 'KIT', isLiteralLabel: true },
+        { id: 'versioncontrol', nameKey: 'Control de Versiones & AR', icon: History, requiredRole: 'free', badge: 'GIT 3D', isLiteralLabel: true },
+        { id: 'metaverse', nameKey: 'Gaming & Metaverso 3D', icon: Gamepad2, requiredRole: 'agency', badge: 'USD/FBX', isLiteralLabel: true }
       ]
     },
     {
@@ -100,23 +107,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
       title: 'Marketing & Video Ads',
       icon: '🎬',
       items: [
-        { id: 'adgen', nameKey: 'sidebar.adgen', icon: Video, requiredRole: 'pro', badge: 'PRO' },
-        { id: 'mediabuyer', nameKey: 'Media Buyer & ROAS Ads', icon: TrendingUp, requiredRole: 'pro', badge: 'ADS', isLiteralLabel: true },
-        { id: 'turntable', nameKey: 'Video Cinemático 360°', icon: Film, requiredRole: 'pro', badge: 'CINEMA', isLiteralLabel: true },
-        { id: 'lookbook', nameKey: 'Lookbook IA Modelos', icon: Camera, requiredRole: 'pro', badge: 'PHOTO', isLiteralLabel: true },
-        { id: 'metaverse', nameKey: 'Gaming & Metaverso 3D', icon: Gamepad2, requiredRole: 'pro', badge: 'UNREAL', isLiteralLabel: true }
+        { id: 'mediabuyer', nameKey: 'Media Buying & Video Ads', icon: Film, requiredRole: 'free', badge: 'ADS 4K', isLiteralLabel: true },
+        { id: 'turntable', nameKey: 'Giro Cinemático 360°', icon: Radio, requiredRole: 'free', badge: '360°', isLiteralLabel: true },
+        { id: 'lookbook', nameKey: 'Lookbook Editorial IA', icon: Sparkles, requiredRole: 'pro', badge: 'HD', isLiteralLabel: true },
+        { id: 'trendforecast', nameKey: 'sidebar.trendforecast', icon: TrendingUp, requiredRole: 'free', badge: 'TRENDS' }
       ]
     },
     {
-      id: 'ecommerce',
+      id: 'ecommerce_factory',
       title: 'E-Commerce & Fábrica B2B',
       icon: '🛍️',
       items: [
-        { id: 'shopifylanding', nameKey: 'Landings Shopify IA', icon: ShoppingBag, requiredRole: 'pro', badge: 'LANDING', isLiteralLabel: true },
-        { id: 'suppliers', nameKey: 'sidebar.suppliers', icon: Globe2, requiredRole: 'agency', badge: 'AGENCY' },
-        { id: 'textilelab', nameKey: 'Laboratorio Textil & B2B', icon: Activity, requiredRole: 'agency', badge: 'LAB', isLiteralLabel: true },
-        { id: 'trendforecast', nameKey: 'Tendencias & Ventas IA', icon: TrendingUp, requiredRole: 'agency', badge: 'WGSN', isLiteralLabel: true },
-        { id: 'automo', nameKey: 'sidebar.automo', icon: Calendar, requiredRole: 'agency', badge: 'AGENCY' }
+        { id: 'shopifylanding', nameKey: 'Shopify Landing Builder', icon: ShoppingBag, requiredRole: 'free', badge: 'STORE', isLiteralLabel: true },
+        { id: 'clothify', nameKey: 'Costos & Fichas Tech Pack', icon: Scissors, requiredRole: 'free', badge: 'B2B', isLiteralLabel: true },
+        { id: 'pattern2d', nameKey: 'Patronaje 2D & Moldería', icon: Scissors, requiredRole: 'pro', badge: 'DXF', isLiteralLabel: true },
+        { id: 'textilelab', nameKey: 'Laboratorio Textil & B2B', icon: Activity, requiredRole: 'pro', badge: 'TECH', isLiteralLabel: true },
+        { id: 'solesmith', nameKey: 'Calzado & Suelas SoleSmith', icon: Scissors, requiredRole: 'pro', badge: 'SHOES', isLiteralLabel: true },
+        { id: 'suppliers', nameKey: 'sidebar.suppliers', icon: Compass, requiredRole: 'agency', badge: 'AGENCY' },
+        { id: 'automo', nameKey: 'sidebar.automo', icon: Compass, requiredRole: 'free', badge: 'CALENDAR' }
       ]
     },
     {
@@ -139,6 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'community', nameKey: 'Comunidad & Remix', icon: Sparkles, requiredRole: 'free', badge: 'OPEN', isLiteralLabel: true },
         { id: 'mascot', nameKey: 'sidebar.mascot', icon: Smile, requiredRole: 'free', badge: 'HUB' },
         { id: 'admin', nameKey: 'sidebar.admin', icon: ShieldAlert, requiredRole: 'admin', badge: 'ADMIN' },
+        { id: 'staging_manager', nameKey: 'Control Módulos & Rollout', icon: Sliders, requiredRole: 'admin', badge: 'STAGING', isLiteralLabel: true },
         { id: 'apigateway', nameKey: 'Conectores & APIs de IA', icon: Cpu, requiredRole: 'admin', badge: '18 APIS', isLiteralLabel: true },
         { id: 'roadmap', nameKey: 'Roadmap & Checklist', icon: CheckSquare, requiredRole: 'free', badge: 'PLAN', isLiteralLabel: true }
       ]
@@ -152,6 +161,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
     } else {
       promptUpgrade(item.requiredRole);
     }
+  };
+
+  const getStagingBadge = (itemId: string) => {
+    const status = moduleStagingService.getModuleStatus(itemId);
+    if (status === 'coming_soon') {
+      return { label: 'FASE 2', class: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' };
+    }
+    if (status === 'maintenance') {
+      return { label: 'UPDATE', class: 'bg-amber-500/20 text-amber-300 border-amber-500/40' };
+    }
+    if (status === 'disabled') {
+      return { label: 'LOCK', class: 'bg-rose-500/20 text-rose-300 border-rose-500/40' };
+    }
+    return null;
   };
 
   const getBadgeClass = (badge?: string) => {
@@ -253,11 +276,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 <Icon className="w-4 h-4" />
                                 <span>{item.isLiteralLabel ? item.nameKey : t(item.nameKey)}</span>
                               </div>
-                              {item.badge && (
-                                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
-                                  {item.badge}
-                                </span>
-                              )}
+                              {(() => {
+                                const stagingBadge = getStagingBadge(item.id);
+                                if (stagingBadge) {
+                                  return (
+                                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${stagingBadge.class}`}>
+                                      {stagingBadge.label}
+                                    </span>
+                                  );
+                                }
+                                if (item.badge) {
+                                  return (
+                                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${getBadgeClass(item.badge)}`}>
+                                      {item.badge}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </button>
                           );
                         })}
@@ -386,17 +422,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           {!isCollapsed && (
                             <div className="flex items-center gap-1">
                               {!allowed && <Lock className="w-3 h-3 text-slate-500" />}
-                              {item.badge && (
-                                <span
-                                  className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
-                                    active
-                                      ? 'bg-black text-cyber-gold border-black'
-                                      : getBadgeClass(item.badge)
-                                  }`}
-                                >
-                                  {item.badge}
-                                </span>
-                              )}
+                              {(() => {
+                                const stagingBadge = getStagingBadge(item.id);
+                                if (stagingBadge) {
+                                  return (
+                                    <span
+                                      className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
+                                        active ? 'bg-black text-cyber-gold border-black' : stagingBadge.class
+                                      }`}
+                                    >
+                                      {stagingBadge.label}
+                                    </span>
+                                  );
+                                }
+                                if (item.badge) {
+                                  return (
+                                    <span
+                                      className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${
+                                        active ? 'bg-black text-cyber-gold border-black' : getBadgeClass(item.badge)
+                                      }`}
+                                    >
+                                      {item.badge}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </div>
                           )}
                         </button>

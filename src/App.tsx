@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -43,11 +43,21 @@ import { JarvisHologramVoiceCore } from './components/modules/JarvisHologramVoic
 import { JarvisFloatingWidget } from './components/common/JarvisFloatingWidget';
 import { APIGatewayHub } from './components/modules/APIGatewayHub';
 import { WorkflowAutomationsN8N } from './components/modules/WorkflowAutomationsN8N';
+import { ModuleMaintenanceScreen } from './components/common/ModuleMaintenanceScreen';
+import { ModuleStagingAdmin } from './components/modules/ModuleStagingAdmin';
+import { moduleStagingService } from './services/moduleStagingService';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
   const [currentView, setCurrentView] = useState<string>('aurora3d');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [stagingVersion, setStagingVersion] = useState<number>(0);
+
+  useEffect(() => {
+    const handleStagingUpdate = () => setStagingVersion((v) => v + 1);
+    window.addEventListener('aether_staging_updated', handleStagingUpdate);
+    return () => window.removeEventListener('aether_staging_updated', handleStagingUpdate);
+  }, []);
 
   const handleOpenAuth = (mode?: 'login' | 'register') => {
     setAuthModalMode(mode || 'login');
@@ -106,6 +116,28 @@ const MainLayout: React.FC = () => {
   // 2. If viewMode is 'app' (User logged in or registered):
   // Show the internal dashboard workspace with Sidebar
   const renderWorkspaceModule = () => {
+    const isAccessible = moduleStagingService.isModuleAccessible(currentView, role);
+    if (!isAccessible && currentView !== 'staging_manager' && currentView !== 'admin') {
+      const modConfig = moduleStagingService.getModuleById(currentView) || {
+        id: currentView,
+        name: 'Módulo en Mantenimiento',
+        category: 'general',
+        categoryTitle: 'Plataforma',
+        status: moduleStagingService.getModuleStatus(currentView),
+        version: '1.0.0',
+        phase: 2,
+        changelogNote: 'Actualización y optimización de rendimiento en progreso.'
+      };
+      return (
+        <ModuleMaintenanceScreen
+          moduleConfig={modConfig}
+          userRole={role}
+          onNavigateToDesign={() => setCurrentView('aurora3d')}
+          onReload={() => setStagingVersion((v) => v + 1)}
+        />
+      );
+    }
+
     switch (currentView) {
       case 'aurora3d':
         return <Aurora3DStudio />;
@@ -157,6 +189,8 @@ const MainLayout: React.FC = () => {
         return <SynthetixMascot />;
       case 'admin':
         return <AdminConsole />;
+      case 'staging_manager':
+        return <ModuleStagingAdmin />;
       case 'apigateway':
         return <APIGatewayHub />;
       case 'roadmap':
