@@ -18,6 +18,10 @@ import { LandingPage } from './components/landing/LandingPage';
 // Internal Workspace Modules
 import { Aurora3DStudio } from './components/modules/Aurora3DStudio';
 import { MobileAurora3D } from './components/mobile/MobileAurora3D';
+import { MobilePoxxiReels } from './components/mobile/MobilePoxxiReels';
+import { MobilePatternCutting2D } from './components/mobile/MobilePatternCutting2D';
+import { MobileGlobalSuppliers } from './components/mobile/MobileGlobalSuppliers';
+import { MobileExpertConsultations } from './components/mobile/MobileExpertConsultations';
 import { Scanner3D } from './components/modules/Scanner3D';
 import { AdGenAI } from './components/modules/AdGenAI';
 import { ClothifySourcing } from './components/modules/ClothifySourcing';
@@ -209,7 +213,7 @@ const MainLayout: React.FC = () => {
       case 'roadmap':
         return <ProjectRoadmapChecklist />;
       case 'expert_consultations':
-        return <ExpertConsultationsHub />;
+        return isMobile ? <MobileExpertConsultations /> : <ExpertConsultationsHub />;
       default:
         return isMobile ? <MobileAurora3D /> : <Aurora3DStudio />;
     }
