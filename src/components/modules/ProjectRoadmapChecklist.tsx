@@ -1166,6 +1166,46 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Historial de Invoices Stripe y Degradación Automática a Free por Fallo',
     desc: 'Registro auditable de facturas y degradación automática a Free Starter tras 3 intentos fallidos de tarjeta.',
     isInitialDone: true
+  },
+  {
+    id: 'adobe_photoshop_pbr_layers_and_blend_modes',
+    module: 'Aurora 3D Studio',
+    category: 'advanced',
+    title: 'Capas PBR & Modos de Fusión Adobe Photoshop (Multiply, Screen, Overlay, Soft Light)',
+    desc: 'Jerarquía de capas Albedo, Normal, Roughness, Metallic y Decal con opacidad independiente y fusión Photoshop.',
+    isInitialDone: true
+  },
+  {
+    id: 'adobe_illustrator_bezier_curves_and_extrusion',
+    module: 'Aurora 3D Studio',
+    category: 'advanced',
+    title: 'Escultor de Curvas Bézier Vectoriales & Extrusión 3D Adobe Illustrator',
+    desc: 'Editor interactivo de curvas vectoriales, biselado paramétrico y extrusión 3D directa de moldes y nervaduras.',
+    isInitialDone: true
+  },
+  {
+    id: 'adobe_illustrator_curved_typography_and_monograms',
+    module: 'Aurora 3D Studio',
+    category: 'advanced',
+    title: 'Tipografía Curva en Relieve 3D & Generador de Monogramas (Seamless Grid Pattern)',
+    desc: 'Extrusión de textos tipográficos en mallas 3D y repetición de patrones monograma estilo LV / Gucci / Carbon Weave.',
+    isInitialDone: true
+  },
+  {
+    id: 'substance_3d_procedural_pbr_materials_suite',
+    module: 'Aurora 3D Studio',
+    category: 'advanced',
+    title: 'Suite de Materiales Procedurales PBR Substance 3D & Filtros HSL Photoshop',
+    desc: '8 materiales hiperrealistas (Cuero Vacuno, Denim, Carbono, Cromo, Seda, Terciopelo) con gradación de color y curvas.',
+    isInitialDone: true
+  },
+  {
+    id: 'multi_format_export_psd_ai_glb_usdz',
+    module: 'Aurora 3D Studio',
+    category: 'advanced',
+    title: 'Exportador Multi-Formato Profesional (Adobe .PSD, .AI / .SVG, Blender .GLB, Apple .USDZ)',
+    desc: 'Exportación directa de paquetes de capas PSD para Photoshop, vectores AI/SVG para Illustrator y modelos 3D listos para WebXR.',
+    isInitialDone: true
   }
 ];
 
