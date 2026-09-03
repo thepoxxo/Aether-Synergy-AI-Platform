@@ -332,7 +332,7 @@ export const CommunityExplore: React.FC<CommunityExploreProps> = ({ onRemixDesig
           }`}
         >
           <Film className="w-4 h-4 text-rose-400" />
-          <span>📱 Aether TikTok & Shorts 3D</span>
+          <span>✨ Poxxi 3D Shorts</span>
         </button>
 
         <button

@@ -358,14 +358,14 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
           <div>
             <div className="flex items-center gap-2.5">
               <h2 className="text-xl sm:text-2xl font-tech font-extrabold text-white tracking-wider">
-                AETHER REELS & TIKTOK 3D STUDIO
+                POXXI 3D • SHORTS & PASARELAS
               </h2>
               <span className="text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/50 flex items-center gap-1">
-                <Flame className="w-3 h-3 text-rose-400" /> VERTICAL 9:16 FEED
+                ✨ POXXI FEED 9:16
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Feed inmersivo de videos 3D generados por IA, pasarelas de moda, animaciones de producto y despieces interactivos.
+              Feed inmersivo y dinámico de videos 3D generados por IA, pasarelas de moda, calzado y despieces interactivos.
             </p>
           </div>
         </div>
@@ -375,8 +375,8 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
           onClick={() => setIsCreateModalOpen(true)}
           className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:opacity-95 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-all"
         >
-          <Plus className="w-4 h-4" />
-          <span>+ Subir / Generar Short IA</span>
+          <Sparkles className="w-4 h-4" />
+          <span>+ Crear Poxxi 3D</span>
         </button>
       </div>
 
@@ -723,17 +723,17 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
               </div>
               <div>
                 <h3 className="font-tech font-bold text-lg text-white">
-                  CREAR SHORT / REEL 3D CON IA
+                  CREAR POXXI SHORT 3D CON IA
                 </h3>
                 <p className="text-slate-400 text-xs">
-                  Genera un video en 9:16 con cámara cinemática 360°, pista Suno AI y subtítulos
+                  Genera un video vertical 9:16 con cámara cinemática 360°, pista Suno AI y efectos PBR
                 </p>
               </div>
             </div>
 
             <div className="space-y-3 pt-2">
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Título del Reel:</label>
+                <label className="text-slate-300 font-bold block mb-1">Título del Poxxi:</label>
                 <input
                   type="text"
                   value={newReelTitle}
@@ -802,12 +802,12 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
                 {isGeneratingAiReel ? (
                   <>
                     <Radio className="w-4 h-4 animate-spin text-white" />
-                    <span>Renderizando Short 9:16 en la Nube con IA...</span>
+                    <span>Renderizando Poxxi 9:16 en la Nube con IA...</span>
                   </>
                 ) : (
                   <>
                     <Wand2 className="w-4 h-4" />
-                    <span>Generar Reel & Publicar en Feed Global</span>
+                    <span>Publicar Poxxi en el Feed Global</span>
                   </>
                 )}
               </button>
