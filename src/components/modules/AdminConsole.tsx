@@ -45,7 +45,10 @@ import {
   RotateCw,
   X,
   FileText,
-  Mail
+  Mail,
+  Film,
+  Globe2,
+  Calendar
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
@@ -438,6 +441,63 @@ export const AdminConsole: React.FC = () => {
       trendType: 'up',
       status: 'optimal',
       desc: 'Disparo de eventos automáticos desde Shopify, Discord, TikTok Ads y pipelines de datos sin código.'
+    },
+    {
+      id: 'tiktok_poxxi_3d',
+      name: 'Poxxi 3D • Shorts & Pasarelas Verticales 9:16',
+      category: 'Marketing & Comunidad Viral',
+      icon: Film,
+      color: 'text-rose-400',
+      borderColor: 'border-rose-500/40',
+      bgColor: 'bg-rose-500/10',
+      monthlyCostUSD: 135.00,
+      monthlyGenerations: 6750,
+      unitCostUSD: 0.020,
+      primaryAPIs: ['WebGPU Video Canvas', 'Suno AI Soundtrack Sync', 'Cloudflare Stream CDN'],
+      hardwareUsage: '45.0 Horas Video Transcoding & HLS Streaming',
+      profitContributionMargin: 91.5,
+      trend: '+45.2%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Feed vertical 9:16 para pasarelas de moda, calzado 360°, doble tap de corazón y remix 3D en vivo.'
+    },
+    {
+      id: 'global_suppliers_b2b',
+      name: 'Directorio Global de Proveedores & TechPacks B2B',
+      category: 'E-Commerce & Fábrica B2B',
+      icon: Globe2,
+      color: 'text-teal-400',
+      borderColor: 'border-teal-500/40',
+      bgColor: 'bg-teal-500/10',
+      monthlyCostUSD: 48.00,
+      monthlyGenerations: 3200,
+      unitCostUSD: 0.015,
+      primaryAPIs: ['WhatsApp Business API', 'PDFKit Spec Generator', 'Currency Converter Live'],
+      hardwareUsage: '12.0 Horas Serverless Execution',
+      profitContributionMargin: 97.0,
+      trend: '+15.4%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Sourcing internacional de fábricas de cualquier país, cotizaciones de volumen y reseñas comunitarias en 4 dimensiones.'
+    },
+    {
+      id: 'automo_calendar_marketing',
+      name: 'Automo • Calendario Multicanal & Piloto Automático',
+      category: 'Marketing & Video Ads',
+      icon: Calendar,
+      color: 'text-purple-400',
+      borderColor: 'border-purple-500/40',
+      bgColor: 'bg-purple-500/10',
+      monthlyCostUSD: 54.00,
+      monthlyGenerations: 4500,
+      unitCostUSD: 0.012,
+      primaryAPIs: ['Meta Graph API v20.0', 'TikTok Open API', 'YouTube Data API v3', 'LinkedIn Marketing API'],
+      hardwareUsage: 'CRON Scheduler & Token Refresh Workers',
+      profitContributionMargin: 96.5,
+      trend: '+28.0%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Programación automática de publicaciones multicanal en Instagram, TikTok, Facebook, YouTube y LinkedIn con Copywriting IA.'
     },
     {
       id: 'base_infrastructure',

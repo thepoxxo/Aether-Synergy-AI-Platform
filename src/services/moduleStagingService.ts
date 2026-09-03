@@ -55,13 +55,13 @@ export const DEFAULT_MODULE_CONFIGS: ModuleStagingConfig[] = [
   // Categoria 2: Marketing & Video Ads
   {
     id: 'tiktok_feed',
-    name: 'Aether Reels & TikTok 3D Shorts',
+    name: 'Poxxi 3D • Shorts & Pasarelas',
     category: 'marketing',
     categoryTitle: 'Marketing & Video Ads',
     status: 'active',
-    version: '1.0.0',
+    version: '1.2.0',
     phase: 1,
-    changelogNote: 'Feed vertical 9:16 de videos y pasarelas 3D generadas por IA con comentarios y remix.'
+    changelogNote: 'Feed vertical 9:16 de videos y pasarelas 3D con doble tap, comentarios y remix 3D directo.'
   },
   {
     id: 'photostudio_viral',
@@ -167,23 +167,23 @@ export const DEFAULT_MODULE_CONFIGS: ModuleStagingConfig[] = [
   },
   {
     id: 'suppliers',
-    name: 'Directorio Proveedores B2B',
+    name: 'Proveedores Globales B2B & Sourcing',
     category: 'ecommerce_factory',
     categoryTitle: 'E-Commerce & Fábrica B2B',
     status: 'active',
-    version: '1.6.0',
+    version: '2.0.0',
     phase: 2,
-    changelogNote: 'Fábricas verificadas en Portugal, Turquía y Asia.'
+    changelogNote: 'Directorio internacional, registro de fábricas propias de cualquier país y sistema de calificación B2B en 4 dimensiones.'
   },
   {
     id: 'automo',
-    name: 'Calendario Lanzamientos',
+    name: 'Automo • Calendario Redes & Piloto Automático',
     category: 'ecommerce_factory',
     categoryTitle: 'E-Commerce & Fábrica B2B',
     status: 'active',
-    version: '1.2.0',
+    version: '2.0.0',
     phase: 2,
-    changelogNote: 'Cronograma comercial para drops y preventas.'
+    changelogNote: 'Programación multicanal para Instagram, TikTok, Facebook, YouTube y LinkedIn con Copywriting IA.'
   },
 
   // Categoria 4: Agentes IA & Agencias
