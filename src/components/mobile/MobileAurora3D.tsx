@@ -15,157 +15,241 @@ import {
   ShoppingBag,
   Cpu,
   ChevronUp,
+  Sun,
+  Moon,
+  Flame,
+  Check,
   X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useDeviceMode } from '../../context/DeviceModeContext';
 
 export const MobileAurora3D: React.FC = () => {
-  const { promptUpgrade, hasAccess } = useAuth();
   const { hapticFeedback } = useDeviceMode();
   const [selectedModel, setSelectedModel] = useState<'jacket' | 'sneaker' | 'chair' | 'bag' | 'box' | 'car'>('jacket');
   const [selectedMaterial, setSelectedMaterial] = useState<'pbr_gold' | 'neon_cyber' | 'leather_matte' | 'denim' | 'metallic'>('pbr_gold');
-  const [activeSheet, setActiveSheet] = useState<'none' | 'models' | 'materials' | 'ai_prompt' | 'layers'>('none');
+  const [selectedColor, setSelectedColor] = useState('#E5A93C');
+  const [shaderMode, setShaderMode] = useState<'pbr' | 'clay' | 'wireframe'>('pbr');
+  const [lightingMode, setLightingMode] = useState<'studio' | 'neon' | 'sun'>('studio');
+  const [activeSheet, setActiveSheet] = useState<'none' | 'models' | 'materials' | 'colors' | 'ai_prompt'>('none');
   const [aiPrompt, setAiPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const modelsList = [
-    { id: 'jacket', name: 'Chaqueta Bomber 3D', icon: '🧥', badge: 'Moda' },
-    { id: 'sneaker', name: 'Sneakers Cyberpunk', icon: '👟', badge: 'Calzado' },
-    { id: 'chair', name: 'Sillón Lounge Nórdico', icon: '🪑', badge: 'Muebles' },
-    { id: 'bag', name: 'Bolso de Cuero Minimal', icon: '👜', badge: 'Marroquinería' },
-    { id: 'box', name: 'Caja Packaging Gourmet', icon: '🍔', badge: 'Packaging' },
-    { id: 'car', name: 'Asiento Deportivo Auto', icon: '🚗', badge: 'Tapicería' }
+    {
+      id: 'jacket',
+      name: 'Chaqueta Bomber Techwear',
+      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&auto=format&fit=crop&q=80',
+      badge: 'Moda 3D',
+      polyCount: '48.2K Polígonos'
+    },
+    {
+      id: 'sneaker',
+      name: 'Sneakers Cyberpunk Pro',
+      image: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80',
+      badge: 'Calzado',
+      polyCount: '62.4K Polígonos'
+    },
+    {
+      id: 'chair',
+      name: 'Sillón Lounge Nórdico',
+      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80',
+      badge: 'Mobiliario',
+      polyCount: '34.8K Polígonos'
+    },
+    {
+      id: 'bag',
+      name: 'Bolso de Cuero Minimal',
+      image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&auto=format&fit=crop&q=80',
+      badge: 'Marroquinería',
+      polyCount: '28.1K Polígonos'
+    },
+    {
+      id: 'box',
+      name: 'Packaging Troquelado Kraft',
+      image: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&auto=format&fit=crop&q=80',
+      badge: 'Packaging',
+      polyCount: '12.5K Polígonos'
+    },
+    {
+      id: 'car',
+      name: 'Butaca Recaro Alcantara',
+      image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop&q=80',
+      badge: 'Automotriz',
+      polyCount: '74.6K Polígonos'
+    }
   ];
 
   const materialsList = [
-    { id: 'pbr_gold', name: 'Cyber Gold PBR', color: 'from-amber-400 to-yellow-600', desc: 'Reflejos metálicos 8K' },
-    { id: 'neon_cyber', name: 'Neón Holográfico', color: 'from-cyan-400 to-blue-600', desc: 'Textura emisiva' },
-    { id: 'leather_matte', name: 'Cuero Nappa Mate', color: 'from-stone-700 to-stone-900', desc: 'Grano natural' },
-    { id: 'denim', name: 'Denim Pesado 460 GSM', color: 'from-blue-700 to-indigo-950', desc: 'Sarga diagonal' },
-    { id: 'metallic', name: 'Titanio Anodizado', color: 'from-slate-400 to-slate-700', desc: 'Acabado aeroespacial' }
+    { id: 'pbr_gold', name: 'Cyber Gold PBR 8K', color: 'from-amber-400 to-yellow-600', roughness: '0.15', metalness: '0.90' },
+    { id: 'neon_cyber', name: 'Neón Reactivo Emisivo', color: 'from-cyan-400 to-blue-600', roughness: '0.05', metalness: '0.30' },
+    { id: 'leather_matte', name: 'Cuero Nappa Grano Mate', color: 'from-stone-700 to-stone-900', roughness: '0.65', metalness: '0.05' },
+    { id: 'denim', name: 'Denim Pesado 460 GSM', color: 'from-blue-700 to-indigo-950', roughness: '0.85', metalness: '0.00' },
+    { id: 'metallic', name: 'Titanio Aeroespacial', color: 'from-slate-400 to-slate-700', roughness: '0.25', metalness: '0.95' }
   ];
+
+  const colorPalette = [
+    { name: 'Cyber Gold', hex: '#E5A93C' },
+    { name: 'Obsidian Black', hex: '#0B0B0F' },
+    { name: 'Neon Cyan', hex: '#06B6D4' },
+    { name: 'Crimson Red', hex: '#EF4444' },
+    { name: 'Royal Purple', hex: '#A855F7' },
+    { name: 'Pure White', hex: '#F8FAFC' }
+  ];
+
+  const currentModelData = modelsList.find((m) => m.id === selectedModel) || modelsList[0];
 
   const handleGenerateAI = async () => {
     if (!aiPrompt.trim()) return;
     hapticFeedback();
     setIsGenerating(true);
-    await new Promise((r) => setTimeout(r, 1800));
+    await new Promise((r) => setTimeout(r, 1600));
     setIsGenerating(false);
     setActiveSheet('none');
-    alert('¡Diseño 3D re-renderizado con éxito mediante IA!');
+    alert('¡Diseño 3D re-renderizado con éxito mediante Gemini & Tripo AI!');
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-130px)] bg-black text-white font-mono text-xs select-none relative overflow-hidden">
-      {/* 1. Mobile Top Status Bar & Quick Presets */}
-      <div className="flex items-center justify-between px-3 py-2 bg-cyber-950/90 border-b border-cyber-800 z-10">
+    <div className="flex flex-col h-[calc(100vh-130px)] bg-cyber-950 text-white font-mono text-xs select-none relative overflow-hidden">
+      {/* 1. Mobile Top HUD (Status & Lighting Mode) */}
+      <div className="flex items-center justify-between px-3 py-2 bg-cyber-950/90 border-b border-cyber-800 z-20">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-tech font-bold text-xs uppercase text-slate-200">
-            {modelsList.find((m) => m.id === selectedModel)?.name}
-          </span>
+          <div>
+            <span className="font-tech font-bold text-xs text-white block leading-tight">{currentModelData.name}</span>
+            <span className="text-[9px] text-cyber-gold font-mono">{currentModelData.polyCount} • WebGPU</span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
+          {/* Shaders toggle */}
+          <div className="flex bg-cyber-900 p-0.5 rounded-lg border border-cyber-800 text-[9px] font-bold">
+            <button
+              onClick={() => { hapticFeedback(); setShaderMode('pbr'); }}
+              className={`px-1.5 py-0.5 rounded ${shaderMode === 'pbr' ? 'bg-cyber-gold text-black' : 'text-slate-400'}`}
+            >
+              PBR
+            </button>
+            <button
+              onClick={() => { hapticFeedback(); setShaderMode('wireframe'); }}
+              className={`px-1.5 py-0.5 rounded ${shaderMode === 'wireframe' ? 'bg-cyber-gold text-black' : 'text-slate-400'}`}
+            >
+              CAD
+            </button>
+          </div>
+
+          <button
+            onClick={() => alert('¡Proyección AR QuickLook iniciada en tu entorno real!')}
+            className="px-2 py-1 rounded-lg bg-cyan-500/20 border border-cyan-500 text-cyan-300 font-tech font-bold text-[9px] uppercase flex items-center gap-1 ml-1"
+          >
+            <Eye className="w-3 h-3" />
+            <span>AR</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 2. Fullscreen Immersive 3D Viewport */}
+      <div className="flex-1 relative flex items-center justify-center bg-gradient-to-b from-black via-cyber-950 to-black overflow-hidden">
+        {/* Background Ambient Studio Lighting effect */}
+        <div
+          className="absolute inset-0 opacity-40 blur-3xl pointer-events-none"
+          style={{
+            background: lightingMode === 'neon'
+              ? 'radial-gradient(circle, #06b6d4 0%, #a855f7 40%, transparent 70%)'
+              : lightingMode === 'sun'
+              ? 'radial-gradient(circle, #f59e0b 0%, #ea580c 40%, transparent 70%)'
+              : 'radial-gradient(circle, #e5a93c 0%, #1e1b4b 50%, transparent 75%)'
+          }}
+        />
+
+        {/* 3D Model Interactive Mockup with Transform */}
+        <div
+          style={{
+            transform: `rotateY(${rotationAngle}deg) scale(${zoomLevel})`,
+            transition: 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)'
+          }}
+          className="relative w-72 h-80 flex flex-col items-center justify-center z-10"
+        >
+          {/* Pedestal Glow */}
+          <div
+            className="absolute -bottom-4 w-56 h-8 rounded-full blur-xl"
+            style={{ backgroundColor: selectedColor, opacity: 0.4 }}
+          />
+
+          {/* Model Image Frame */}
+          <div className="relative w-64 h-72 rounded-3xl overflow-hidden border-2 border-cyber-800 shadow-[0_0_50px_rgba(0,0,0,0.8)] bg-cyber-900 group">
+            <img
+              src={currentModelData.image}
+              alt={currentModelData.name}
+              className={`w-full h-full object-cover object-center transition-all duration-300 ${
+                shaderMode === 'wireframe' ? 'invert opacity-70 contrast-200' : ''
+              }`}
+            />
+
+            {/* Live Shader Tint Overlay */}
+            <div
+              className="absolute inset-0 mix-blend-color opacity-30 pointer-events-none"
+              style={{ backgroundColor: selectedColor }}
+            />
+
+            {/* Specular Light Reflection */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/20 pointer-events-none" />
+
+            {/* Floating Model Badge */}
+            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between bg-black/70 backdrop-blur-md p-2 rounded-xl border border-white/10">
+              <span className="text-[10px] font-tech font-bold text-white uppercase">{currentModelData.badge}</span>
+              <span className="text-[9px] font-mono font-bold text-cyber-gold">60 FPS</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Quick Action Controls (Left & Right Rails) */}
+        <div className="absolute left-3 top-3 z-20 flex flex-col gap-2">
+          <button
+            onClick={() => {
+              hapticFeedback();
+              setRotationAngle((prev) => prev - 45);
+            }}
+            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-white active:scale-95"
+            title="Rotar Izquierda"
+          >
+            ↺
+          </button>
           <button
             onClick={() => {
               hapticFeedback();
               setRotationAngle((prev) => prev + 45);
             }}
-            className="p-1.5 rounded-xl bg-cyber-900 border border-cyber-800 text-slate-300 active:scale-95"
-            title="Rotar 45°"
+            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-white active:scale-95"
+            title="Rotar Derecha"
           >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => alert('¡Modo Realidad Aumentada (AR QuickLook) activado! Apunta tu cámara a una superficie plana.')}
-            className="px-2.5 py-1 rounded-xl bg-cyan-500/20 border border-cyan-500 text-cyan-300 font-tech font-bold text-[10px] uppercase flex items-center gap-1"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            <span>Ver AR</span>
+            ↻
           </button>
         </div>
-      </div>
 
-      {/* 2. Main Fullscreen 3D Viewport with Touch Drag & Pinch */}
-      <div className="flex-1 relative flex items-center justify-center bg-gradient-to-b from-cyber-950 via-black to-cyber-950 overflow-hidden">
-        {/* Visual 3D Product Canvas Mockup */}
-        <div
-          style={{ transform: `rotateY(${rotationAngle}deg)`, transition: 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
-          className="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center"
-        >
-          {/* Glowing pedestal shadow */}
-          <div className="absolute -bottom-6 w-48 h-8 rounded-full bg-gradient-to-r from-cyber-gold/30 via-cyan-500/20 to-purple-500/30 blur-xl" />
-          
-          {selectedModel === 'jacket' && (
-            <div className="w-56 h-64 rounded-3xl bg-gradient-to-br from-cyber-gold/90 via-amber-600 to-cyber-950 p-1 border-2 border-cyber-gold/60 shadow-[0_0_50px_rgba(229,169,60,0.3)] flex flex-col items-center justify-center relative">
-              <div className="text-6xl mb-2 animate-pulse">🧥</div>
-              <span className="font-tech font-bold text-xs text-white">Chaqueta Techwear X-1</span>
-              <span className="text-[10px] text-cyber-gold font-bold">PBR 8K WebGPU</span>
-            </div>
-          )}
-
-          {selectedModel === 'sneaker' && (
-            <div className="w-64 h-44 rounded-3xl bg-gradient-to-br from-cyan-400 via-blue-700 to-black p-1 border-2 border-cyan-400 shadow-[0_0_50px_rgba(6,182,212,0.3)] flex flex-col items-center justify-center">
-              <div className="text-6xl mb-1">👟</div>
-              <span className="font-tech font-bold text-xs text-white">Cyber Runner Pro</span>
-              <span className="text-[10px] text-cyan-300 font-bold">Suela Nitrógeno</span>
-            </div>
-          )}
-
-          {selectedModel === 'chair' && (
-            <div className="w-56 h-60 rounded-3xl bg-gradient-to-br from-stone-800 via-stone-900 to-black p-1 border-2 border-amber-500/60 shadow-lg flex flex-col items-center justify-center">
-              <div className="text-6xl mb-2">🪑</div>
-              <span className="font-tech font-bold text-xs text-white">Sillón Lounge Nórdico</span>
-              <span className="text-[10px] text-amber-300 font-bold">Madera CNC & Cuero</span>
-            </div>
-          )}
-
-          {selectedModel === 'bag' && (
-            <div className="w-52 h-56 rounded-3xl bg-gradient-to-br from-stone-900 via-amber-950 to-black p-1 border-2 border-cyber-gold/50 shadow-lg flex flex-col items-center justify-center">
-              <div className="text-6xl mb-2">👜</div>
-              <span className="font-tech font-bold text-xs text-white">Tote Bag Minimal</span>
-              <span className="text-[10px] text-cyber-gold font-bold">Cuero Italiano 1.4mm</span>
-            </div>
-          )}
-
-          {selectedModel === 'box' && (
-            <div className="w-56 h-52 rounded-3xl bg-gradient-to-br from-amber-900 via-stone-900 to-black p-1 border-2 border-amber-400 shadow-lg flex flex-col items-center justify-center">
-              <div className="text-6xl mb-2">🍔</div>
-              <span className="font-tech font-bold text-xs text-white">Packaging Kraft Gourmet</span>
-              <span className="text-[10px] text-amber-400 font-bold">Troquel ECT 44</span>
-            </div>
-          )}
-
-          {selectedModel === 'car' && (
-            <div className="w-56 h-64 rounded-3xl bg-gradient-to-br from-red-950 via-stone-950 to-black p-1 border-2 border-red-500 shadow-lg flex flex-col items-center justify-center">
-              <div className="text-6xl mb-2">🚗</div>
-              <span className="font-tech font-bold text-xs text-white">Butaca Recaro Alcantara</span>
-              <span className="text-[10px] text-red-400 font-bold">Costura Airbag</span>
-            </div>
-          )}
-        </div>
-
-        {/* Floating Controls HUD over 3D Canvas */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          <span className="px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md border border-cyber-800 text-[10px] text-slate-300">
-            60 FPS • WebGPU
-          </span>
-        </div>
-
-        <div className="absolute top-3 right-3 flex flex-col gap-1.5">
+        <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
           <button
-            onClick={() => alert('¡Captura 4K guardada en tu galería de fotos!')}
-            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-slate-300 active:scale-95"
-            title="Tomar Foto 4K"
+            onClick={() => {
+              hapticFeedback();
+              setZoomLevel((prev) => (prev >= 1.3 ? 1.0 : prev + 0.15));
+            }}
+            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-white active:scale-95 font-bold"
+            title="Zoom"
+          >
+            🔍
+          </button>
+          <button
+            onClick={() => alert('¡Captura 4K HDR exportada!')}
+            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-white active:scale-95"
+            title="Foto 4K"
           >
             <Camera className="w-4 h-4" />
           </button>
           <button
-            onClick={() => alert('¡Archivo .GLB 3D exportado!')}
-            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-slate-300 active:scale-95"
+            onClick={() => alert('¡Archivo .GLB descargado!')}
+            className="p-2 rounded-xl bg-black/60 backdrop-blur-md border border-cyber-800 text-white active:scale-95"
             title="Descargar GLB"
           >
             <Download className="w-4 h-4" />
@@ -174,16 +258,11 @@ export const MobileAurora3D: React.FC = () => {
       </div>
 
       {/* 3. Floating Mobile Action Bar (Bottom Quick Tools) */}
-      <div className="p-2 bg-cyber-950/95 border-t border-cyber-800 flex items-center justify-around gap-1">
+      <div className="p-2 bg-cyber-950/95 border-t border-cyber-800 flex items-center justify-around gap-1 z-20">
         <button
-          onClick={() => {
-            hapticFeedback();
-            setActiveSheet('models');
-          }}
+          onClick={() => { hapticFeedback(); setActiveSheet('models'); }}
           className={`flex-1 py-2 px-1 rounded-xl flex flex-col items-center gap-1 border transition-all ${
-            activeSheet === 'models'
-              ? 'bg-cyber-gold text-black border-cyber-gold font-bold'
-              : 'bg-cyber-900 border-cyber-800 text-slate-300'
+            activeSheet === 'models' ? 'bg-cyber-gold text-black border-cyber-gold font-bold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
           }`}
         >
           <Box className="w-4 h-4" />
@@ -191,25 +270,27 @@ export const MobileAurora3D: React.FC = () => {
         </button>
 
         <button
-          onClick={() => {
-            hapticFeedback();
-            setActiveSheet('materials');
-          }}
+          onClick={() => { hapticFeedback(); setActiveSheet('materials'); }}
           className={`flex-1 py-2 px-1 rounded-xl flex flex-col items-center gap-1 border transition-all ${
-            activeSheet === 'materials'
-              ? 'bg-cyber-gold text-black border-cyber-gold font-bold'
-              : 'bg-cyber-900 border-cyber-800 text-slate-300'
+            activeSheet === 'materials' ? 'bg-cyber-gold text-black border-cyber-gold font-bold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
           }`}
         >
           <Palette className="w-4 h-4" />
-          <span className="text-[9px] font-tech uppercase">Material</span>
+          <span className="text-[9px] font-tech uppercase">Texturas</span>
         </button>
 
         <button
-          onClick={() => {
-            hapticFeedback();
-            setActiveSheet('ai_prompt');
-          }}
+          onClick={() => { hapticFeedback(); setActiveSheet('colors'); }}
+          className={`flex-1 py-2 px-1 rounded-xl flex flex-col items-center gap-1 border transition-all ${
+            activeSheet === 'colors' ? 'bg-cyber-gold text-black border-cyber-gold font-bold' : 'bg-cyber-900 border-cyber-800 text-slate-300'
+          }`}
+        >
+          <span className="w-3.5 h-3.5 rounded-full border border-white" style={{ backgroundColor: selectedColor }} />
+          <span className="text-[9px] font-tech uppercase">Color</span>
+        </button>
+
+        <button
+          onClick={() => { hapticFeedback(); setActiveSheet('ai_prompt'); }}
           className={`flex-1 py-2 px-1 rounded-xl flex flex-col items-center gap-1 border transition-all ${
             activeSheet === 'ai_prompt'
               ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-pink-400 font-bold'
@@ -223,13 +304,14 @@ export const MobileAurora3D: React.FC = () => {
 
       {/* 4. Native Slide-Up Bottom Sheets for Tools */}
       {activeSheet !== 'none' && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-cyber-900 border-t-2 border-cyber-gold rounded-t-3xl p-4 max-h-[60vh] overflow-y-auto space-y-3 animate-slideUp">
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/65 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-cyber-900 border-t-2 border-cyber-gold rounded-t-3xl p-4 max-h-[65vh] overflow-y-auto space-y-3 animate-slideUp">
             {/* Sheet Header */}
             <div className="flex items-center justify-between border-b border-cyber-800 pb-2">
               <span className="font-tech font-bold text-sm uppercase text-white">
-                {activeSheet === 'models' && '📦 Cambiar Modelo 3D Base'}
-                {activeSheet === 'materials' && '🎨 Texturas & Shaders PBR'}
+                {activeSheet === 'models' && '📦 Seleccionar Modelo 3D'}
+                {activeSheet === 'materials' && '🎨 Shaders & Materiales PBR'}
+                {activeSheet === 'colors' && '🎨 Paleta Cromática 3D'}
                 {activeSheet === 'ai_prompt' && '🪄 Rediseño con Prompt de IA'}
               </span>
               <button
@@ -240,7 +322,7 @@ export const MobileAurora3D: React.FC = () => {
               </button>
             </div>
 
-            {/* Sheet Content: Models Selector */}
+            {/* Sheet Content: Models */}
             {activeSheet === 'models' && (
               <div className="grid grid-cols-2 gap-2">
                 {modelsList.map((m) => (
@@ -251,15 +333,15 @@ export const MobileAurora3D: React.FC = () => {
                       setSelectedModel(m.id as any);
                       setActiveSheet('none');
                     }}
-                    className={`p-3 rounded-2xl border text-left flex items-center gap-2.5 ${
+                    className={`p-2.5 rounded-2xl border text-left flex items-center gap-2.5 ${
                       selectedModel === m.id
                         ? 'bg-cyber-gold/20 border-cyber-gold text-white font-bold shadow-gold-glow'
                         : 'bg-cyber-950 border-cyber-800 text-slate-400'
                     }`}
                   >
-                    <span className="text-2xl">{m.icon}</span>
+                    <img src={m.image} alt={m.name} className="w-10 h-10 rounded-xl object-cover" />
                     <div>
-                      <div className="font-tech text-xs text-white">{m.name}</div>
+                      <div className="font-tech text-xs text-white leading-tight">{m.name}</div>
                       <span className="text-[9px] text-cyber-gold font-bold">{m.badge}</span>
                     </div>
                   </button>
@@ -288,12 +370,36 @@ export const MobileAurora3D: React.FC = () => {
                       <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${mat.color} border border-white/20 shadow-md`} />
                       <div>
                         <div className="font-tech text-xs text-white">{mat.name}</div>
-                        <span className="text-[10px] text-slate-400">{mat.desc}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">Rough: {mat.roughness} • Metal: {mat.metalness}</span>
                       </div>
                     </div>
                     {selectedMaterial === mat.id && (
                       <span className="text-cyber-gold font-bold text-xs">ACTIVO ✓</span>
                     )}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Sheet Content: Colors */}
+            {activeSheet === 'colors' && (
+              <div className="grid grid-cols-3 gap-2.5 py-1">
+                {colorPalette.map((col) => (
+                  <button
+                    key={col.hex}
+                    onClick={() => {
+                      hapticFeedback();
+                      setSelectedColor(col.hex);
+                      setActiveSheet('none');
+                    }}
+                    className={`p-3 rounded-2xl border flex flex-col items-center gap-1.5 ${
+                      selectedColor === col.hex
+                        ? 'bg-cyber-gold/20 border-cyber-gold text-white font-bold'
+                        : 'bg-cyber-950 border-cyber-800 text-slate-400'
+                    }`}
+                  >
+                    <span className="w-8 h-8 rounded-full border-2 border-white/30 shadow-md" style={{ backgroundColor: col.hex }} />
+                    <span className="text-[10px] font-tech text-center">{col.name}</span>
                   </button>
                 ))}
               </div>
