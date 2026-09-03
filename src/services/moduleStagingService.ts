@@ -238,7 +238,19 @@ export const DEFAULT_MODULE_CONFIGS: ModuleStagingConfig[] = [
     changelogNote: 'Desfile virtual interactivo con público y música.'
   },
 
-  // Categoria 5: Ecosistema & Admin
+  // Categoria 5: Consultoría & Expertos Pro
+  {
+    id: 'expert_consultations',
+    name: 'Red de Profesionales Certificados & Mentoría',
+    category: 'mentorship_consulting',
+    categoryTitle: 'Consultoría & Expertos Pro',
+    status: 'active',
+    version: '1.0.0',
+    phase: 1,
+    changelogNote: 'Directorio de ingenieros, patronistas y abogados certificados para consultas técnicas 1-on-1 y auditorías.'
+  },
+
+  // Categoria 6: Ecosistema & Admin
   {
     id: 'community',
     name: 'Comunidad & Remix',

@@ -36,7 +36,9 @@ import {
   ChevronDown,
   Zap,
   Workflow,
-  Sliders
+  Sliders,
+  Award,
+  GraduationCap
 } from 'lucide-react';
 import { moduleStagingService } from '../../services/moduleStagingService';
 
@@ -139,6 +141,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'automations', nameKey: 'Automatizaciones n8n & Flujos', icon: Workflow, requiredRole: 'free', badge: 'FLOW', isLiteralLabel: true },
         { id: 'workspaces', nameKey: 'Espacios Multi-Marca', icon: Building2, requiredRole: 'agency', badge: 'TEAMS', isLiteralLabel: true },
         { id: 'runway', nameKey: 'Pasarela en Vivo 3D', icon: Radio, requiredRole: 'pro', badge: 'LIVE', isLiteralLabel: true }
+      ]
+    },
+    {
+      id: 'mentorship_consulting',
+      title: 'Consultoría & Expertos Pro',
+      icon: '🎓',
+      items: [
+        { id: 'expert_consultations', nameKey: 'Red de Expertos & Mentoría', icon: Award, requiredRole: 'free', badge: 'PRO 1-ON-1', isLiteralLabel: true }
       ]
     },
     {

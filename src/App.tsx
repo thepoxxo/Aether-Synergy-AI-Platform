@@ -48,6 +48,7 @@ import { ModuleStagingAdmin } from './components/modules/ModuleStagingAdmin';
 import { moduleStagingService } from './services/moduleStagingService';
 import { ProductPhotoStudioViralPublisher } from './components/modules/ProductPhotoStudioViralPublisher';
 import { AetherReelsTikTok } from './components/modules/AetherReelsTikTok';
+import { ExpertConsultationsHub } from './components/modules/ExpertConsultationsHub';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -201,6 +202,8 @@ const MainLayout: React.FC = () => {
         return <APIGatewayHub />;
       case 'roadmap':
         return <ProjectRoadmapChecklist />;
+      case 'expert_consultations':
+        return <ExpertConsultationsHub />;
       default:
         return <Aurora3DStudio />;
     }
