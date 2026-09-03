@@ -204,6 +204,11 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
 
   // Upload/Create Reel Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isTippingModalOpen, setIsTippingModalOpen] = useState<boolean>(false);
+  const [isLiveRunwayModalOpen, setIsLiveRunwayModalOpen] = useState<boolean>(false);
+  const [isIPCertModalOpen, setIsIPCertModalOpen] = useState<boolean>(false);
+  const [tipAmount, setTipAmount] = useState<number>(5);
+  const [preOrdersCount, setPreOrdersCount] = useState<number>(48);
   const [newReelTitle, setNewReelTitle] = useState<string>('');
   const [newReelCategory, setNewReelCategory] = useState<string>('fashion');
   const [newReelPrompt, setNewReelPrompt] = useState<string>('');
@@ -372,6 +377,14 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
 
         {/* Global Creator Action */}
         <button
+          onClick={() => setIsLiveRunwayModalOpen(true)}
+          className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:opacity-95 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5 transition-all"
+        >
+          <Radio className="w-4 h-4 text-rose-300 animate-pulse" />
+          <span>🔴 Live Runway Pre-Orden</span>
+        </button>
+
+        <button
           onClick={() => setIsCreateModalOpen(true)}
           className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:opacity-95 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-all"
         >
@@ -539,6 +552,28 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
 
             {/* Share Button */}
             <div className="flex flex-col items-center gap-1">
+              <button
+                onClick={() => setIsTippingModalOpen(true)}
+                className="flex flex-col items-center gap-1 text-cyber-gold hover:scale-110 transition-transform"
+                title="Apoyar y enviar propina al creador"
+              >
+                <div className="w-11 h-11 rounded-full bg-black/60 backdrop-blur-md border border-cyber-gold/50 flex items-center justify-center shadow-lg">
+                  <DollarSign className="w-5 h-5 text-cyber-gold" />
+                </div>
+                <span className="text-[10px] font-bold">Propina</span>
+              </button>
+
+              <button
+                onClick={() => setIsIPCertModalOpen(true)}
+                className="flex flex-col items-center gap-1 text-cyan-300 hover:scale-110 transition-transform"
+                title="Ver Certificado de Autoría y Registro IP"
+              >
+                <div className="w-11 h-11 rounded-full bg-black/60 backdrop-blur-md border border-cyan-500/50 flex items-center justify-center shadow-lg">
+                  <Award className="w-5 h-5 text-cyan-400" />
+                </div>
+                <span className="text-[10px] font-bold">Autoría</span>
+              </button>
+
               <button
                 onClick={handleShareReel}
                 className="p-3 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white shadow-lg transition-all"
@@ -812,6 +847,147 @@ export const AetherReelsTikTok: React.FC<AetherReelsTikTokProps> = ({ onNavigate
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* =========================================================
+          MODAL: ENVIAR PROPINA / MONETIZACIÓN AL CREADOR
+          ========================================================= */}
+      {isTippingModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyber-gold/50 rounded-3xl p-6 max-w-sm w-full shadow-cyber-card text-white space-y-4 text-xs font-mono relative">
+            <button
+              onClick={() => setIsTippingModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyber-gold/20 text-cyber-gold border border-cyber-gold">
+                <DollarSign className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">APOYAR AL CREADOR</h3>
+                <p className="text-slate-400 text-[10px]">Enviando a: <strong>{activeReel.author}</strong></p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-4 gap-2 text-center font-bold">
+              {[2, 5, 10, 25].map((amt) => (
+                <button
+                  key={amt}
+                  onClick={() => setTipAmount(amt)}
+                  className={`py-2.5 rounded-xl border transition-all ${
+                    tipAmount === amt
+                      ? 'bg-cyber-gold text-black border-cyber-gold shadow-gold-glow'
+                      : 'bg-cyber-950 border-cyber-800 text-slate-300'
+                  }`}
+                >
+                  ${amt}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => {
+                alert(`¡Propina de ${tipAmount} USD enviada con éxito a ${activeReel.author}! ¡Gracias por apoyar el talento de la comunidad!`);
+                setIsTippingModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-extrabold text-xs uppercase shadow-gold-glow hover:opacity-95 transition-all"
+            >
+              💰 Confirmar Propina (${tipAmount} USD)
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: LIVE RUNWAY & PRE-VENTA EXCLUSIVA
+          ========================================================= */}
+      {isLiveRunwayModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsLiveRunwayModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                <Radio className="w-6 h-6 animate-pulse text-rose-400" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">LIVE STREAM PASARELA & PRE-ORDEN</h3>
+                <p className="text-slate-400 text-[10px]">Transmisión interactiva con producción bajo demanda</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+              <div className="flex justify-between">
+                <span className="text-slate-400">Pre-Órdenes Confirmadas:</span>
+                <span className="text-emerald-400 font-bold">{preOrdersCount} / 100 Piezas (Meta 100%)</span>
+              </div>
+              <div className="w-full bg-cyber-900 h-2 rounded-full overflow-hidden">
+                <div className="bg-gradient-to-r from-rose-500 to-purple-500 h-full" style={{ width: `${preOrdersCount}%` }} />
+              </div>
+              <p className="text-[11px] text-slate-400 pt-1">
+                Al completar las 100 pre-órdenes, la fábrica aliada inicia el corte en serie con TechPack oficial.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                setPreOrdersCount((prev: number) => prev + 1);
+                alert('¡Pre-orden reservada con éxito! Tu prenda se producirá de forma prioritaria con número de serie exclusivo.');
+                setIsLiveRunwayModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 text-white font-tech font-extrabold text-xs uppercase shadow-lg hover:opacity-95 transition-all"
+            >
+              🛍️ Reservar Pre-Orden Exclusiva ($85 USD)
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: CERTIFICADO DE AUTORÍA & REGISTRO IP
+          ========================================================= */}
+      {isIPCertModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 max-w-md w-full shadow-cyber-card text-white space-y-4 relative font-mono text-xs">
+            <button
+              onClick={() => setIsIPCertModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
+                <Award className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">CERTIFICADO DE AUTORÍA IP</h3>
+                <p className="text-slate-400 text-[10px]">Estampado de tiempo y firma criptográfica inmutable</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-slate-300">
+              <p>🎨 <strong>Diseñador:</strong> {activeReel.author} ({activeReel.authorHandle})</p>
+              <p>🔒 <strong>Hash SHA-256:</strong> <span className="text-cyan-300">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span></p>
+              <p>⏱️ <strong>Timestamp:</strong> 2026-10-23T19:30:00Z</p>
+              <p>📜 <strong>Licencia:</strong> CC BY-NC-SA 4.0 (Remix habilitado con atribución obligatoria)</p>
+            </div>
+
+            <button
+              onClick={() => alert('¡Certificado de Propiedad Intelectual descargado en PDF de alta resolución!')}
+              className="w-full py-3.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              📜 Descargar Certificado de Registro PDF
+            </button>
           </div>
         </div>
       )}

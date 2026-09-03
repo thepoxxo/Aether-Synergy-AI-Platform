@@ -535,6 +535,11 @@ export const GlobalSuppliers: React.FC = () => {
   const [isAddSupplierModalOpen, setIsAddSupplierModalOpen] = useState(false);
   const [isRateSupplierModalOpen, setIsRateSupplierModalOpen] = useState(false);
   const [isReviewsDrawerOpen, setIsReviewsDrawerOpen] = useState(false);
+  const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
+  const [isDPPModalOpen, setIsDPPModalOpen] = useState(false);
+  const [isCarbonModalOpen, setIsCarbonModalOpen] = useState(false);
+  const [escrowDepositPaid, setEscrowDepositPaid] = useState(false);
+  const [escrowAQLPassed, setEscrowAQLPassed] = useState(false);
 
   // New Supplier Form State
   const [newSupName, setNewSupName] = useState('');
@@ -718,6 +723,33 @@ export const GlobalSuppliers: React.FC = () => {
 
         {/* Global Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setIsEscrowModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-95 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5 transition-all"
+            title="Fideicomiso seguro para pagos contra inspección de calidad AQL 2.5"
+          >
+            <ShieldAlert className="w-4 h-4" />
+            <span>Fideicomiso Escrow B2B</span>
+          </button>
+
+          <button
+            onClick={() => setIsDPPModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500 text-cyan-300 font-tech font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
+            title="Generar Pasaporte Digital de Producto con QR según normativa europea 2026"
+          >
+            <Barcode className="w-4 h-4" />
+            <span>Pasaporte DPP (UE 2026)</span>
+          </button>
+
+          <button
+            onClick={() => setIsCarbonModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500 text-emerald-300 font-tech font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
+            title="Calculadora de Huella de Carbono & Emisiones de Envío"
+          >
+            <Leaf className="w-4 h-4" />
+            <span>Huella CO2</span>
+          </button>
+
           <button
             onClick={() => setIsAddSupplierModalOpen(true)}
             className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5 transition-all"
@@ -1482,6 +1514,160 @@ export const GlobalSuppliers: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {/* =========================================================
+          MODAL: FIDEICOMISO SEGURO B2B (ESCROW PROTOCOL)
+          ========================================================= */}
+      {isEscrowModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-blue-500/50 rounded-3xl p-6 max-w-xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={() => setIsEscrowModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500">
+                <ShieldAlert className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">
+                  FIDEICOMISO SEGURO B2B (AETHER ESCROW)
+                </h3>
+                <p className="text-slate-400 text-xs">
+                  Protección de anticipos y balance con fábrica: <strong>{activeSupplier.name} ({activeSupplier.flag})</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3 font-mono text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">Total Orden ({orderQuantity} u.):</span>
+                <span className="font-tech font-extrabold text-base text-white">${totalProductionCost.toLocaleString()} USD</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">1. Anticipo 30% en Bóveda Escrow:</span>
+                <span className="text-cyan-300 font-bold">${(totalProductionCost * 0.3).toLocaleString()} USD</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">2. Saldo 70% Contra Auditoría AQL 2.5:</span>
+                <span className="text-emerald-400 font-bold">${(totalProductionCost * 0.7).toLocaleString()} USD</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-[11px] text-blue-300">
+                🔒 Los fondos permanecen congelados y se transfieren a la fábrica solo cuando el auditor en planta confirma cero defectos críticos.
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setEscrowDepositPaid(true);
+                alert(`¡Depósito de anticipo de ${(totalProductionCost * 0.3).toLocaleString()} USD ingresado exitosamente en Bóveda Escrow!`);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white font-tech font-extrabold text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition-all"
+            >
+              {escrowDepositPaid ? '✅ Anticipo 30% Activo en Bóveda' : 'Depositar Anticipo 30% en Escrow Seguro'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: PASAPORTE DIGITAL DE PRODUCTO (DPP QR)
+          ========================================================= */}
+      {isDPPModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={() => setIsDPPModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyan-500/20 text-cyan-400 border border-cyan-500">
+                <Barcode className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">
+                  PASAPORTE DIGITAL DE PRODUCTO (DPP UE 2026)
+                </h3>
+                <p className="text-slate-400 text-xs">
+                  Cumplimiento de la Directiva de Ecodiseño de la Unión Europea
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2.5 font-mono text-xs text-slate-300">
+              <p>🏷️ <strong>SKU Oficial:</strong> AET-PROD-2026-{activeSupplier.id.toUpperCase()}</p>
+              <p>🌍 <strong>País de Origen:</strong> {activeSupplier.country} ({activeSupplier.city})</p>
+              <p>🧵 <strong>Composición:</strong> 100% Algodón Peinado Orgánico GOTS + Hilos Reciclados</p>
+              <p>♻️ <strong>Tasa de Reciclabilidad:</strong> 96.4% Biodegradable</p>
+              <p>🔍 <strong>ID de Lote Blockchain:</strong> 0x8f29...b492 (Inmutable)</p>
+            </div>
+
+            <button
+              onClick={() => alert('¡Código QR del Pasaporte Digital de Producto (DPP) generado en SVG y PNG 4K!')}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-tech font-extrabold text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition-all"
+            >
+              📱 Descargar Código QR para Etiqueta Física
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: CALCULADORA DE HUELLA DE CARBONO
+          ========================================================= */}
+      {isCarbonModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={() => setIsCarbonModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500">
+                <Leaf className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">
+                  IMPACTO AMBIENTAL & HUELLA DE CARBONO
+                </h3>
+                <p className="text-slate-400 text-xs">
+                  Cálculo de emisiones de producción y transporte internacional
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2.5 font-mono text-xs">
+              <div className="flex justify-between">
+                <span className="text-slate-400">Emisiones Fabricación ({orderQuantity} u.):</span>
+                <span className="text-emerald-400 font-bold">{(orderQuantity * 2.4).toFixed(1)} kg CO₂e</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Emisiones Transporte Aéreo:</span>
+                <span className="text-amber-300 font-bold">{(orderQuantity * 1.8).toFixed(1)} kg CO₂e</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-cyber-800">
+                <span className="text-slate-300 font-bold">Total Huella de Carbono del Lote:</span>
+                <span className="text-emerald-400 font-bold">{(orderQuantity * 4.2).toFixed(1)} kg CO₂e</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => alert('¡Certificado de Neutralidad de Carbono (Carbon Neutral Offset) emitido con éxito!')}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition-all"
+            >
+              🌿 Compensar Huella con Créditos Verdes ($12 USD)
+            </button>
           </div>
         </div>
       )}

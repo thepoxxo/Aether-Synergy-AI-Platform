@@ -315,6 +315,10 @@ export const ExpertConsultationsHub: React.FC = () => {
   const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
   const [isRateModalOpen, setIsRateModalOpen] = useState(false);
   const [isMyBookingsModalOpen, setIsMyBookingsModalOpen] = useState(false);
+  const [isWhiteboardModalOpen, setIsWhiteboardModalOpen] = useState(false);
+  const [isArbitrationModalOpen, setIsArbitrationModalOpen] = useState(false);
+  const [isExamCertModalOpen, setIsExamCertModalOpen] = useState(false);
+  const [examPassed, setExamPassed] = useState(false);
 
   // New Booking Form State
   const [bookDate, setBookDate] = useState('2026-10-25');
@@ -533,6 +537,33 @@ export const ExpertConsultationsHub: React.FC = () => {
           >
             <Calendar className="w-4 h-4 text-cyber-gold" />
             <span>Mis Consultas ({bookings.length})</span>
+          </button>
+
+          <button
+            onClick={() => setIsWhiteboardModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500 text-cyan-300 font-tech font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
+            title="Abrir sala de reunión con pizarra y anotaciones 3D en vivo"
+          >
+            <Video className="w-4 h-4 text-cyan-400" />
+            <span>Pizarra 3D en Vivo</span>
+          </button>
+
+          <button
+            onClick={() => setIsArbitrationModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500 text-purple-300 font-tech font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
+            title="Tribunal colegiado para resolución de disputas técnicas con fábricas"
+          >
+            <Scale className="w-4 h-4 text-purple-400" />
+            <span>Tribunal Arbitraje</span>
+          </button>
+
+          <button
+            onClick={() => setIsExamCertModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500 text-emerald-300 font-tech font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
+            title="Validación oficial de habilidades y certificado con QR"
+          >
+            <Award className="w-4 h-4 text-emerald-400" />
+            <span>Certificado Aether</span>
           </button>
 
           <button
@@ -1272,6 +1303,139 @@ export const ExpertConsultationsHub: React.FC = () => {
                 ))
               )}
             </div>
+          </div>
+        </div>
+      )}
+      {/* =========================================================
+          MODAL: PIZARRA VIRTUAL 3D EN VIVO
+          ========================================================= */}
+      {isWhiteboardModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 max-w-2xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsWhiteboardModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
+                <Video className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">SALA VIRTUAL & PIZARRA 3D EN TIEMPO REAL</h3>
+                <p className="text-slate-400 text-[10px]">Herramientas de dibujo, flechas de aplomo y notas sobre mallas 3D</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3">
+              <div className="aspect-video bg-black/80 rounded-xl border border-cyber-700 flex flex-col items-center justify-center relative overflow-hidden">
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500 text-black font-bold text-[9px]">EN VIVO 🟢</span>
+                  <span className="px-2 py-0.5 rounded bg-cyber-900 border border-cyber-700 text-white font-bold text-[9px]">HD 1080p 60fps</span>
+                </div>
+                <Sparkles className="w-10 h-10 text-cyan-400 animate-pulse mb-2" />
+                <span className="text-slate-300 font-bold">Malla 3D Sincronizada con el Mentor</span>
+                <span className="text-[10px] text-slate-500">Latencia WebRTC: 24ms • Cifrado de Punto a Punto</span>
+              </div>
+
+              <div className="flex flex-wrap gap-2 text-[10px]">
+                <button className="px-3 py-1.5 rounded-lg bg-cyber-900 border border-cyan-400 text-cyan-300 font-bold">✏️ Dibujar Trazo</button>
+                <button className="px-3 py-1.5 rounded-lg bg-cyber-900 border border-cyber-700 text-slate-300 font-bold">📏 Medir Distancia</button>
+                <button className="px-3 py-1.5 rounded-lg bg-cyber-900 border border-cyber-700 text-slate-300 font-bold">💬 Chat Técnico</button>
+                <button className="px-3 py-1.5 rounded-lg bg-cyber-900 border border-cyber-700 text-slate-300 font-bold">📷 Captura de Corrección</button>
+              </div>
+            </div>
+
+            <button
+              onClick={() => alert('¡Sesión grabada y exportada con resumen automático de IA!')}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              💾 Guardar Minuta de Sesión & Capturas de Corrección
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: TRIBUNAL DE ARBITRAJE B2B
+          ========================================================= */}
+      {isArbitrationModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsArbitrationModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                <Scale className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">TRIBUNAL DE ARBITRAJE TÉCNICO B2B</h3>
+                <p className="text-slate-400 text-[10px]">Resolución de controversias y peritajes de calidad con fábricas</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-slate-300">
+              <p>⚖️ <strong>Panel Arbitral:</strong> 3 Peritos Colegiados en Ingeniería Textil & Legal</p>
+              <p>📋 <strong>Protocolo:</strong> Revisión de TechPack original vs muestras físicas con defecto</p>
+              <p>⏱️ <strong>Tiempo de Dictamen:</strong> 72 Horas hábiles</p>
+              <p>🛡️ <strong>Efecto Legal:</strong> Vinculante para liberación o reembolso de fondos Escrow</p>
+            </div>
+
+            <button
+              onClick={() => alert('¡Expediente arbitral iniciado! Se han asignado 3 peritos colegiados para emitir dictamen.')}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              ⚖️ Abrir Expediente de Arbitraje Técnico
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: CERTIFICACIÓN OFICIAL AETHER & EXAMEN
+          ========================================================= */}
+      {isExamCertModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsExamCertModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-500">
+                <Award className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">CERTIFICACIÓN OFICIAL AETHER DESIGNER</h3>
+                <p className="text-slate-400 text-[10px]">Acreditación técnica en patronaje industrial, 3D WebGPU y TechPacks</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-slate-300">
+              <p>📜 <strong>Evaluación:</strong> 25 Preguntas de tolerancias, encogimiento AATCC y cálculo de mermas</p>
+              <p>🏅 <strong>Puntaje Mínimo de Aprobación:</strong> 85% / 100%</p>
+              <p>🔍 <strong>Beneficio:</strong> Insignia de Diseñador Certificado y acceso prioritario a clientes B2B</p>
+            </div>
+
+            <button
+              onClick={() => {
+                setExamPassed(true);
+                alert('¡Examen completado con 96/100! Tu Certificado Oficial Aether Certified Designer ha sido emitido con código QR verificable.');
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 text-black font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              {examPassed ? '✅ Certificado Emitido (Descargar PDF)' : '🎓 Iniciar Evaluación de Certificación'}
+            </button>
           </div>
         </div>
       )}

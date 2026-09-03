@@ -44,6 +44,10 @@ export const ShopifyLandingBuilderAI: React.FC = () => {
   const [devicePreview, setDevicePreview] = useState<'desktop' | 'mobile'>('desktop');
   const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
+  const [is3DEmbedModalOpen, setIs3DEmbedModalOpen] = useState<boolean>(false);
+  const [isSizeScannerModalOpen, setIsSizeScannerModalOpen] = useState<boolean>(false);
+  const [userHeight, setUserHeight] = useState(175);
+  const [userWeight, setUserWeight] = useState(70);
   const [activeTab, setActiveTab] = useState<'preview' | 'prompt' | 'copy' | 'sections'>('preview');
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
 

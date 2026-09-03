@@ -67,6 +67,9 @@ export const AdminConsole: React.FC = () => {
 
   // Module Cost Breakdown Timeframe and Search
   const [costTimeframe, setCostTimeframe] = useState<'today' | 'week' | 'month' | 'year'>('month');
+  const [isProcurementModalOpen, setIsProcurementModalOpen] = useState(false);
+  const [isStripeModalOpen, setIsStripeModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [moduleCostSearch, setModuleCostSearch] = useState('');
   const [costAlertThreshold, setCostAlertThreshold] = useState<number>(800);
 
@@ -2003,6 +2006,135 @@ export const AdminConsole: React.FC = () => {
         >
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{toastMessage.text}</span>
+        </div>
+      )}
+      {/* =========================================================
+          MODAL: AGENTE AUTÓNOMO DE COMPRAS & NEGOCIACIÓN J.A.R.V.I.S.
+          ========================================================= */}
+      {isProcurementModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 max-w-xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsProcurementModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                <Cpu className="w-6 h-6 text-cyber-gold" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">AGENTE AUTÓNOMO DE COMPRAS J.A.R.V.I.S.</h3>
+                <p className="text-slate-400 text-[10px]">Negociación algorítmica de cotizaciones masivas con fábricas</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-slate-300">
+              <p>🤖 <strong>Estado:</strong> Activo • Monitoreando 14 talleres B2B</p>
+              <p>📉 <strong>Ahorro Promedio Obtenido:</strong> -14.2% por volumen de lote</p>
+              <p>✉️ <strong>Correos Enviados en Piloto Automático:</strong> 86 solicitudes RFQ</p>
+              <p>⚡ <strong>Tiempo de Respuesta:</strong> &lt; 3 minutos por ronda de negociación</p>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Agente de Compras ejecutando ronda de contraofertas para órdenes pendientes!');
+                setIsProcurementModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              ⚡ Ejecutar Ronda de Negociación Autónoma
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: FACTURACIÓN STRIPE BILLING & TAX ENGINE
+          ========================================================= */}
+      {isStripeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsStripeModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-500">
+                <DollarSign className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">STRIPE BILLING & TAX AUTOMATION</h3>
+                <p className="text-slate-400 text-[10px]">Emisión de facturas fiscales internacionales (DIAN / SAT / FacturaE)</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-slate-300">
+              <p>💳 <strong>Pasarela Activa:</strong> Stripe Connect Custom</p>
+              <p>📑 <strong>Cálculo Automático de Impuestos:</strong> Stripe Tax en 45 países</p>
+              <p>🔄 <strong>Tasa de Cobro Exitoso:</strong> 99.2% con Smart Retries de IA</p>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Sincronización con Stripe Dashboard completada exitosamente!');
+                setIsStripeModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-black font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              📊 Abrir Stripe Billing Dashboard
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: MONITOR DE SALUD & STATUS PAGE EN VIVO
+          ========================================================= */}
+      {isStatusModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsStatusModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
+                <Activity className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">ESTADO DE INFRAESTRUCTURA EN TIEMPO REAL</h3>
+                <p className="text-slate-400 text-[10px]">Monitoreo de clusters WebGPU, APIs y almacenamiento R2</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span>Cluster WebGPU Aurora 3D</span>
+                <span className="text-emerald-400 font-bold">OPERACIONAL 🟢 (22ms)</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span>Motor de Moldería CAD 2D</span>
+                <span className="text-emerald-400 font-bold">OPERACIONAL 🟢 (15ms)</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span>Poxxi 3D HLS Streaming</span>
+                <span className="text-emerald-400 font-bold">OPERACIONAL 🟢 (48ms)</span>
+              </div>
+              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
+                <span>Fideicomiso B2B Escrow API</span>
+                <span className="text-emerald-400 font-bold">OPERACIONAL 🟢 (19ms)</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

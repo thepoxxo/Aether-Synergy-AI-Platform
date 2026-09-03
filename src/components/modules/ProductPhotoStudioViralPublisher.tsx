@@ -132,6 +132,9 @@ export const ProductPhotoStudioViralPublisher: React.FC = () => {
   const [category, setCategory] = useState<ProductCategory>('fashion_apparel');
   const [activeScene, setActiveScene] = useState<StudioSceneTheme>('cyberpunk_urban');
   const [presentationAngle, setPresentationAngle] = useState<PresentationAngle>('virtual_human_model');
+  const [isABTestModalOpen, setIsABTestModalOpen] = useState(false);
+  const [isCatalogModalOpen, setIsCatalogModalOpen] = useState(false);
+  const [isGhostMannequinActive, setIsGhostMannequinActive] = useState(false);
   const [regularPrice, setRegularPrice] = useState(140);
   const [promoPrice, setPromoPrice] = useState(89);
   const [currency, setCurrency] = useState('USD');
@@ -1019,6 +1022,103 @@ export const ProductPhotoStudioViralPublisher: React.FC = () => {
                 Guardar Conector
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* =========================================================
+          MODAL: SUITE DE PRUEBAS A/B CON SCORE PREDICTIVO DE CTR
+          ========================================================= */}
+      {isABTestModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-pink-500/50 rounded-3xl p-6 max-w-2xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative font-mono text-xs">
+            <button
+              onClick={() => setIsABTestModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-pink-500/20 text-pink-300 border border-pink-500">
+                <Zap className="w-6 h-6 text-cyber-gold" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">SUITE DE PRUEBAS A/B PREDICTIVAS (META API)</h3>
+                <p className="text-slate-400 text-[10px]">Predicción algorítmica de CTR y ROAS para 3 variantes de fondo</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+                <div className="text-[11px] font-bold text-pink-400">Variante A: Tokio Neón</div>
+                <div className="text-2xl font-tech font-extrabold text-white">3.82% CTR</div>
+                <p className="text-[10px] text-slate-400">Excelente para público 18-28 años en Instagram Reels.</p>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-cyber-950 border border-emerald-500/50 space-y-2 shadow-md">
+                <div className="text-[11px] font-bold text-emerald-400">Variante B: Mármol Minimalista 🏆</div>
+                <div className="text-2xl font-tech font-extrabold text-emerald-400">5.14% CTR</div>
+                <p className="text-[10px] text-emerald-300">GANADOR PREVISTO: Mayor intención de compra y ticket promedio.</p>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+                <div className="text-[11px] font-bold text-cyan-400">Variante C: Podio 3D Futurista</div>
+                <div className="text-2xl font-tech font-extrabold text-white">4.05% CTR</div>
+                <p className="text-[10px] text-slate-400">Ideal para feeds de Pinterest y Banners de Shopify.</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Campaña A/B configurada en Meta Ads Manager con presupuesto optimizado hacia la Variante B!');
+                setIsABTestModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 text-white font-tech font-extrabold text-xs uppercase shadow-lg transition-all"
+            >
+              🚀 Lanzar Test A/B en Piloto Automático
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: GENERADOR DE CATÁLOGO PDF SHOPPABLE
+          ========================================================= */}
+      {isCatalogModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 max-w-md w-full shadow-cyber-card text-white space-y-4 relative font-mono text-xs">
+            <button
+              onClick={() => setIsCatalogModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
+                <ShoppingBag className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-base text-white">CATÁLOGO SHOPPABLE INTERACTIVO</h3>
+                <p className="text-slate-400 text-[10px]">Lookbook digital con botones directos de pago por WhatsApp y Web</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-slate-300">
+              <p>📖 <strong>Páginas Generadas:</strong> 12 Páginas en Alta Resolución 300 DPI</p>
+              <p>🛍️ <strong>Hipervínculos:</strong> Botones de "Comprar Ahora" y enlace directo a WhatsApp</p>
+              <p>📱 <strong>Formato:</strong> PDF Interactivo compatible con móviles y tablets</p>
+            </div>
+
+            <button
+              onClick={() => {
+                alert('¡Catálogo Lookbook Shoppable en PDF de alta resolución descargado!');
+                setIsCatalogModalOpen(false);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-tech font-extrabold text-xs uppercase shadow-md transition-all"
+            >
+              📥 Descargar Lookbook PDF Shoppable
+            </button>
           </div>
         </div>
       )}
