@@ -54,6 +54,16 @@ export const DEFAULT_MODULE_CONFIGS: ModuleStagingConfig[] = [
 
   // Categoria 2: Marketing & Video Ads
   {
+    id: 'tiktok_feed',
+    name: 'Aether Reels & TikTok 3D Shorts',
+    category: 'marketing',
+    categoryTitle: 'Marketing & Video Ads',
+    status: 'active',
+    version: '1.0.0',
+    phase: 1,
+    changelogNote: 'Feed vertical 9:16 de videos y pasarelas 3D generadas por IA con comentarios y remix.'
+  },
+  {
     id: 'photostudio_viral',
     name: 'Estudio Foto IA & Viral Blast Facebook',
     category: 'marketing',

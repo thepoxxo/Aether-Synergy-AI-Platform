@@ -47,6 +47,7 @@ import { ModuleMaintenanceScreen } from './components/common/ModuleMaintenanceSc
 import { ModuleStagingAdmin } from './components/modules/ModuleStagingAdmin';
 import { moduleStagingService } from './services/moduleStagingService';
 import { ProductPhotoStudioViralPublisher } from './components/modules/ProductPhotoStudioViralPublisher';
+import { AetherReelsTikTok } from './components/modules/AetherReelsTikTok';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -140,6 +141,8 @@ const MainLayout: React.FC = () => {
     }
 
     switch (currentView) {
+      case 'tiktok_feed':
+        return <AetherReelsTikTok onNavigateToModule={(mod) => setCurrentView(mod)} />;
       case 'photostudio_viral':
         return <ProductPhotoStudioViralPublisher />;
       case 'aurora3d':

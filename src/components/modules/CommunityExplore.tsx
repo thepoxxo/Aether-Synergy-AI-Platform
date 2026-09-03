@@ -27,9 +27,12 @@ import {
   Play,
   Check,
   Zap,
-  Box
+  Box,
+  Film,
+  Radio
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { AetherReelsTikTok } from './AetherReelsTikTok';
 
 export interface CommunityDesign {
   id: string;
@@ -181,7 +184,7 @@ const ACTIVE_CHALLENGE: DesignChallenge = {
 
 export const CommunityExplore: React.FC<CommunityExploreProps> = ({ onRemixDesign }) => {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'explore' | 'challenges' | 'saved_collections'>('explore');
+  const [activeTab, setActiveTab] = useState<'explore' | 'reels_tiktok' | 'challenges' | 'saved_collections'>('explore');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'trending' | 'most_liked' | 'most_remixed'>('trending');
@@ -318,6 +321,18 @@ export const CommunityExplore: React.FC<CommunityExploreProps> = ({ onRemixDesig
         >
           <Sparkles className="w-4 h-4" />
           <span>🌟 Explorar Diseños & Remix</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('reels_tiktok')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-tech font-bold text-xs uppercase tracking-wider transition-all ${
+            activeTab === 'reels_tiktok'
+              ? 'bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 text-white shadow-lg font-extrabold'
+              : 'text-rose-300 hover:text-white bg-rose-500/10 border border-rose-500/30'
+          }`}
+        >
+          <Film className="w-4 h-4 text-rose-400" />
+          <span>📱 Aether TikTok & Shorts 3D</span>
         </button>
 
         <button
@@ -519,7 +534,20 @@ export const CommunityExplore: React.FC<CommunityExploreProps> = ({ onRemixDesig
       )}
 
       {/* =========================================================
-          TAB 2: DESAFÍOS CREATIVOS & BOUNTIES
+          TAB 2: AETHER REELS & TIKTOK 3D STUDIO
+          ========================================================= */}
+      {activeTab === 'reels_tiktok' && (
+        <AetherReelsTikTok
+          onNavigateToModule={(mod) => {
+            if (onRemixDesign) {
+              onRemixDesign(designs[0]);
+            }
+          }}
+        />
+      )}
+
+      {/* =========================================================
+          TAB 3: DESAFÍOS CREATIVOS & BOUNTIES
           ========================================================= */}
       {activeTab === 'challenges' && (
         <div className="space-y-6 animate-fadeIn">

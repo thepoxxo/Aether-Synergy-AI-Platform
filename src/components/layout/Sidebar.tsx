@@ -107,6 +107,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       title: 'Marketing & Video Ads',
       icon: '🎬',
       items: [
+        { id: 'tiktok_feed', nameKey: 'Aether Reels & TikTok 3D', icon: Film, requiredRole: 'free', badge: 'REELS', isLiteralLabel: true },
         { id: 'photostudio_viral', nameKey: 'Foto Estudio IA & Viral Blast', icon: Camera, requiredRole: 'free', badge: 'META FB', isLiteralLabel: true },
         { id: 'mediabuyer', nameKey: 'Media Buying & Video Ads', icon: Film, requiredRole: 'free', badge: 'ADS 4K', isLiteralLabel: true },
         { id: 'turntable', nameKey: 'Giro Cinemático 360°', icon: Radio, requiredRole: 'free', badge: '360°', isLiteralLabel: true },
