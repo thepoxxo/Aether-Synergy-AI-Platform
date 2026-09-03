@@ -23,8 +23,24 @@ import {
   CheckCircle2,
   TrendingUp,
   Cpu,
-  Wind
+  Wind,
+  Target,
+  Plus,
+  Trash2,
+  Edit3,
+  Calendar,
+  DollarSign,
+  Plane,
+  Brain,
+  Zap,
+  Award,
+  Flame,
+  ArrowUpRight,
+  Check,
+  X,
+  FileText
 } from 'lucide-react';
+import { UserPersonalGoal, GoalCategory, GoalPriority, GoalSubtask } from '../../types/userGoals';
 
 interface ChecklistItem {
   id: string;
@@ -1249,7 +1265,337 @@ const CHECKLIST_DATA: ChecklistItem[] = [
   }
 ];
 
+export const INITIAL_PERSONAL_GOALS: UserPersonalGoal[] = [
+  {
+    id: 'goal_001',
+    title: 'Lanzar Colección Cápsula Cyberpunk Verano 2026',
+    description: 'Diseñar 6 prendas completas en 3D con patrones de corte DXF y exportación de fichas técnicas para fábrica.',
+    category: 'design_brand',
+    priority: 'high',
+    targetDate: '2026-10-15',
+    isCompleted: false,
+    subtasks: [
+      { id: 'sub_001', title: 'Crear los 6 modelos 3D en Aurora Studio (Chaquetas, Hoodies, Pantalones)', completed: true },
+      { id: 'sub_002', title: 'Simular caída de telas en CLO3D y texturas PBR Substance 3D', completed: true },
+      { id: 'sub_003', title: 'Generar lookbook con modelos virtuales IA en FLUX.1', completed: false },
+      { id: 'sub_004', title: 'Exportar paquetes master .PSD, .AI y .GLB para confección', completed: false }
+    ],
+    createdAt: '2026-09-01'
+  },
+  {
+    id: 'goal_002',
+    title: 'Fondo de Ahorro para Maquinaria de Bordado & Estampado Textil',
+    description: 'Ahorro progresivo del 25% de los ingresos de ventas para adquirir máquina bordadora digital de 6 cabezales.',
+    category: 'finance_savings',
+    priority: 'high',
+    targetDate: '2026-12-01',
+    isCompleted: false,
+    isFinancialGoal: true,
+    targetAmount: 4500,
+    currentAmount: 2850,
+    currency: 'USD',
+    subtasks: [
+      { id: 'sub_005', title: 'Abrir cuenta de ahorros exclusiva para reinversión en taller', completed: true },
+      { id: 'sub_006', title: 'Cotizar 3 proveedores de maquinaria textil en Medellín y Bogotá', completed: true },
+      { id: 'sub_007', title: 'Alcanzar el 75% del capital antes de noviembre', completed: false },
+      { id: 'sub_008', title: 'Efectuar la compra final y coordinar transporte e instalación', completed: false }
+    ],
+    createdAt: '2026-08-15'
+  },
+  {
+    id: 'goal_003',
+    title: 'Viaje & Stand Comercial en Colombiatex / Semana de la Moda de París',
+    description: 'Presupuesto y agenda logística para asistir a la feria textil y presentar el catálogo 3D ante compradores internacionales.',
+    category: 'travel_events',
+    priority: 'medium',
+    targetDate: '2026-11-20',
+    isCompleted: false,
+    isFinancialGoal: true,
+    targetAmount: 2200,
+    currentAmount: 1400,
+    currency: 'USD',
+    subtasks: [
+      { id: 'sub_009', title: 'Comprar tiquetes aéreos y reservar hospedaje cerca del evento', completed: true },
+      { id: 'sub_010', title: 'Diseñar tarjetas de presentación NFC y lookbooks impresos con QR 3D', completed: false },
+      { id: 'sub_011', title: 'Agendar reuniones B2B con al menos 15 marcas y distribuidores', completed: false }
+    ],
+    createdAt: '2026-08-20'
+  },
+  {
+    id: 'goal_004',
+    title: 'Rutina Deep Work: 4 Horas Diarias de Enfoque sin Distracciones',
+    description: 'Establecer bloques matutinos de alta productividad para diseño 3D y desarrollo de marca con cero notificaciones.',
+    category: 'focus_habits',
+    priority: 'medium',
+    targetDate: '2026-10-30',
+    isCompleted: false,
+    subtasks: [
+      { id: 'sub_012', title: 'Bloque 1 (8:00 AM - 10:00 AM): Modelado 3D puro en Aurora Studio', completed: true },
+      { id: 'sub_013', title: 'Bloque 2 (10:30 AM - 12:30 PM): Creación de contenido y video ads', completed: true },
+      { id: 'sub_014', title: 'Cierre de día (5:00 PM): Revisión de métricas de ventas y pedidos WhatsApp', completed: false }
+    ],
+    createdAt: '2026-09-01'
+  },
+  {
+    id: 'goal_005',
+    title: 'Campaña Viral en 200 Grupos de Facebook & TikTok Shop',
+    description: 'Ejecutar difusión masiva automatizada con Meta Graph API v20.0 para generar $5,000 USD en ventas de temporada.',
+    category: 'sales_marketing',
+    priority: 'high',
+    targetDate: '2026-09-30',
+    isCompleted: false,
+    subtasks: [
+      { id: 'sub_015', title: 'Recrear 20 fotos de producto en escenarios fotorrealistas de estudio', completed: true },
+      { id: 'sub_016', title: 'Generar variaciones de copys persuasivos AIDA con IA', completed: true },
+      { id: 'sub_017', title: 'Programar difusión automática con Anti-Spam Human Delay de 20s', completed: false },
+      { id: 'sub_018', title: 'Cerrar pedidos entrantes vía WhatsApp Business y Shopify', completed: false }
+    ],
+    createdAt: '2026-09-02'
+  }
+];
+
 export const ProjectRoadmapChecklist: React.FC = () => {
+  const [activeMainTab, setActiveMainTab] = useState<'personal_goals' | 'platform_roadmap'>('personal_goals');
+
+  const [personalGoals, setPersonalGoals] = useState<UserPersonalGoal[]>(() => {
+    try {
+      const saved = localStorage.getItem('aether_user_personal_goals_v1');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error(e);
+    }
+    return INITIAL_PERSONAL_GOALS;
+  });
+
+  const [selectedGoalCategory, setSelectedGoalCategory] = useState<string>('all');
+  const [goalSearchQuery, setGoalSearchQuery] = useState<string>('');
+
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<UserPersonalGoal | null>(null);
+  const [isAiGoalModalOpen, setIsAiGoalModalOpen] = useState(false);
+  const [aiGoalPrompt, setAiGoalPrompt] = useState('');
+  const [isGeneratingAiGoal, setIsGeneratingAiGoal] = useState(false);
+
+  const [formTitle, setFormTitle] = useState('');
+  const [formDesc, setFormDesc] = useState('');
+  const [formCategory, setFormCategory] = useState<GoalCategory>('design_brand');
+  const [formPriority, setFormPriority] = useState<GoalPriority>('high');
+  const [formTargetDate, setFormTargetDate] = useState('2026-10-30');
+  const [formIsFinancial, setFormIsFinancial] = useState(false);
+  const [formTargetAmount, setFormTargetAmount] = useState(1000);
+  const [formCurrentAmount, setFormCurrentAmount] = useState(0);
+  const [formCurrency, setFormCurrency] = useState('USD');
+  const [formSubtasks, setFormSubtasks] = useState<{ id: string; title: string; completed: boolean }[]>([
+    { id: 'sub_1', title: 'Paso 1: Planificación inicial', completed: false },
+    { id: 'sub_2', title: 'Paso 2: Ejecución de diseño', completed: false },
+    { id: 'sub_3', title: 'Paso 3: Lanzamiento y ventas', completed: false }
+  ]);
+  const [newSubtaskInput, setNewSubtaskInput] = useState('');
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aether_user_personal_goals_v1', JSON.stringify(personalGoals));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [personalGoals]);
+
+  const toggleGoalCompleted = (id: string) => {
+    setPersonalGoals((prev) =>
+      prev.map((g) => (g.id === id ? { ...g, isCompleted: !g.isCompleted } : g))
+    );
+  };
+
+  const toggleSubtask = (goalId: string, subtaskId: string) => {
+    setPersonalGoals((prev) =>
+      prev.map((g) => {
+        if (g.id !== goalId) return g;
+        const updatedSubs = g.subtasks.map((s) =>
+          s.id === subtaskId ? { ...s, completed: !s.completed } : s
+        );
+        const allDone = updatedSubs.length > 0 && updatedSubs.every((s) => s.completed);
+        return { ...g, subtasks: updatedSubs, isCompleted: allDone ? true : g.isCompleted };
+      })
+    );
+  };
+
+  const handleQuickAddFunds = (goalId: string, amount: number) => {
+    setPersonalGoals((prev) =>
+      prev.map((g) => {
+        if (g.id !== goalId || !g.isFinancialGoal) return g;
+        const nextAmount = Math.min((g.currentAmount || 0) + amount, g.targetAmount || 999999);
+        return {
+          ...g,
+          currentAmount: nextAmount,
+          isCompleted: nextAmount >= (g.targetAmount || 0) ? true : g.isCompleted
+        };
+      })
+    );
+  };
+
+  const handleDeleteGoal = (goalId: string) => {
+    if (confirm('¿Estás seguro de que deseas eliminar esta meta?')) {
+      setPersonalGoals((prev) => prev.filter((g) => g.id !== goalId));
+    }
+  };
+
+  const handleOpenCreateGoalModal = () => {
+    setEditingGoal(null);
+    setFormTitle('');
+    setFormDesc('');
+    setFormCategory('design_brand');
+    setFormPriority('high');
+    setFormTargetDate('2026-10-30');
+    setFormIsFinancial(false);
+    setFormTargetAmount(1500);
+    setFormCurrentAmount(0);
+    setFormCurrency('USD');
+    setFormSubtasks([
+      { id: 'sub_' + Date.now() + '_1', title: 'Paso 1: Definir requerimientos', completed: false },
+      { id: 'sub_' + Date.now() + '_2', title: 'Paso 2: Ejecutar desarrollo', completed: false }
+    ]);
+    setIsGoalModalOpen(true);
+  };
+
+  const handleOpenEditGoalModal = (goal: UserPersonalGoal) => {
+    setEditingGoal(goal);
+    setFormTitle(goal.title);
+    setFormDesc(goal.description);
+    setFormCategory(goal.category);
+    setFormPriority(goal.priority);
+    setFormTargetDate(goal.targetDate);
+    setFormIsFinancial(Boolean(goal.isFinancialGoal));
+    setFormTargetAmount(goal.targetAmount || 1500);
+    setFormCurrentAmount(goal.currentAmount || 0);
+    setFormCurrency(goal.currency || 'USD');
+    setFormSubtasks([...goal.subtasks]);
+    setIsGoalModalOpen(true);
+  };
+
+  const handleSaveGoal = () => {
+    if (!formTitle.trim()) {
+      alert('Por favor ingresa un título para la meta.');
+      return;
+    }
+
+    if (editingGoal) {
+      setPersonalGoals((prev) =>
+        prev.map((g) =>
+          g.id === editingGoal.id
+            ? {
+                ...g,
+                title: formTitle,
+                description: formDesc,
+                category: formCategory,
+                priority: formPriority,
+                targetDate: formTargetDate,
+                isFinancialGoal: formIsFinancial,
+                targetAmount: formIsFinancial ? Number(formTargetAmount) : undefined,
+                currentAmount: formIsFinancial ? Number(formCurrentAmount) : undefined,
+                currency: formCurrency,
+                subtasks: formSubtasks
+              }
+            : g
+        )
+      );
+    } else {
+      const newGoal: UserPersonalGoal = {
+        id: 'goal_' + Date.now(),
+        title: formTitle,
+        description: formDesc,
+        category: formCategory,
+        priority: formPriority,
+        targetDate: formTargetDate,
+        isCompleted: false,
+        isFinancialGoal: formIsFinancial,
+        targetAmount: formIsFinancial ? Number(formTargetAmount) : undefined,
+        currentAmount: formIsFinancial ? Number(formCurrentAmount) : undefined,
+        currency: formCurrency,
+        subtasks: formSubtasks,
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+      setPersonalGoals((prev) => [newGoal, ...prev]);
+    }
+
+    setIsGoalModalOpen(false);
+  };
+
+  const handleGenerateAiGoal = async () => {
+    if (!aiGoalPrompt.trim()) return;
+
+    setIsGeneratingAiGoal(true);
+    await new Promise((r) => setTimeout(r, 1200));
+
+    const promptLower = aiGoalPrompt.toLowerCase();
+    let generatedCat: GoalCategory = 'design_brand';
+    let isFin = false;
+    let targetMoney = 2500;
+
+    if (promptLower.includes('ahorr') || promptLower.includes('dolar') || promptLower.includes('plata') || promptLower.includes('finanz')) {
+      generatedCat = 'finance_savings';
+      isFin = true;
+      targetMoney = 3500;
+    } else if (promptLower.includes('viaj') || promptLower.includes('feria') || promptLower.includes('paris') || promptLower.includes('colombia')) {
+      generatedCat = 'travel_events';
+      isFin = true;
+      targetMoney = 2000;
+    } else if (promptLower.includes('vent') || promptLower.includes('facebook') || promptLower.includes('marketing') || promptLower.includes('tiktok')) {
+      generatedCat = 'sales_marketing';
+    } else if (promptLower.includes('habito') || promptLower.includes('enfoque') || promptLower.includes('rutina')) {
+      generatedCat = 'focus_habits';
+    }
+
+    const aiGoal: UserPersonalGoal = {
+      id: 'goal_ai_' + Date.now(),
+      title: aiGoalPrompt.length > 50 ? aiGoalPrompt.substring(0, 48) + '...' : aiGoalPrompt,
+      description: 'Plan de acción generado automáticamente por la IA de Aether para cumplir: "' + aiGoalPrompt + '".',
+      category: generatedCat,
+      priority: 'high',
+      targetDate: '2026-11-15',
+      isCompleted: false,
+      isFinancialGoal: isFin,
+      targetAmount: isFin ? targetMoney : undefined,
+      currentAmount: isFin ? 0 : undefined,
+      currency: 'USD',
+      subtasks: [
+        { id: 'sub_' + Date.now() + '_1', title: 'Fase 1: Análisis y preparación de recursos', completed: true },
+        { id: 'sub_' + Date.now() + '_2', title: 'Fase 2: Ejecución de diseño / ahorro prioritario', completed: false },
+        { id: 'sub_' + Date.now() + '_3', title: 'Fase 3: Implementación en plataforma y canales de venta', completed: false },
+        { id: 'sub_' + Date.now() + '_4', title: 'Fase 4: Evaluación de resultados y consolidación', completed: false }
+      ],
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setPersonalGoals((prev) => [aiGoal, ...prev]);
+    setIsGeneratingAiGoal(false);
+    setIsAiGoalModalOpen(false);
+    setAiGoalPrompt('');
+  };
+
+  const calculateDaysRemaining = (targetDateStr: string) => {
+    const today = new Date();
+    const target = new Date(targetDateStr);
+    const diffTime = target.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const totalPersonalGoals = personalGoals.length;
+  const completedPersonalGoals = personalGoals.filter((g) => g.isCompleted).length;
+  const personalProgressPercent = totalPersonalGoals > 0 ? Math.round((completedPersonalGoals / totalPersonalGoals) * 100) : 0;
+  const totalSavingsAccumulated = personalGoals
+    .filter((g) => g.isFinancialGoal)
+    .reduce((acc, g) => acc + (g.currentAmount || 0), 0);
+
+  const filteredPersonalGoals = personalGoals.filter((goal) => {
+    const matchCat = selectedGoalCategory === 'all' || goal.category === selectedGoalCategory;
+    const matchSearch =
+      goalSearchQuery === '' ||
+      goal.title.toLowerCase().includes(goalSearchQuery.toLowerCase()) ||
+      goal.description.toLowerCase().includes(goalSearchQuery.toLowerCase());
+    return matchCat && matchSearch;
+  });
+
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(() => {
     try {
       const initial: Record<string, boolean> = {};
@@ -1288,13 +1634,10 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   const completedTasks = Object.values(checkedItems).filter(Boolean).length;
   const progressPercent = Math.round((completedTasks / totalTasks) * 100);
 
-  // Category counts
   const basicTasks = CHECKLIST_DATA.filter((i) => i.category === 'basic');
   const basicCompleted = basicTasks.filter((i) => checkedItems[i.id]).length;
-
   const interTasks = CHECKLIST_DATA.filter((i) => i.category === 'intermediate');
   const interCompleted = interTasks.filter((i) => checkedItems[i.id]).length;
-
   const advTasks = CHECKLIST_DATA.filter((i) => i.category === 'advanced');
   const advCompleted = advTasks.filter((i) => checkedItems[i.id]).length;
 
@@ -1336,192 +1679,815 @@ export const ProjectRoadmapChecklist: React.FC = () => {
     }
   };
 
+  const getGoalCategoryLabel = (cat: GoalCategory) => {
+    switch (cat) {
+      case 'design_brand':
+        return { label: 'Diseño & Marca', emoji: '🎨', color: 'text-pink-400 border-pink-500/40 bg-pink-500/10' };
+      case 'finance_savings':
+        return { label: 'Finanzas & Ahorro', emoji: '💰', color: 'text-emerald-400 border-emerald-500/40 bg-emerald-500/10' };
+      case 'travel_events':
+        return { label: 'Viajes & Ferias', emoji: '✈️', color: 'text-cyan-400 border-cyan-500/40 bg-cyan-500/10' };
+      case 'focus_habits':
+        return { label: 'Enfoque & Hábitos', emoji: '🧠', color: 'text-purple-400 border-purple-500/40 bg-purple-500/10' };
+      case 'sales_marketing':
+        return { label: 'Marketing & Ventas', emoji: '🚀', color: 'text-amber-400 border-amber-500/40 bg-amber-500/10' };
+      case 'personal_lifestyle':
+        return { label: 'Estilo de Vida', emoji: '⭐', color: 'text-yellow-300 border-yellow-500/40 bg-yellow-500/10' };
+    }
+  };
+
   return (
-    <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-6 animate-fadeIn transition-colors">
-      {/* Header & Overall Progress */}
-      <div className="bg-cyber-900/90 p-6 rounded-3xl border border-cyber-gold/50 shadow-cyber-card space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-2xl bg-cyber-gold/20 border border-cyber-gold text-cyber-gold shadow-gold-glow">
-              <CheckSquare className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h2 className="text-2xl font-tech font-extrabold text-white tracking-wider">
-                  ROADMAP & CHECKLIST MAESTRO DE TAREAS
-                </h2>
-                <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyber-800 text-cyber-gold border border-cyber-700">
-                  {completedTasks} / {totalTasks} Completadas
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Categorizado por niveles: <strong className="text-emerald-400">Básico</strong>, <strong className="text-amber-400">Intermedio</strong> y <strong className="text-purple-400">Avanzado</strong>.
-              </p>
-            </div>
-          </div>
-
-          <div className="text-right">
-            <span className="text-xs text-slate-400 block font-tech uppercase">Progreso Global:</span>
-            <span className="text-3xl font-tech font-extrabold text-cyber-gold">{progressPercent}%</span>
-          </div>
-        </div>
-
-        {/* Live Progress Bar */}
-        <div className="relative h-3.5 w-full rounded-full bg-cyber-950 border border-cyber-800 overflow-hidden shadow-inner">
-          <div
-            className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-cyber-gold shadow-gold-glow transition-all duration-500 rounded-full"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-
-        {/* 3 Level Progress Badges */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-          <div className="p-3 rounded-2xl bg-cyber-950/80 border border-emerald-500/30 flex items-center justify-between">
-            <span className="text-xs font-tech font-bold text-emerald-400 flex items-center gap-1.5">
-              🟢 Nivel 1 (Básico)
-            </span>
-            <span className="text-xs font-mono font-bold text-white">
-              {basicCompleted} / {basicTasks.length} ({Math.round((basicCompleted / basicTasks.length) * 100)}%)
-            </span>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-cyber-950/80 border border-amber-500/30 flex items-center justify-between">
-            <span className="text-xs font-tech font-bold text-amber-400 flex items-center gap-1.5">
-              🟡 Nivel 2 (Intermedio)
-            </span>
-            <span className="text-xs font-mono font-bold text-white">
-              {interCompleted} / {interTasks.length} ({Math.round((interCompleted / interTasks.length) * 100)}%)
-            </span>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-cyber-950/80 border border-purple-500/30 flex items-center justify-between">
-            <span className="text-xs font-tech font-bold text-purple-400 flex items-center gap-1.5">
-              🟣 Nivel 3 (Avanzado)
-            </span>
-            <span className="text-xs font-mono font-bold text-white">
-              {advCompleted} / {advTasks.length} ({Math.round((advCompleted / advTasks.length) * 100)}%)
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-cyber-900/80 p-4 rounded-2xl border border-cyber-800 shadow-md">
-        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
-          {/* Search Box */}
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar tarea, módulo o tecnología..."
-              className="w-full bg-cyber-950 border border-cyber-700 focus:border-cyber-gold rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
-            />
-          </div>
-
-          {/* Module Filter */}
-          <select
-            value={selectedModule}
-            onChange={(e) => setSelectedModule(e.target.value)}
-            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
-          >
-            {modules.map((m) => (
-              <option key={m} value={m}>
-                {m === 'all' ? '🔍 Todos los Módulos' : m}
-              </option>
-            ))}
-          </select>
-
-          {/* Level Filter */}
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
-          >
-            <option value="all">⚡ Todos los Niveles</option>
-            <option value="basic">🟢 Básico ({basicCompleted}/{basicTasks.length})</option>
-            <option value="intermediate">🟡 Intermedio ({interCompleted}/{interTasks.length})</option>
-            <option value="advanced">🟣 Avanzado ({advCompleted}/{advTasks.length})</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
+    <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-6 animate-fadeIn transition-colors text-slate-100">
+      {/* Selector Principal de Modo */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-cyber-900/95 border border-cyber-gold/50 p-4 rounded-3xl shadow-gold-glow">
+        <div className="flex items-center gap-2 bg-cyber-950 p-1.5 rounded-2xl border border-cyber-800 w-full sm:w-auto">
           <button
-            onClick={() => {
-              if (confirm('¿Deseas restablecer las casillas al estado recomendado por defecto?')) {
-                const initial: Record<string, boolean> = {};
-                CHECKLIST_DATA.forEach((item) => {
-                  if (item.isInitialDone) initial[item.id] = true;
-                });
-                setCheckedItems(initial);
-              }
-            }}
-            className="text-xs text-slate-400 hover:text-cyber-gold flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-cyber-800"
+            onClick={() => setActiveMainTab('personal_goals')}
+            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
+              activeMainTab === 'personal_goals'
+                ? 'bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black shadow-gold-glow font-extrabold'
+                : 'text-slate-400 hover:text-white'
+            }`}
           >
-            <RotateCcw className="w-3.5 h-3.5" /> Restablecer
+            <Target className="w-4 h-4" />
+            <span>🎯 Mis Metas & Checklist Personal (Life OS)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMainTab('platform_roadmap')}
+            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
+              activeMainTab === 'platform_roadmap'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md font-extrabold'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <CheckSquare className="w-4 h-4" />
+            <span>🚀 Roadmap Técnico Aether ({totalTasks} Hitos)</span>
           </button>
         </div>
+
+        {activeMainTab === 'personal_goals' ? (
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => setIsAiGoalModalOpen(true)}
+              className="px-4 py-2 rounded-2xl bg-purple-500/20 border border-purple-500 hover:bg-purple-500/30 text-purple-300 font-tech font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              <span>Crear con IA</span>
+            </button>
+            <button
+              onClick={handleOpenCreateGoalModal}
+              className="px-5 py-2 rounded-2xl bg-gradient-to-r from-cyber-gold to-amber-500 hover:opacity-95 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow flex items-center gap-1.5 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Nueva Meta</span>
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              const exportJson = JSON.stringify(checkedItems, null, 2);
+              const blob = new Blob([exportJson], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `Aether_Roadmap_Progress_${new Date().toISOString().split('T')[0]}.json`;
+              a.click();
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-cyber-950 border border-cyber-700 text-slate-300 hover:text-white hover:border-cyber-gold text-xs font-tech font-bold transition-all shadow-sm"
+          >
+            <Download className="w-3.5 h-3.5 text-cyber-gold" />
+            <span>Exportar Progreso</span>
+          </button>
+        )}
       </div>
 
-      {/* Interactive Tasks Grid */}
-      <div className="space-y-3">
-        {filteredTasks.map((task) => {
-          const isDone = Boolean(checkedItems[task.id]);
+      {/* TAB 1: METAS PERSONALES */}
+      {activeMainTab === 'personal_goals' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 rounded-3xl bg-cyber-900 border border-cyber-800 shadow-cyber-card space-y-1">
+              <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
+                <span>Metas Cumplidas</span>
+                <Award className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div className="text-2xl font-tech font-bold text-emerald-400">
+                {completedPersonalGoals} / {totalPersonalGoals}
+              </div>
+              <div className="text-[10px] font-mono text-slate-500">
+                {personalProgressPercent}% de tasa de éxito global
+              </div>
+            </div>
 
-          return (
-            <div
-              key={task.id}
-              onClick={() => toggleItem(task.id)}
-              className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-4 group ${
-                isDone
-                  ? 'bg-cyber-950/90 border-emerald-500/50 shadow-md'
-                  : 'bg-cyber-900 border-cyber-800 hover:border-cyber-gold/50 shadow-cyber-card'
-              }`}
-            >
-              <div className="flex items-start gap-3.5">
+            <div className="p-4 rounded-3xl bg-cyber-900 border border-cyber-800 shadow-cyber-card space-y-1">
+              <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
+                <span>Ahorro & Finanzas</span>
+                <DollarSign className="w-4 h-4 text-cyber-gold" />
+              </div>
+              <div className="text-2xl font-tech font-bold text-cyber-gold">
+                ${totalSavingsAccumulated.toLocaleString()} USD
+              </div>
+              <div className="text-[10px] font-mono text-slate-500">
+                Capital acumulado en metas financieras
+              </div>
+            </div>
+
+            <div className="p-4 rounded-3xl bg-cyber-900 border border-cyber-800 shadow-cyber-card space-y-1">
+              <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
+                <span>Enfoque & Hábitos</span>
+                <Flame className="w-4 h-4 text-pink-400" />
+              </div>
+              <div className="text-2xl font-tech font-bold text-pink-400">
+                Racha Activa
+              </div>
+              <div className="text-[10px] font-mono text-slate-500">
+                7 Días consecutivos de disciplina
+              </div>
+            </div>
+
+            <div className="p-4 rounded-3xl bg-cyber-900 border border-cyber-800 shadow-cyber-card space-y-1">
+              <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
+                <span>Estado Global</span>
+                <TrendingUp className="w-4 h-4 text-cyan-400" />
+              </div>
+              <div className="text-2xl font-tech font-bold text-cyan-400">
+                {personalProgressPercent >= 70 ? '🔥 Imparable' : personalProgressPercent >= 40 ? '⚡ Avanzando' : '🌱 Iniciando'}
+              </div>
+              <div className="text-[10px] font-mono text-slate-500">
+                Consistencia diaria garantizada
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-cyber-900 p-4 rounded-3xl border border-cyber-800 shadow-cyber-card flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono">
+              {[
+                { id: 'all', label: 'Todas las Metas', emoji: '🌟' },
+                { id: 'design_brand', label: 'Diseño & Marca', emoji: '🎨' },
+                { id: 'finance_savings', label: 'Finanzas & Ahorro', emoji: '💰' },
+                { id: 'travel_events', label: 'Viajes & Ferias', emoji: '✈️' },
+                { id: 'focus_habits', label: 'Enfoque & Hábitos', emoji: '🧠' },
+                { id: 'sales_marketing', label: 'Marketing & Ventas', emoji: '🚀' },
+                { id: 'personal_lifestyle', label: 'Estilo de Vida', emoji: '⭐' }
+              ].map((cat) => (
                 <button
-                  type="button"
-                  className="mt-0.5 text-slate-400 group-hover:text-cyber-gold transition-colors shrink-0"
+                  key={cat.id}
+                  onClick={() => setSelectedGoalCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                    selectedGoalCategory === cat.id
+                      ? 'bg-cyber-gold text-black font-bold shadow-gold-glow'
+                      : 'bg-cyber-950 text-slate-400 hover:text-white border border-cyber-800'
+                  }`}
                 >
-                  {isDone ? (
-                    <CheckSquare className="w-5 h-5 text-emerald-400" />
-                  ) : (
-                    <Square className="w-5 h-5 text-slate-600 group-hover:text-cyber-gold" />
-                  )}
+                  <span>{cat.emoji}</span>
+                  <span>{cat.label}</span>
                 </button>
+              ))}
+            </div>
 
-                <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={`font-tech font-bold text-sm transition-colors ${
-                        isDone ? 'text-slate-300 font-extrabold' : 'text-white group-hover:text-cyber-gold'
-                      }`}
-                    >
-                      {task.title}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400 bg-cyber-950 px-2 py-0.5 rounded border border-cyber-800">
-                      {task.module}
-                    </span>
-                    {isDone && (
-                      <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> LISTO
-                      </span>
-                    )}
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={goalSearchQuery}
+                onChange={(e) => setGoalSearchQuery(e.target.value)}
+                placeholder="Buscar metas o tareas..."
+                className="w-full bg-cyber-950 border border-cyber-700 rounded-2xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyber-gold"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredPersonalGoals.map((goal) => {
+              const catInfo = getGoalCategoryLabel(goal.category);
+              const daysLeft = calculateDaysRemaining(goal.targetDate);
+              const completedSubs = goal.subtasks.filter((s) => s.completed).length;
+              const subProgress = goal.subtasks.length > 0 ? Math.round((completedSubs / goal.subtasks.length) * 100) : 0;
+              const financialProgress = goal.isFinancialGoal && goal.targetAmount
+                ? Math.min(100, Math.round(((goal.currentAmount || 0) / goal.targetAmount) * 100))
+                : 0;
+
+              return (
+                <div
+                  key={goal.id}
+                  className={`p-5 rounded-3xl border transition-all space-y-4 shadow-cyber-card ${
+                    goal.isCompleted
+                      ? 'bg-cyber-950/90 border-emerald-500/50 shadow-emerald-500/10'
+                      : 'bg-cyber-900 border-cyber-800 hover:border-cyber-700'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <button
+                        onClick={() => toggleGoalCompleted(goal.id)}
+                        className="mt-1 text-slate-400 hover:text-emerald-400 transition-colors shrink-0"
+                      >
+                        {goal.isCompleted ? (
+                          <CheckSquare className="w-5 h-5 text-emerald-400" />
+                        ) : (
+                          <Square className="w-5 h-5 text-slate-600 hover:text-cyber-gold" />
+                        )}
+                      </button>
+
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={`font-tech font-bold text-base transition-colors ${
+                              goal.isCompleted ? 'line-through text-slate-400' : 'text-white'
+                            }`}
+                          >
+                            {goal.title}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold border ${catInfo.color}`}>
+                            {catInfo.emoji} {catInfo.label}
+                          </span>
+                          {goal.priority === 'high' && (
+                            <span className="px-2 py-0.5 rounded-lg text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                              🔥 Alta
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">{goal.description}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => handleOpenEditGoalModal(goal)}
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-cyber-gold hover:bg-cyber-950 transition-colors"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGoal(goal.id)}
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-cyber-950 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                  <p className={`text-xs ${isDone ? 'text-slate-400' : 'text-slate-300'}`}>
-                    {task.desc}
+
+                  {goal.isFinancialGoal && goal.targetAmount && (
+                    <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 font-mono text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400 flex items-center gap-1.5">
+                          <DollarSign className="w-3.5 h-3.5 text-cyber-gold" /> Meta de Ahorro / Finanzas:
+                        </span>
+                        <span className="text-cyber-gold font-bold">
+                          ${goal.currentAmount?.toLocaleString()} / ${goal.targetAmount.toLocaleString()} {goal.currency} ({financialProgress}%)
+                        </span>
+                      </div>
+                      <div className="h-2 bg-cyber-900 rounded-full overflow-hidden border border-cyber-700">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-500 to-cyber-gold transition-all duration-500"
+                          style={{ width: `${financialProgress}%` }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 text-[10px]">
+                        <span className="text-slate-500">Aportar ahorro rápido:</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleQuickAddFunds(goal.id, 50)}
+                            className="px-2 py-0.5 rounded bg-cyber-900 hover:bg-cyber-800 text-cyber-gold border border-cyber-700"
+                          >
+                            +$50
+                          </button>
+                          <button
+                            onClick={() => handleQuickAddFunds(goal.id, 100)}
+                            className="px-2 py-0.5 rounded bg-cyber-900 hover:bg-cyber-800 text-cyber-gold border border-cyber-700"
+                          >
+                            +$100
+                          </button>
+                          <button
+                            onClick={() => handleQuickAddFunds(goal.id, 500)}
+                            className="px-2 py-0.5 rounded bg-cyber-900 hover:bg-cyber-800 text-cyber-gold border border-cyber-700"
+                          >
+                            +$500
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {goal.subtasks.length > 0 && (
+                    <div className="space-y-2 pt-1 border-t border-cyber-800/80">
+                      <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                        <span>Checklist de Pasos ({completedSubs}/{goal.subtasks.length}):</span>
+                        <span className="text-cyan-400 font-bold">{subProgress}% completado</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        {goal.subtasks.map((sub) => (
+                          <div
+                            key={sub.id}
+                            onClick={() => toggleSubtask(goal.id, sub.id)}
+                            className={`flex items-center gap-2.5 p-2 rounded-xl border text-xs cursor-pointer transition-colors ${
+                              sub.completed
+                                ? 'bg-cyber-950/60 border-emerald-500/30 text-slate-400'
+                                : 'bg-cyber-950 border-cyber-800 hover:border-cyber-700 text-slate-200'
+                            }`}
+                          >
+                            <div
+                              className={`w-4 h-4 rounded flex items-center justify-center shrink-0 border ${
+                                sub.completed ? 'bg-emerald-500 border-emerald-400 text-black' : 'border-slate-600'
+                              }`}
+                            >
+                              {sub.completed && <Check className="w-3 h-3 stroke-[3]" />}
+                            </div>
+                            <span className={sub.completed ? 'line-through text-slate-500 text-[11px]' : 'text-xs'}>
+                              {sub.title}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between pt-2 border-t border-cyber-800 text-[11px] font-mono">
+                    <div className="flex items-center gap-1.5 text-slate-400">
+                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Límite: {goal.targetDate}</span>
+                    </div>
+
+                    <div>
+                      {daysLeft > 0 ? (
+                        <span className="px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 text-[10px] font-bold">
+                          ⏳ Faltan {daysLeft} días
+                        </span>
+                      ) : daysLeft === 0 ? (
+                        <span className="px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/40 text-[10px] font-bold animate-pulse">
+                          🚨 Vence Hoy
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/40 text-[10px] font-bold">
+                          ⚠️ Plazo cumplido
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: ROADMAP TÉCNICO DE LA PLATAFORMA */}
+      {activeMainTab === 'platform_roadmap' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="bg-cyber-900/90 p-6 rounded-3xl border border-cyan-500/50 shadow-cyber-card space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="p-3 rounded-2xl bg-cyan-500/20 border border-cyan-500 text-cyan-400 shadow-md">
+                  <CheckSquare className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h2 className="text-2xl font-tech font-extrabold text-white tracking-wider">
+                      ROADMAP & CHECKLIST MAESTRO DE LA PLATAFORMA
+                    </h2>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                      SISTEMA 100% OPERATIVO
+                    </span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-mono mt-1">
+                    Auditoría exhaustiva de capacidades, motores 3D, agentes autónomos, facturación y despliegues.
                   </p>
                 </div>
               </div>
 
-              <div className="shrink-0 pt-0.5">
-                {getCategoryBadge(task.category)}
+              <div className="text-right">
+                <div className="text-3xl font-tech font-black text-cyan-400">
+                  {progressPercent}%
+                </div>
+                <div className="text-xs font-mono text-slate-400">
+                  {completedTasks} de {totalTasks} Hitos Verificados
+                </div>
               </div>
             </div>
-          );
-        })}
-      </div>
+
+            <div className="space-y-1.5">
+              <div className="h-3 w-full bg-cyber-950 rounded-full overflow-hidden border border-cyber-800 p-0.5">
+                <div
+                  className="h-full bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 rounded-full transition-all duration-500"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 font-mono text-xs">
+              <div className="p-3 rounded-2xl bg-cyber-950/80 border border-emerald-500/30 flex items-center justify-between">
+                <span className="text-slate-300">🟢 Básico (Fundamentos)</span>
+                <span className="font-bold text-emerald-400">{basicCompleted} / {basicTasks.length}</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-cyber-950/80 border border-amber-500/30 flex items-center justify-between">
+                <span className="text-slate-300">🟡 Intermedio (Inteligencia)</span>
+                <span className="font-bold text-amber-300">{interCompleted} / {interTasks.length}</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-cyber-950/80 border border-purple-500/30 flex items-center justify-between">
+                <span className="text-slate-300">🟣 Avanzado (Agencia/B2B)</span>
+                <span className="font-bold text-purple-300">{advCompleted} / {advTasks.length}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-cyber-900 p-4 rounded-3xl border border-cyber-800 shadow-cyber-card flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Buscar función, módulo o hito..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-cyber-950 border border-cyber-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-mono w-48 sm:w-64"
+                />
+              </div>
+
+              <select
+                value={selectedModule}
+                onChange={(e) => setSelectedModule(e.target.value)}
+                className="bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-400 font-mono"
+              >
+                {modules.map((mod) => (
+                  <option key={mod} value={mod}>
+                    {mod === 'all' ? '📁 Todos los Módulos' : mod}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-400 font-mono"
+              >
+                <option value="all">⚡ Todos los Niveles</option>
+                <option value="basic">🟢 Básico</option>
+                <option value="intermediate">🟡 Intermedio</option>
+                <option value="advanced">🟣 Avanzado</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  if (confirm('¿Deseas restablecer las casillas al estado recomendado por defecto?')) {
+                    const initial: Record<string, boolean> = {};
+                    CHECKLIST_DATA.forEach((item) => {
+                      if (item.isInitialDone) initial[item.id] = true;
+                    });
+                    setCheckedItems(initial);
+                  }
+                }}
+                className="text-xs text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-cyber-800"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Restablecer
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {filteredTasks.map((task) => {
+              const isDone = Boolean(checkedItems[task.id]);
+
+              return (
+                <div
+                  key={task.id}
+                  onClick={() => toggleItem(task.id)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-4 group ${
+                    isDone
+                      ? 'bg-cyber-950/90 border-emerald-500/50 shadow-md'
+                      : 'bg-cyber-900 border-cyber-800 hover:border-cyan-400/50 shadow-cyber-card'
+                  }`}
+                >
+                  <div className="flex items-start gap-3.5">
+                    <button
+                      type="button"
+                      className="mt-0.5 text-slate-400 group-hover:text-cyan-400 transition-colors shrink-0"
+                    >
+                      {isDone ? (
+                        <CheckSquare className="w-5 h-5 text-emerald-400" />
+                      ) : (
+                        <Square className="w-5 h-5 text-slate-600 group-hover:text-cyan-400" />
+                      )}
+                    </button>
+
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`font-tech font-bold text-sm transition-colors ${
+                            isDone ? 'text-slate-300 font-extrabold' : 'text-white group-hover:text-cyan-400'
+                          }`}
+                        >
+                          {task.title}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400 bg-cyber-950 px-2 py-0.5 rounded border border-cyber-800">
+                          {task.module}
+                        </span>
+                        {isDone && (
+                          <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> LISTO
+                          </span>
+                        )}
+                      </div>
+                      <p className={`text-xs ${isDone ? 'text-slate-400' : 'text-slate-300'}`}>
+                        {task.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 pt-0.5">
+                    {getCategoryBadge(task.category)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 1: CREAR O EDITAR META PERSONAL */}
+      {isGoalModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn font-mono text-xs">
+          <div className="bg-cyber-900 border border-cyber-gold/50 rounded-3xl p-6 max-w-xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={() => setIsGoalModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyber-gold/20 text-cyber-gold border border-cyber-gold">
+                <Target className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg">
+                  {editingGoal ? 'EDITAR META PERSONAL' : 'NUEVA META / ENFOQUE PERSONAL'}
+                </h3>
+                <p className="text-slate-400 text-[11px]">Diseño, finanzas, viajes, hábitos o metas de negocio</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <div className="space-y-1">
+                <label className="text-slate-400 text-[11px] block">Título de la Meta:</label>
+                <input
+                  type="text"
+                  value={formTitle}
+                  onChange={(e) => setFormTitle(e.target.value)}
+                  placeholder="Ej: Ahorrar para taller de confección o Lanzar Colección 3D..."
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-cyber-gold"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-slate-400 text-[11px] block">Descripción / Detalles:</label>
+                <textarea
+                  value={formDesc}
+                  onChange={(e) => setFormDesc(e.target.value)}
+                  rows={2}
+                  placeholder="Objetivos específicos, notas de enfoque o presupuesto..."
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyber-gold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-400 text-[11px] block">Categoría:</label>
+                  <select
+                    value={formCategory}
+                    onChange={(e) => setFormCategory(e.target.value as GoalCategory)}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white focus:outline-none"
+                  >
+                    <option value="design_brand">🎨 Diseño & Marca</option>
+                    <option value="finance_savings">💰 Finanzas & Ahorro</option>
+                    <option value="travel_events">✈️ Viajes & Ferias</option>
+                    <option value="focus_habits">🧠 Enfoque & Hábitos</option>
+                    <option value="sales_marketing">🚀 Marketing & Ventas</option>
+                    <option value="personal_lifestyle">⭐ Estilo de Vida</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-400 text-[11px] block">Prioridad:</label>
+                  <select
+                    value={formPriority}
+                    onChange={(e) => setFormPriority(e.target.value as GoalPriority)}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white focus:outline-none"
+                  >
+                    <option value="high">🔥 Alta</option>
+                    <option value="medium">⚡ Media</option>
+                    <option value="low">🌿 Baja</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-400 text-[11px] block">Fecha Límite:</label>
+                  <input
+                    type="date"
+                    value={formTargetDate}
+                    onChange={(e) => setFormTargetDate(e.target.value)}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+                <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formIsFinancial}
+                    onChange={(e) => setFormIsFinancial(e.target.checked)}
+                    className="rounded accent-cyber-gold"
+                  />
+                  <span className="font-bold text-cyber-gold">¿Es una meta de ahorro o financiera ($)?</span>
+                </label>
+
+                {formIsFinancial && (
+                  <div className="grid grid-cols-3 gap-2 pt-2 animate-fadeIn">
+                    <div>
+                      <label className="text-[10px] text-slate-400 block">Monto Meta:</label>
+                      <input
+                        type="number"
+                        value={formTargetAmount}
+                        onChange={(e) => setFormTargetAmount(Number(e.target.value))}
+                        className="w-full bg-cyber-900 border border-cyber-700 rounded-xl px-2 py-1.5 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-400 block">Ahorro Actual:</label>
+                      <input
+                        type="number"
+                        value={formCurrentAmount}
+                        onChange={(e) => setFormCurrentAmount(Number(e.target.value))}
+                        className="w-full bg-cyber-900 border border-cyber-700 rounded-xl px-2 py-1.5 text-emerald-400 font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-400 block">Moneda:</label>
+                      <select
+                        value={formCurrency}
+                        onChange={(e) => setFormCurrency(e.target.value)}
+                        className="w-full bg-cyber-900 border border-cyber-700 rounded-xl px-2 py-1.5 text-white"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="COP">COP ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="MXN">MXN ($)</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <label className="text-slate-400 text-[11px] block">Sub-tareas & Pasos Accionables:</label>
+                <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                  {formSubtasks.map((st, idx) => (
+                    <div key={st.id} className="flex items-center gap-2">
+                      <span className="text-slate-500 text-[10px] w-4">{idx + 1}.</span>
+                      <input
+                        type="text"
+                        value={st.title}
+                        onChange={(e) => {
+                          const updated = [...formSubtasks];
+                          updated[idx].title = e.target.value;
+                          setFormSubtasks(updated);
+                        }}
+                        className="flex-1 bg-cyber-950 border border-cyber-700 rounded-xl px-2.5 py-1 text-xs text-white"
+                      />
+                      <button
+                        onClick={() => setFormSubtasks(formSubtasks.filter((_, i) => i !== idx))}
+                        className="p-1 text-slate-500 hover:text-rose-400"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="text"
+                    value={newSubtaskInput}
+                    onChange={(e) => setNewSubtaskInput(e.target.value)}
+                    placeholder="Escribir nuevo paso..."
+                    className="flex-1 bg-cyber-950 border border-cyber-700 rounded-xl px-2.5 py-1 text-xs text-white"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && newSubtaskInput.trim()) {
+                        setFormSubtasks([
+                          ...formSubtasks,
+                          { id: 'sub_' + Date.now(), title: newSubtaskInput.trim(), completed: false }
+                        ]);
+                        setNewSubtaskInput('');
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (newSubtaskInput.trim()) {
+                        setFormSubtasks([
+                          ...formSubtasks,
+                          { id: 'sub_' + Date.now(), title: newSubtaskInput.trim(), completed: false }
+                        ]);
+                        setNewSubtaskInput('');
+                      }
+                    }}
+                    className="px-3 py-1 bg-cyber-800 hover:bg-cyber-700 text-slate-300 rounded-xl text-xs font-bold"
+                  >
+                    Añadir
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 flex gap-2">
+              <button
+                onClick={handleSaveGoal}
+                className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase shadow-gold-glow"
+              >
+                {editingGoal ? 'Guardar Cambios' : 'Crear Meta Personal'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: ASISTENTE IA DE METAS */}
+      {isAiGoalModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn font-mono text-xs">
+          <div className="bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 max-w-xl w-full shadow-cyber-card text-white space-y-4 relative">
+            <button
+              onClick={() => setIsAiGoalModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">ASISTENTE IA DE METAS & HÁBITOS</h3>
+                <p className="text-slate-400 text-[11px]">Escribe tu objetivo y la IA desglosará el plan completo con presupuesto y pasos</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <label className="text-slate-300 text-xs font-tech font-bold block">
+                Describe lo que deseas lograr (diseño, ahorro, viajes, hábitos, ventas):
+              </label>
+              <textarea
+                value={aiGoalPrompt}
+                onChange={(e) => setAiGoalPrompt(e.target.value)}
+                rows={3}
+                placeholder="Ej: Quiero ahorrar $3,000 USD para comprar una máquina bordadora y lanzar mi tienda de streetwear en 60 días..."
+                className="w-full bg-cyber-950 border border-cyber-700 rounded-2xl p-3 text-xs text-white focus:outline-none focus:border-purple-400"
+              />
+
+              <div className="space-y-1.5">
+                <span className="text-[10px] text-slate-500">Inspiración rápida:</span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    '🎨 Lanzar colección 3D y vender 50 piezas en Shopify',
+                    '💰 Ahorrar $2,500 USD para insumos textiles',
+                    '✈️ Viajar a Colombiatex y tener 15 reuniones B2B',
+                    '🧠 4 Horas de Deep Work diarias sin teléfono'
+                  ].map((tpl) => (
+                    <button
+                      key={tpl}
+                      onClick={() => setAiGoalPrompt(tpl)}
+                      className="p-2 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-800 text-[10px] text-slate-300 text-left truncate"
+                    >
+                      {tpl}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={handleGenerateAiGoal}
+                disabled={isGeneratingAiGoal || !aiGoalPrompt.trim()}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-600 to-purple-700 hover:opacity-95 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+              >
+                {isGeneratingAiGoal ? (
+                  <>
+                    <RotateCcw className="w-4 h-4 animate-spin" />
+                    <span>Desglosando Meta & Checklist con IA...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>Generar Meta Accionable con IA</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
