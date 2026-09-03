@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { DeviceModeProvider, useDeviceMode } from './context/DeviceModeContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/layout/Navbar';
@@ -49,9 +50,13 @@ import { moduleStagingService } from './services/moduleStagingService';
 import { ProductPhotoStudioViralPublisher } from './components/modules/ProductPhotoStudioViralPublisher';
 import { AetherReelsTikTok } from './components/modules/AetherReelsTikTok';
 import { ExpertConsultationsHub } from './components/modules/ExpertConsultationsHub';
+import { MobileAppBottomNav } from './components/layout/MobileAppBottomNav';
+import { DesktopWindowHeader } from './components/layout/DesktopWindowHeader';
+import { DeviceModeSimulator } from './components/common/DeviceModeSimulator';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
+  const { deviceMode, isMobile } = useDeviceMode();
   const [currentView, setCurrentView] = useState<string>('aurora3d');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [stagingVersion, setStagingVersion] = useState<number>(0);
@@ -209,8 +214,23 @@ const MainLayout: React.FC = () => {
     }
   };
 
+  const isSimulatedMobileFrame = deviceMode === 'mobile_phone';
+  const isSimulatedTabletFrame = deviceMode === 'tablet';
+
   return (
-    <div className="min-h-screen bg-cyber-950 text-slate-100 flex flex-col font-sans selection:bg-cyber-gold selection:text-black transition-colors duration-300">
+    <div className={`min-h-screen bg-cyber-950 text-slate-100 flex flex-col font-sans selection:bg-cyber-gold selection:text-black transition-colors duration-300 ${
+      isSimulatedMobileFrame
+        ? 'max-w-[430px] mx-auto my-4 rounded-[40px] border-4 border-cyber-800 shadow-[0_0_60px_rgba(229,169,60,0.25)] overflow-hidden min-h-[860px]'
+        : isSimulatedTabletFrame
+        ? 'max-w-[860px] mx-auto my-4 rounded-[32px] border-4 border-cyber-800 shadow-[0_0_60px_rgba(168,85,247,0.25)] overflow-hidden min-h-[900px]'
+        : ''
+    }`}>
+      {/* Desktop App Window Header Bar (Windows/macOS style with GPU telemetry) */}
+      <DesktopWindowHeader />
+
+      {/* Device Viewport Mode Simulator Badge */}
+      <DeviceModeSimulator />
+
       {/* Top Navbar inside workspace with button to return to Landing */}
       <Navbar currentView={currentView} setCurrentView={setCurrentView} />
 
@@ -223,7 +243,7 @@ const MainLayout: React.FC = () => {
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        <main className="flex-1 min-w-0 pb-12 overflow-y-auto">
+        <main className="flex-1 min-w-0 pb-20 sm:pb-12 overflow-y-auto">
           {renderWorkspaceModule()}
         </main>
       </div>
@@ -285,6 +305,9 @@ const MainLayout: React.FC = () => {
         </div>
       </div>
 
+      {/* Native Mobile App Bottom Navigation Bar (Dock) */}
+      <MobileAppBottomNav currentView={currentView} setCurrentView={setCurrentView} />
+
       {/* Global Persistent Floating JARVIS Hologram Widget */}
       <JarvisFloatingWidget onNavigateView={(v) => setCurrentView(v)} />
     </div>
@@ -296,7 +319,9 @@ export function App() {
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <MainLayout />
+          <DeviceModeProvider>
+            <MainLayout />
+          </DeviceModeProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
