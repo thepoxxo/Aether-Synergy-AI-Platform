@@ -56,13 +56,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setCurrentView }) =
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-gold via-amber-500 to-yellow-600 p-0.5 shadow-gold-glow group-hover:scale-105 transition-transform flex items-center justify-center">
             <div className="w-full h-full bg-cyber-950 rounded-[10px] flex items-center justify-center">
-              <span className="font-tech font-bold text-xl text-cyber-gold">A</span>
+              <span className="font-tech font-bold text-xl text-cyber-gold">P</span>
             </div>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-tech font-extrabold text-lg text-white tracking-wider">
-                AETHER <span className="text-cyber-gold">SYNERGY</span>
+                POXXI <span className="text-cyber-gold">STUDIO</span>
               </span>
             </div>
             <span className="text-[10px] text-slate-400 uppercase tracking-widest hidden sm:block">

@@ -40,7 +40,7 @@ export const DesktopWindowHeader: React.FC = () => {
         </div>
         <span className="text-slate-500">•</span>
         <span className="text-slate-300 font-tech font-bold tracking-wider">
-          AETHER SYNERGY DESKTOP WORKSPACE • V2.5.0 PRO
+          POXXI STUDIO • AI 3D DESIGN & INDUSTRIAL WORKSPACE V2.5
         </span>
       </div>
 

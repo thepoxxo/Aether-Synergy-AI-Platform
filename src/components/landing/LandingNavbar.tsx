@@ -33,11 +33,11 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onOpenLogin }) => 
         >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyber-gold to-amber-500 p-0.5 shadow-gold-glow flex items-center justify-center">
             <div className="w-full h-full bg-cyber-950 rounded-[6px] flex items-center justify-center">
-              <span className="font-tech font-extrabold text-base text-cyber-gold">A</span>
+              <span className="font-tech font-extrabold text-base text-cyber-gold">P</span>
             </div>
           </div>
           <span className="font-tech font-extrabold text-lg text-white tracking-widest uppercase">
-            AETHER <span className="text-cyber-gold">SYNERGY</span>
+            POXXI <span className="text-cyber-gold">STUDIO</span>
           </span>
         </div>
 

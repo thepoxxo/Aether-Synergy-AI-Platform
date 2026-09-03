@@ -138,11 +138,11 @@ export const MobileAppBottomNav: React.FC<MobileAppBottomNavProps> = ({
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyber-gold to-yellow-600 p-0.5 flex items-center justify-center shadow-gold-glow">
                 <div className="w-full h-full bg-cyber-950 rounded-[9px] flex items-center justify-center">
-                  <span className="font-tech font-bold text-cyber-gold text-lg">A</span>
+                  <span className="font-tech font-bold text-cyber-gold text-lg">P</span>
                 </div>
               </div>
               <div>
-                <h3 className="font-tech font-bold text-base text-white">AETHER SYNERGY APP</h3>
+                <h3 className="font-tech font-bold text-base text-white">POXXI STUDIO APP</h3>
                 <span className="text-[10px] text-cyber-gold font-bold">PLATAFORMA NATIVA MÓVIL</span>
               </div>
             </div>

@@ -58,6 +58,7 @@ import { ExpertConsultationsHub } from './components/modules/ExpertConsultations
 import { MobileAppBottomNav } from './components/layout/MobileAppBottomNav';
 import { DesktopWindowHeader } from './components/layout/DesktopWindowHeader';
 import { DeviceModeSimulator } from './components/common/DeviceModeSimulator';
+import { AdminMasterModuleHubModal } from './components/common/AdminMasterModuleHubModal';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -65,6 +66,7 @@ const MainLayout: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('aurora3d');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [stagingVersion, setStagingVersion] = useState<number>(0);
+  const [isAdminHubModalOpen, setIsAdminHubModalOpen] = useState(false);
 
   useEffect(() => {
     const handleStagingUpdate = () => setStagingVersion((v) => v + 1);
@@ -226,6 +228,12 @@ const MainLayout: React.FC = () => {
 
       {/* Device Viewport Mode Simulator Badge */}
       <DeviceModeSimulator />
+      <AdminMasterModuleHubModal
+        isOpen={isAdminHubModalOpen}
+        onClose={() => setIsAdminHubModalOpen(false)}
+        onSelectModule={(modId) => setCurrentView(modId)}
+        currentView={currentView}
+      />
 
       {/* Top Navbar inside workspace with button to return to Landing */}
       <Navbar currentView={currentView} setCurrentView={setCurrentView} />
@@ -299,6 +307,15 @@ const MainLayout: React.FC = () => {
             Admin
           </button>
         </div>
+        {role === 'admin' && (
+          <button
+            onClick={() => setIsAdminHubModalOpen(true)}
+            className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 text-black font-tech font-extrabold uppercase shadow-gold-glow ml-1 flex items-center gap-1 active:scale-95 transition-all"
+            title="Abrir Panel Maestro de los 29 Módulos para Auditoría"
+          >
+            <span>🎛️ Auditar 29 Módulos</span>
+          </button>
+        )}
       </div>
 
       {/* Native Mobile App Bottom Navigation Bar (Dock) */}
