@@ -46,6 +46,7 @@ import { WorkflowAutomationsN8N } from './components/modules/WorkflowAutomations
 import { ModuleMaintenanceScreen } from './components/common/ModuleMaintenanceScreen';
 import { ModuleStagingAdmin } from './components/modules/ModuleStagingAdmin';
 import { moduleStagingService } from './services/moduleStagingService';
+import { ProductPhotoStudioViralPublisher } from './components/modules/ProductPhotoStudioViralPublisher';
 
 const MainLayout: React.FC = () => {
   const { viewMode, setViewMode, role, switchRole, setLoginModalOpen, setAuthModalMode } = useAuth();
@@ -139,6 +140,8 @@ const MainLayout: React.FC = () => {
     }
 
     switch (currentView) {
+      case 'photostudio_viral':
+        return <ProductPhotoStudioViralPublisher />;
       case 'aurora3d':
         return <Aurora3DStudio />;
       case 'scanner3d':

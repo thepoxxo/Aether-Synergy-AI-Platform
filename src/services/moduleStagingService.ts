@@ -54,6 +54,16 @@ export const DEFAULT_MODULE_CONFIGS: ModuleStagingConfig[] = [
 
   // Categoria 2: Marketing & Video Ads
   {
+    id: 'photostudio_viral',
+    name: 'Estudio Foto IA & Viral Blast Facebook',
+    category: 'marketing',
+    categoryTitle: 'Marketing & Video Ads',
+    status: 'active',
+    version: '2.5.0',
+    phase: 1,
+    changelogNote: 'Recreación de fotos en escenarios de estudio y publicación masiva automática en grupos de Facebook vía Graph API v20.0.'
+  },
+  {
     id: 'mediabuyer',
     name: 'Media Buyer Video Ads 4K',
     category: 'marketing',

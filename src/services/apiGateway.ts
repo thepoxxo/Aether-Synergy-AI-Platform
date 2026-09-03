@@ -329,6 +329,40 @@ class APIGatewayService {
       status: 'simulated',
       docUrl: 'https://shopify.dev/',
       isConfigured: false
+    },
+    {
+      id: 'facebook_graph_api',
+      name: 'Meta Facebook Graph API v20.0',
+      provider: 'Meta Platforms, Inc.',
+      category: 'payments_ecommerce',
+      categoryLabel: 'Publicación & Redes',
+      iconName: 'Share2',
+      envKey: 'VITE_META_FACEBOOK_GRAPH_TOKEN',
+      description: 'Publicación masiva automática en cientos de grupos de Facebook, Marketplace y Páginas Oficiales.',
+      capabilities: ['Facebook Groups Auto-Post', 'Marketplace Listing Push', 'Meta Business Suite Sync', 'Anti-Spam Human Delay'],
+      supportedDomains: ['Grupos de Facebook', 'Marketplace', 'Instagram Feed & Stories', 'Catálogos Meta'],
+      pricingTier: 'Meta for Developers API',
+      estimatedCostPerCall: 'Gratuito con App Aprobada',
+      status: 'simulated',
+      docUrl: 'https://developers.facebook.com/docs/graph-api/',
+      isConfigured: false
+    },
+    {
+      id: 'whatsapp_cloud_api',
+      name: 'WhatsApp Business Cloud API',
+      provider: 'Meta Platforms, Inc.',
+      category: 'payments_ecommerce',
+      categoryLabel: 'Publicación & Redes',
+      iconName: 'MessageCircle',
+      envKey: 'VITE_WHATSAPP_CLOUD_API_KEY',
+      description: 'Cierre de ventas automatizado vía WhatsApp, difusión masiva de catálogos y links prellenados.',
+      capabilities: ['Broadcast Lists', 'Interactive Product Messages', 'WhatsApp Pay Integration', 'Webhook Bot'],
+      supportedDomains: ['Cierre de Ventas WhatsApp', 'Notificaciones de Pedido', 'Catálogo Móvil'],
+      pricingTier: 'Pay per conversation',
+      estimatedCostPerCall: '$0.008 USD / conversación iniciada',
+      status: 'simulated',
+      docUrl: 'https://developers.facebook.com/docs/whatsapp/cloud-api',
+      isConfigured: false
     }
   ];
 

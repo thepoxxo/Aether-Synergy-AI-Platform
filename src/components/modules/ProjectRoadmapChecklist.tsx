@@ -1206,6 +1206,46 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     title: 'Exportador Multi-Formato Profesional (Adobe .PSD, .AI / .SVG, Blender .GLB, Apple .USDZ)',
     desc: 'Exportación directa de paquetes de capas PSD para Photoshop, vectores AI/SVG para Illustrator y modelos 3D listos para WebXR.',
     isInitialDone: true
+  },
+  {
+    id: 'ai_product_photo_studio_scene_recreation',
+    module: 'Foto Estudio IA & Viral Blast',
+    category: 'advanced',
+    title: 'Estudio Fotográfico de Producto con IA & Recreación de Escenarios Hiperrealistas 4K',
+    desc: 'Captura con cámara web o subida de foto, eliminación de fondo Alpha Matte y recreación en 7 escenarios de alta conversión.',
+    isInitialDone: true
+  },
+  {
+    id: 'facebook_groups_bulk_auto_poster',
+    module: 'Foto Estudio IA & Viral Blast',
+    category: 'advanced',
+    title: 'Publicador Masivo Automático en Cientos de Grupos de Facebook (Meta Graph API v20.0)',
+    desc: 'Base de datos de cientos de grupos segmentados por ciudad/país, selección masiva con 1 clic y transmisión automática de posts.',
+    isInitialDone: true
+  },
+  {
+    id: 'meta_anti_spam_human_delay_and_text_spinning',
+    module: 'Foto Estudio IA & Viral Blast',
+    category: 'advanced',
+    title: 'Algoritmo Anti-Ban Human Delay & Rotación de Textos (Text Spinning) de Meta',
+    desc: 'Intervalos configurables (15s a 45s) y variaciones dinámicas de texto para proteger la cuenta y evadir filtros de spam.',
+    isInitialDone: true
+  },
+  {
+    id: 'multi_network_omni_publisher_instagram_tiktok_whatsapp',
+    module: 'Foto Estudio IA & Viral Blast',
+    category: 'advanced',
+    title: 'Omni-Publicador Multi-Redes (Instagram, TikTok Shop, WhatsApp Difusión, Pinterest, Shopify)',
+    desc: 'Sincronización simultánea en los principales canales sociales y catálogos de e-commerce con enlaces directos de compra.',
+    isInitialDone: true
+  },
+  {
+    id: 'realtime_campaign_live_telemetry_and_reach_metrics',
+    module: 'Foto Estudio IA & Viral Blast',
+    category: 'advanced',
+    title: 'Consola de Telemetría en Vivo, Logs HTTP 200 y Métricas de Alcance y Clics WhatsApp',
+    desc: 'Auditoría en tiempo real de posts emitidos con ID único, alcance de miembros y estimación de prospectos para ventas.',
+    isInitialDone: true
   }
 ];
 
