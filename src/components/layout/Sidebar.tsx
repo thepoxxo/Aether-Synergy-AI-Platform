@@ -198,17 +198,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {/* Mobile Floating Drawer Trigger Button (Only visible on screens < md) */}
-      <div className="md:hidden fixed top-16 left-3 z-30">
-        <button
-          onClick={() => setIsMobileDrawerOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyber-900/90 border border-cyber-gold/60 text-cyber-gold font-tech font-bold text-xs shadow-gold-glow backdrop-blur-md"
-        >
-          <Menu className="w-4 h-4" />
-          <span>Módulos ({categories.reduce((acc, cat) => acc + cat.items.length, 0)})</span>
-        </button>
-      </div>
-
       {/* Mobile Drawer Overlay */}
       {isMobileDrawerOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md animate-fadeIn flex">

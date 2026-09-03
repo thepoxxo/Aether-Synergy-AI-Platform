@@ -17,6 +17,7 @@ import { LandingPage } from './components/landing/LandingPage';
 
 // Internal Workspace Modules
 import { Aurora3DStudio } from './components/modules/Aurora3DStudio';
+import { MobileAurora3D } from './components/mobile/MobileAurora3D';
 import { Scanner3D } from './components/modules/Scanner3D';
 import { AdGenAI } from './components/modules/AdGenAI';
 import { ClothifySourcing } from './components/modules/ClothifySourcing';
@@ -210,21 +211,12 @@ const MainLayout: React.FC = () => {
       case 'expert_consultations':
         return <ExpertConsultationsHub />;
       default:
-        return <Aurora3DStudio />;
+        return isMobile ? <MobileAurora3D /> : <Aurora3DStudio />;
     }
   };
 
-  const isSimulatedMobileFrame = deviceMode === 'mobile_phone';
-  const isSimulatedTabletFrame = deviceMode === 'tablet';
-
   return (
-    <div className={`min-h-screen bg-cyber-950 text-slate-100 flex flex-col font-sans selection:bg-cyber-gold selection:text-black transition-colors duration-300 ${
-      isSimulatedMobileFrame
-        ? 'max-w-[430px] mx-auto my-4 rounded-[40px] border-4 border-cyber-800 shadow-[0_0_60px_rgba(229,169,60,0.25)] overflow-hidden min-h-[860px]'
-        : isSimulatedTabletFrame
-        ? 'max-w-[860px] mx-auto my-4 rounded-[32px] border-4 border-cyber-800 shadow-[0_0_60px_rgba(168,85,247,0.25)] overflow-hidden min-h-[900px]'
-        : ''
-    }`}>
+    <div className="min-h-screen bg-cyber-950 text-slate-100 flex flex-col font-sans selection:bg-cyber-gold selection:text-black transition-colors duration-300 w-full overflow-x-hidden">
       {/* Desktop App Window Header Bar (Windows/macOS style with GPU telemetry) */}
       <DesktopWindowHeader />
 
@@ -235,7 +227,7 @@ const MainLayout: React.FC = () => {
       <Navbar currentView={currentView} setCurrentView={setCurrentView} />
 
       {/* Main Workspace */}
-      <div className="flex-1 flex max-w-[1700px] w-full mx-auto">
+      <div className="flex-1 flex w-full max-w-[1920px] mx-auto min-w-0">
         <Sidebar
           currentView={currentView}
           setCurrentView={setCurrentView}

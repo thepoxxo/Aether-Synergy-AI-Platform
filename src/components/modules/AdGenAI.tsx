@@ -279,7 +279,7 @@ export const AdGenAI: React.FC = () => {
                       {aspectRatio === '9:16' ? 'TikTok / Reels / Shorts' : aspectRatio === '16:9' ? 'YouTube / TV Horizontal' : aspectRatio === '1:1' ? 'Instagram Feed Cuadrado' : 'Instagram Portrait'}
                     </span>
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {[
                       { id: '9:16' as VideoAspectRatio, label: '9:16 Vertical', icon: Smartphone },
                       { id: '16:9' as VideoAspectRatio, label: '16:9 Horizontal', icon: Monitor },
