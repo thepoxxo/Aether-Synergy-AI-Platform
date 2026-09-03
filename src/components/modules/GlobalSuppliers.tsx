@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Globe2,
   MapPin,
@@ -33,9 +33,35 @@ import {
   ShieldAlert,
   FileCode,
   Truck,
-  Plane
+  Plane,
+  Star,
+  Plus,
+  ThumbsUp,
+  Award,
+  Filter,
+  ExternalLink,
+  Building,
+  UserCheck,
+  RotateCcw
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+
+export interface SupplierReview {
+  id: string;
+  supplierId: string;
+  authorName: string;
+  authorCompany: string;
+  ratingQuality: number;
+  ratingDelivery: number;
+  ratingSupport: number;
+  ratingPrice: number;
+  overallRating: number;
+  title: string;
+  comment: string;
+  isVerifiedBuyer: boolean;
+  wouldRecommend: boolean;
+  date: string;
+}
 
 export interface Supplier {
   id: string;
@@ -43,15 +69,21 @@ export interface Supplier {
   country: string;
   flag: string;
   city: string;
-  defaultLang: 'pt' | 'tr' | 'es' | 'it' | 'en';
+  category: 'fashion' | 'furniture' | 'footwear' | 'bags' | 'packaging' | 'hardware' | 'textile';
+  categoryLabel: string;
+  defaultLang: 'pt' | 'tr' | 'es' | 'it' | 'en' | 'fr' | 'zh';
   moq: number;
   leadTime: string;
   pricePerUnit: number;
   rating: number;
+  reviewsCount: number;
   certifications: string[];
   specialty: string;
   whatsapp: string;
+  email?: string;
+  website?: string;
   image: string;
+  isUserAdded?: boolean;
 }
 
 export type TechPackLanguage = 'en' | 'pt' | 'tr' | 'es' | 'it';
@@ -99,52 +131,52 @@ const TECHPACK_I18N: Record<TechPackLanguage, Record<string, string>> = {
   },
   pt: {
     docTitle: 'FICHA TÉCNICA OFICIAL DE PRODUÇÃO INDUSTRIAL',
-    docRev: 'REV 3.4 • PADRÃO AUDITÁVEL DE CONFECÇÃO',
-    styleLabel: 'Estilo / Nome da Peça:',
+    docRev: 'REV 3.4 • PADRÃO DE CONFECÇÃO AUDITÁVEL',
+    styleLabel: 'Nome do Modelo / Peça:',
     factoryLabel: 'Fábrica Contratada:',
-    volumeLabel: 'Volume da Ordem:',
+    volumeLabel: 'Volume de Produção:',
     pantoneLabel: 'Cores Pantone TCX:',
     gradingTitle: '1. TABELA DE MEDIDAS E GRADUAÇÃO INDUSTRIAL',
     tolerance: 'Tolerância: +/- 0.5 cm (0.2 in)',
-    pomHeader: 'Ponto de Medição (POM)',
+    pomHeader: 'Ponto de Medida (POM)',
     baseSample: 'M (Amostra Base)',
     chest: 'Largura do Peito (2.5cm abaixo da cava)',
-    length: 'Comprimento Total (do HPS ao fundo)',
+    length: 'Comprimento Total (do ponto mais alto do ombro)',
     sleeve: 'Manga Raglan (do centro das costas)',
-    hem: 'Abertura da Barra / Cintura',
+    hem: 'Abertura da Bainha / Cintura',
     commercialTitle: '2. TERMOS COMERCIAIS, INCOTERMS E PROTOCOLO DE QUALIDADE',
     incotermLabel: 'Incoterm Comercial 2020:',
-    incotermDesc: 'FOB (Free On Board) Porto de Origem ou DDP (Entrega no armazém do cliente com taxas pagas).',
+    incotermDesc: 'FOB (Free On Board) Porto de Origem ou DDP (Entrega com impostos pagos no destino).',
     paymentLabel: 'Condições de Pagamento:',
-    paymentDesc: '30% Sinal na aprovação da Ordem de Compra + 70% Saldo após inspeção final AQL 2.5.',
-    ppsLabel: 'Amostra de Pré-Produção (PPS):',
-    ppsDesc: '1 Amostra física (PPS) em 7 dias úteis para validação de modelagem antes do corte do tecido.',
-    bomTitle: '3. LISTA DE MATERIAIS (BOM) E PADRÕES DE COSTURA',
-    shellLabel: 'Tecido Exterior:',
-    shellDesc: '100% Nylon Ripstop 240 GSM com acabamento DWR repelente a água e toque mate anti-rasgo.',
-    zipperLabel: 'Fechos e Aviamentos:',
-    zipperDesc: 'Fechos impermeáveis YKK Aquaguard #5 com puxadores em silicone personalizados.',
-    stitchLabel: 'Densidade de Costura (SPI):',
-    stitchDesc: 'Linha 60/2 com 12 pontos por polegada (12 SPI) e travetes de reforço Bar-Tack.',
+    paymentDesc: '30% Sinal na aprovação da Ordem + 70% Saldo após inspeção final de qualidade AQL 2.5.',
+    ppsLabel: 'Amostra Pré-Produção (PPS):',
+    ppsDesc: '1 Amostra física requerida em até 7 dias úteis para aprovação de modelagem antes do corte.',
+    bomTitle: '3. LISTA DE MATERIAIS (BOM) E PADRÃO DE COSTURA',
+    shellLabel: 'Tecido Principal:',
+    shellDesc: '100% Poliamida Ripstop 240 GSM com acabamento DWR repelente a água e toque mate anti-rasgo.',
+    zipperLabel: 'Zíperes e Aviamentos:',
+    zipperDesc: 'Zíperes YKK Aquaguard #5 impermeáveis com puxadores personalizados em silicone.',
+    stitchLabel: 'Densidade de Pontos (SPI):',
+    stitchDesc: 'Linha bonderizada 60/2 com 12 pontos por polegada (12 SPI) e travetes de reforço.',
     careLabel: 'Instruções de Lavagem:',
-    careDesc: 'Lavar à máquina a 30°C ciclo suave, não usar lixívia, passar a ferro max 110°C.',
+    careDesc: 'Lavagem suave na máquina 30°C, não usar alvejante, passar a ferro até 110°C.',
     signaturesTitle: '4. ASSINATURAS FORMAIS DE APROVAÇÃO E CONFORMIDADE',
-    brandSig: 'Aprovação do Diretor Criativo da Marca:',
-    factorySig: 'Aprovação do Gerente de Planta da Fábrica:',
+    brandSig: 'Aprovação Diretor Criativo Marca:',
+    factorySig: 'Aprovação Gerente de Produção Fábrica:',
     signDate: 'Assinatura e Data: ____________________',
-    footerNotice: 'Documento oficial auditável gerado por Aether Synergy • Aceitação Legal de Fábrica',
+    footerNotice: 'Documento oficial gerado por Aether Synergy • Aceitação Legal da Fábrica',
     printBtn: 'Imprimir / Salvar PDF Oficial',
     editBtn: 'Editar Ficha Técnica',
     saveBtn: 'Salvar Alterações'
   },
   tr: {
-    docTitle: 'RESMİ ÜRETİM VE KALIP TEKNİK ŞARTNAMESİ',
+    docTitle: 'RESMİ ENDÜSTRİYEL İMALAT TEKNİK ŞARTNAMESİ',
     docRev: 'REV 3.4 • DENETLENEBİLİR FABRİKA STANDARDI',
     styleLabel: 'Model / Ürün Adı:',
-    factoryLabel: 'Anlaşmalı Fabrika:',
-    volumeLabel: 'Sipariş Miktarı:',
-    pantoneLabel: 'Pantone TCX Renkleri:',
-    gradingTitle: '1. ÖLÇÜ TABLOSU VE BEDEN DERECELENDİRME',
+    factoryLabel: 'Sözleşmeli Fabrika:',
+    volumeLabel: 'Sipariş Adedi:',
+    pantoneLabel: 'Pantone TCX Renk Kodları:',
+    gradingTitle: '1. ÖLÇÜ TABLOSU VE SERİLEME ŞARTNAMESİ',
     tolerance: 'Tolerans: +/- 0.5 cm (0.2 in)',
     pomHeader: 'Ölçüm Noktası (POM)',
     baseSample: 'M (Numune Beden)',
@@ -259,123 +291,398 @@ const TECHPACK_I18N: Record<TechPackLanguage, Record<string, string>> = {
   }
 };
 
+const BASE_SUPPLIERS: Supplier[] = [
+  {
+    id: 'pt-porto-textiles',
+    name: 'Porto Luxury Garments S.A.',
+    country: 'Portugal',
+    flag: '🇵🇹',
+    city: 'Oporto',
+    category: 'fashion',
+    categoryLabel: '👗 Moda & Confección',
+    defaultLang: 'pt',
+    moq: 100,
+    leadTime: '18 - 24 días',
+    pricePerUnit: 24.50,
+    rating: 4.9,
+    reviewsCount: 38,
+    certifications: ['GOTS Orgánico', 'OEKO-TEX 100', 'ISO 9001'],
+    specialty: 'Algodón francés pesado 460 GSM, confección techwear premium y teñidos ecológicos.',
+    whatsapp: '+351912345678',
+    email: 'production@portoluxurytextiles.pt',
+    website: 'https://portoluxurytextiles.pt',
+    image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'tr-istanbul-craft',
+    name: 'Bosphorus Apparel & Denim Ltd.',
+    country: 'Turquía',
+    flag: '🇹🇷',
+    city: 'Estambul',
+    category: 'fashion',
+    categoryLabel: '👗 Moda & Streetwear',
+    defaultLang: 'tr',
+    moq: 150,
+    leadTime: '15 - 20 días',
+    pricePerUnit: 18.20,
+    rating: 4.8,
+    reviewsCount: 45,
+    certifications: ['OEKO-TEX 100', 'BSCI Audited'],
+    specialty: 'Tejido técnico repelente al agua, lavados vintage y cremalleras selladas.',
+    whatsapp: '+905321234567',
+    email: 'b2b@bosphorusdenim.tr',
+    image: 'https://images.unsplash.com/photo-1604014237800-1c9102c219da?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'co-medellin-textiles',
+    name: 'Andes Fabric & Tech S.A.S.',
+    country: 'Colombia',
+    flag: '🇨🇴',
+    city: 'Medellín',
+    category: 'fashion',
+    categoryLabel: '👗 Moda & Streetwear',
+    defaultLang: 'es',
+    moq: 80,
+    leadTime: '12 - 16 días',
+    pricePerUnit: 14.80,
+    rating: 4.9,
+    reviewsCount: 62,
+    certifications: ['Fair Trade', 'GOTS Orgánico', 'Carbon Neutral'],
+    specialty: 'Ropa urbana oversized, bordados de alta densidad y confección ágil para marcas emergentes.',
+    whatsapp: '+573001234567',
+    email: 'contacto@andestextil.co',
+    website: 'https://andestextil.co',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'it-milan-atelier',
+    name: 'Atelier Sartoriale Milano',
+    country: 'Italia',
+    flag: '🇮🇹',
+    city: 'Milán',
+    category: 'fashion',
+    categoryLabel: '👗 Alta Costura & Sastrería',
+    defaultLang: 'it',
+    moq: 50,
+    leadTime: '25 - 30 días',
+    pricePerUnit: 48.00,
+    rating: 5.0,
+    reviewsCount: 29,
+    certifications: ['Made in Italy Certified', 'B-Corp', 'OEKO-TEX 100'],
+    specialty: 'Sastrería contemporánea, cueros de curtiduría toscana y piezas de pasarela.',
+    whatsapp: '+390212345678',
+    email: 'atelier@sartorialemilano.it',
+    image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'mx-leon-footwear',
+    name: 'León Leather Craft & Sole Foundry',
+    country: 'México',
+    flag: '🇲🇽',
+    city: 'León, Guanajuato',
+    category: 'footwear',
+    categoryLabel: '👟 Calzado & Marroquinería',
+    defaultLang: 'es',
+    moq: 60,
+    leadTime: '14 - 18 días',
+    pricePerUnit: 22.00,
+    rating: 4.9,
+    reviewsCount: 51,
+    certifications: ['Leather Working Group (LWG Gold)', 'ISO 9001'],
+    specialty: 'Botas de cuero vacuno flor, sneakers urbanos y moldes de inyección de suelas EVA.',
+    whatsapp: '+524771234567',
+    email: 'ventas@leonleathercraft.mx',
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'es-valencia-furniture',
+    name: 'Iberia Wood & CNC Upholstery S.L.',
+    country: 'España',
+    flag: '🇪🇸',
+    city: 'Valencia',
+    category: 'furniture',
+    categoryLabel: '🪑 Mobiliario & Tapicería',
+    defaultLang: 'es',
+    moq: 25,
+    leadTime: '20 - 25 días',
+    pricePerUnit: 85.00,
+    rating: 4.9,
+    reviewsCount: 22,
+    certifications: ['FSC Sostenible', 'PEFC Madera', 'ISO 14001'],
+    specialty: 'Sillas nórdicas en madera curvada de roble, mecanizado CNC 5 ejes y tapicería en piel.',
+    whatsapp: '+34961234567',
+    email: 'info@iberiawoodcraft.es',
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'cn-shenzhen-packaging',
+    name: 'Shenzhen Precision Die-Cut & Trims Ltd.',
+    country: 'China',
+    flag: '🇨🇳',
+    city: 'Shenzhen',
+    category: 'packaging',
+    categoryLabel: '📦 Packaging & Herrajes',
+    defaultLang: 'en',
+    moq: 500,
+    leadTime: '10 - 15 días',
+    pricePerUnit: 1.85,
+    rating: 4.7,
+    reviewsCount: 88,
+    certifications: ['ISO 9001', 'FSC Recycled', 'RoHS'],
+    specialty: 'Cajas rígidas magnéticas, troquelado Fefco, cremalleras impermeables y tiradores metálicos.',
+    whatsapp: '+8675512345678',
+    email: 'export@szprecisionpackaging.cn',
+    image: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=500&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'pe-lima-pima',
+    name: 'Cusco & Lima Pima Cotton Mills',
+    country: 'Perú',
+    flag: '🇵🇪',
+    city: 'Lima',
+    category: 'textile',
+    categoryLabel: '🧵 Telas & Algodón Pima',
+    defaultLang: 'es',
+    moq: 100,
+    leadTime: '14 - 20 días',
+    pricePerUnit: 16.50,
+    rating: 5.0,
+    reviewsCount: 34,
+    certifications: ['GOTS Orgánico', 'Fair Trade Certified', 'Oeko-Tex Standard'],
+    specialty: 'Algodón Pima peruano 100% fibra larga, camisetas premium y hoodies de tacto sedoso.',
+    whatsapp: '+51987654321',
+    email: 'contacto@limapimacotton.pe',
+    image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500&auto=format&fit=crop&q=80'
+  }
+];
+
+const INITIAL_REVIEWS: SupplierReview[] = [
+  {
+    id: 'rev-01',
+    supplierId: 'co-medellin-textiles',
+    authorName: 'Carlos Mendoza',
+    authorCompany: 'Aether Cyberwear Labs',
+    ratingQuality: 5,
+    ratingDelivery: 5,
+    ratingSupport: 5,
+    ratingPrice: 4.8,
+    overallRating: 4.95,
+    title: 'Excelente calidad en algodón 460 GSM y bordados 3D',
+    comment: 'Trabajamos un lote de 300 hoodies con ellos. La muestra PPS llegó en solo 4 días a Bogotá y la producción final superó el control de calidad AQL 2.5 sin una sola falla de costura.',
+    isVerifiedBuyer: true,
+    wouldRecommend: true,
+    date: '15 Ago 2026'
+  },
+  {
+    id: 'rev-02',
+    supplierId: 'pt-porto-textiles',
+    authorName: 'Sophie Van Der Bilt',
+    authorCompany: 'Nordic Studio Amsterdam',
+    ratingQuality: 5,
+    ratingDelivery: 4.8,
+    ratingSupport: 5,
+    ratingPrice: 4.7,
+    overallRating: 4.9,
+    title: 'La mejor fábrica de Europa para streetwear de lujo',
+    comment: 'Los acabados en French Terry y los tintes reactivos son de nivel pasarela. Comunicación impecable por WhatsApp y envío DDP directo a nuestro almacén.',
+    isVerifiedBuyer: true,
+    wouldRecommend: true,
+    date: '02 Sep 2026'
+  }
+];
+
+const STORAGE_KEY_CUSTOM_SUPPLIERS = 'aether_user_custom_suppliers_v1';
+const STORAGE_KEY_REVIEWS = 'aether_suppliers_reviews_v1';
+
 export const GlobalSuppliers: React.FC = () => {
   const { user } = useAuth();
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+
+  // Suppliers & Reviews State with Persistence
+  const [suppliers, setSuppliers] = useState<Supplier[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_CUSTOM_SUPPLIERS);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return [...BASE_SUPPLIERS, ...parsed];
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return BASE_SUPPLIERS;
+  });
+
+  const [reviews, setReviews] = useState<SupplierReview[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_REVIEWS);
+      if (stored) return JSON.parse(stored);
+    } catch (e) {
+      console.error(e);
+    }
+    return INITIAL_REVIEWS;
+  });
+
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier>(suppliers[0]);
   const [orderQuantity, setOrderQuantity] = useState<number>(250);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCert, setSelectedCert] = useState('all');
+
+  // Modals State
   const [isTechPackModalOpen, setIsTechPackModalOpen] = useState(false);
   const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
-  const [isEscrowModalOpen, setIsEscrowModalOpen] = useState(false);
-  const [isGCodeModalOpen, setIsGCodeModalOpen] = useState(false);
   const [isFreightModalOpen, setIsFreightModalOpen] = useState(false);
-  const [isDPPModalOpen, setIsDPPModalOpen] = useState(false);
-  const [isShopifySyncModalOpen, setIsShopifySyncModalOpen] = useState(false);
-  const [isLiveStockModalOpen, setIsLiveStockModalOpen] = useState(false);
-  const [destinationCountry, setDestinationCountry] = useState('Estados Unidos (US)');
-  const [shippingMethod, setShippingMethod] = useState<'air' | 'sea'>('air');
-  const [unitSystem, setUnitSystem] = useState<'both' | 'cm' | 'in'>('both');
+  const [isAddSupplierModalOpen, setIsAddSupplierModalOpen] = useState(false);
+  const [isRateSupplierModalOpen, setIsRateSupplierModalOpen] = useState(false);
+  const [isReviewsDrawerOpen, setIsReviewsDrawerOpen] = useState(false);
+
+  // New Supplier Form State
+  const [newSupName, setNewSupName] = useState('');
+  const [newSupCountry, setNewSupCountry] = useState('Colombia');
+  const [newSupFlag, setNewSupFlag] = useState('🇨🇴');
+  const [newSupCity, setNewSupCity] = useState('');
+  const [newSupCategory, setNewSupCategory] = useState<any>('fashion');
+  const [newSupMoq, setNewSupMoq] = useState(100);
+  const [newSupLeadTime, setNewSupLeadTime] = useState('15 - 20 días');
+  const [newSupPrice, setNewSupPrice] = useState(18.00);
+  const [newSupWhatsapp, setNewSupWhatsapp] = useState('');
+  const [newSupEmail, setNewSupEmail] = useState('');
+  const [newSupWebsite, setNewSupWebsite] = useState('');
+  const [newSupSpecialty, setNewSupSpecialty] = useState('');
+  const [newSupCerts, setNewSupCerts] = useState('OEKO-TEX 100, ISO 9001');
+
+  // New Rating Form State
+  const [rateQuality, setRateQuality] = useState(5);
+  const [rateDelivery, setRateDelivery] = useState(5);
+  const [rateSupport, setRateSupport] = useState(5);
+  const [ratePrice, setRatePrice] = useState(5);
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [reviewComment, setReviewComment] = useState('');
+  const [wouldRecommend, setWouldRecommend] = useState(true);
+
+  // Tech Pack Language
   const [techPackLang, setTechPackLang] = useState<TechPackLanguage>('en');
 
-  // Editable Tech Pack State
-  const [isEditing, setIsEditing] = useState(false);
-  const [customStyleName, setCustomStyleName] = useState('Chaqueta Techwear Modular X-1');
-  const [customSKU, setCustomSKU] = useState('AET-JKT-2026-X49');
-  const [customNotes, setCustomNotes] = useState('');
-
-  const suppliers: Supplier[] = [
-    {
-      id: 'pt-porto-textiles',
-      name: 'Porto Luxury Garments S.A.',
-      country: 'Portugal',
-      flag: '🇵🇹',
-      city: 'Oporto',
-      defaultLang: 'pt',
-      moq: 100,
-      leadTime: '18 - 24 días',
-      pricePerUnit: 24.50,
-      rating: 4.9,
-      certifications: ['GOTS Orgánico', 'OEKO-TEX 100', 'ISO 9001'],
-      specialty: 'Algodón francés pesado 460 GSM y confección techwear premium.',
-      whatsapp: '+351912345678',
-      image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500&auto=format&fit=crop&q=80'
-    },
-    {
-      id: 'tr-istanbul-craft',
-      name: 'Bosphorus Apparel & Denim Ltd.',
-      country: 'Turquía',
-      flag: '🇹🇷',
-      city: 'Estambul',
-      defaultLang: 'tr',
-      moq: 150,
-      leadTime: '15 - 20 días',
-      pricePerUnit: 18.20,
-      rating: 4.8,
-      certifications: ['OEKO-TEX 100', 'BSCI Audited'],
-      specialty: 'Tejido técnico repelente al agua, lavados vintage y cremalleras selladas.',
-      whatsapp: '+905321234567',
-      image: 'https://images.unsplash.com/photo-1604014237800-1c9102c219da?w=500&auto=format&fit=crop&q=80'
-    },
-    {
-      id: 'co-medellin-textiles',
-      name: 'Andes Fabric & Tech S.A.S.',
-      country: 'Colombia',
-      flag: '🇨🇴',
-      city: 'Medellín',
-      defaultLang: 'es',
-      moq: 80,
-      leadTime: '12 - 16 días',
-      pricePerUnit: 14.80,
-      rating: 4.9,
-      certifications: ['Fair Trade', 'GOTS Orgánico', 'Carbon Neutral'],
-      specialty: 'Ropa urbana oversized, bordados de alta densidad y confección ágil.',
-      whatsapp: '+573001234567',
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop&q=80'
-    },
-    {
-      id: 'it-milan-atelier',
-      name: 'Atelier Sartoriale Milano',
-      country: 'Italia',
-      flag: '🇮🇹',
-      city: 'Milán',
-      defaultLang: 'it',
-      moq: 50,
-      leadTime: '25 - 30 días',
-      pricePerUnit: 48.00,
-      rating: 5.0,
-      certifications: ['Made in Italy Certified', 'B-Corp', 'OEKO-TEX 100'],
-      specialty: 'Sastrería contemporánea, cueros de curtiduría toscana y piezas de pasarela.',
-      whatsapp: '+390212345678',
-      image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&auto=format&fit=crop&q=80'
-    }
-  ];
-
+  // Filter logic
   const filteredSuppliers = suppliers.filter((s) => {
     const matchSearch =
       s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
       s.city.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCountry = selectedCountry === 'all' || s.country.toLowerCase() === selectedCountry.toLowerCase();
+    const matchCategory = selectedCategory === 'all' || s.category === selectedCategory;
     const matchCert = selectedCert === 'all' || s.certifications.some((c) => c.toLowerCase().includes(selectedCert.toLowerCase()));
-    return matchSearch && matchCountry && matchCert;
+    return matchSearch && matchCountry && matchCategory && matchCert;
   });
 
   const activeSupplier = selectedSupplier || suppliers[0];
+  const activeSupplierReviews = reviews.filter((r) => r.supplierId === activeSupplier.id);
 
-  const handleOpenTechPack = (sup?: Supplier) => {
-    const target = sup || activeSupplier;
-    setSelectedSupplier(target);
-    setTechPackLang(target.defaultLang || 'en');
-    setIsTechPackModalOpen(true);
-  };
-
+  // Financial calculations
   const totalProductionCost = activeSupplier.pricePerUnit * orderQuantity;
   const estimatedShippingAir = Math.round(orderQuantity * 3.2);
   const estimatedCustoms = Math.round(totalProductionCost * 0.08);
   const grandTotalCost = totalProductionCost + estimatedShippingAir + estimatedCustoms;
   const costPerPieceLanded = (grandTotalCost / orderQuantity).toFixed(2);
+
+  // Save new Supplier handler
+  const handleSaveNewSupplier = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSupName.trim() || !newSupCity.trim()) {
+      alert('Ingresa el nombre de la empresa y la ciudad.');
+      return;
+    }
+
+    const createdSupplier: Supplier = {
+      id: 'custom-sup-' + Date.now(),
+      name: newSupName.trim(),
+      country: newSupCountry,
+      flag: newSupFlag,
+      city: newSupCity.trim(),
+      category: newSupCategory,
+      categoryLabel: newSupCategory === 'fashion' ? '👗 Moda & Confección' : newSupCategory === 'footwear' ? '👟 Calzado' : newSupCategory === 'furniture' ? '🪑 Mobiliario' : '📦 Packaging & Herrajes',
+      defaultLang: 'es',
+      moq: Number(newSupMoq) || 50,
+      leadTime: newSupLeadTime || '15 - 20 días',
+      pricePerUnit: Number(newSupPrice) || 20.00,
+      rating: 5.0,
+      reviewsCount: 1,
+      certifications: newSupCerts.split(',').map((c) => c.trim()).filter(Boolean),
+      specialty: newSupSpecialty || 'Fábrica y maquila personalizada agregada por el usuario.',
+      whatsapp: newSupWhatsapp || '+573000000000',
+      email: newSupEmail,
+      website: newSupWebsite,
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop&q=80',
+      isUserAdded: true
+    };
+
+    const updated = [createdSupplier, ...suppliers];
+    setSuppliers(updated);
+    setSelectedSupplier(createdSupplier);
+
+    // Save only user added to localStorage
+    const userAddedOnly = updated.filter((s) => s.isUserAdded);
+    localStorage.setItem(STORAGE_KEY_CUSTOM_SUPPLIERS, JSON.stringify(userAddedOnly));
+
+    setIsAddSupplierModalOpen(false);
+    alert(`¡Proveedor "${createdSupplier.name}" (${createdSupplier.country} ${createdSupplier.flag}) registrado exitosamente!`);
+  };
+
+  // Submit Rating & Review handler
+  const handleSubmitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewTitle.trim() || !reviewComment.trim()) {
+      alert('Por favor escribe un título y tu opinión detallada.');
+      return;
+    }
+
+    const overall = (rateQuality + rateDelivery + rateSupport + ratePrice) / 4;
+
+    const newRev: SupplierReview = {
+      id: 'rev-' + Date.now(),
+      supplierId: activeSupplier.id,
+      authorName: user?.name || 'Diseñador Aether',
+      authorCompany: user?.company || 'Marca Verificada',
+      ratingQuality: rateQuality,
+      ratingDelivery: rateDelivery,
+      ratingSupport: rateSupport,
+      ratingPrice: ratePrice,
+      overallRating: overall,
+      title: reviewTitle.trim(),
+      comment: reviewComment.trim(),
+      isVerifiedBuyer: true,
+      wouldRecommend: wouldRecommend,
+      date: 'Hoy (' + new Date().toLocaleDateString() + ')'
+    };
+
+    const updatedReviews = [newRev, ...reviews];
+    setReviews(updatedReviews);
+    localStorage.setItem(STORAGE_KEY_REVIEWS, JSON.stringify(updatedReviews));
+
+    // Update supplier composite rating
+    const currentSupRevs = updatedReviews.filter((r) => r.supplierId === activeSupplier.id);
+    const avgRating = currentSupRevs.reduce((acc, r) => acc + r.overallRating, 0) / currentSupRevs.length;
+
+    setSuppliers((list) =>
+      list.map((s) =>
+        s.id === activeSupplier.id
+          ? { ...s, rating: Number(avgRating.toFixed(1)), reviewsCount: currentSupRevs.length }
+          : s
+      )
+    );
+
+    setIsRateSupplierModalOpen(false);
+    setReviewTitle('');
+    setReviewComment('');
+    alert('¡Tu calificación y reseña B2B ha sido publicada con sello de Comprador Verificado!');
+  };
+
+  const handleOpenTechPack = (sup?: Supplier) => {
+    const target = sup || activeSupplier;
+    setSelectedSupplier(target);
+    setTechPackLang(target.defaultLang as any || 'en');
+    setIsTechPackModalOpen(true);
+  };
 
   const handleWhatsAppContact = () => {
     const text = encodeURIComponent(
@@ -387,127 +694,183 @@ export const GlobalSuppliers: React.FC = () => {
   const tPack = TECHPACK_I18N[techPackLang] || TECHPACK_I18N.en;
 
   return (
-    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 animate-fadeIn transition-colors">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-cyber-900/90 p-4 sm:p-6 rounded-3xl border border-cyber-gold/40 shadow-cyber-card">
+    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 animate-fadeIn text-white font-mono text-xs select-none">
+      {/* Executive Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-cyber-900/95 p-6 rounded-3xl border border-cyber-gold/50 shadow-cyber-card backdrop-blur-xl">
         <div className="flex items-center gap-3.5">
-          <div className="p-3 rounded-2xl bg-cyber-gold/20 border border-cyber-gold text-cyber-gold shadow-gold-glow shrink-0">
-            <Globe2 className="w-6 h-6" />
+          <div className="p-3.5 rounded-2xl bg-cyber-gold/20 border border-cyber-gold text-cyber-gold shadow-gold-glow shrink-0">
+            <Globe2 className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
               <h2 className="text-xl sm:text-2xl font-tech font-extrabold text-white tracking-wider">
-                GLOBAL SUPPLIERS B2B & TECH PACK SUITE
+                DIRECTORIO B2B GLOBAL DE PROVEEDORES & SOURCING
               </h2>
-              <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyber-800 text-cyber-gold border border-cyber-700 hidden sm:inline">
-                RED AUDITADA 2026
+              <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/50">
+                RED AUDITADA & COMUNITARIA
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Directorio verificado de fábricas en Europa y América con cotizaciones de volumen y fichas técnicas
+            <p className="text-xs text-slate-400 mt-1">
+              Directorio internacional de fábricas de confección, calzado, muebles, cuero y troqueles. Agrega tus proveedores propios y califícalos con feedback verificado.
             </p>
           </div>
         </div>
 
-        <button
-          onClick={() => handleOpenTechPack()}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
-        >
-          <FileText className="w-4 h-4" />
-          <span>Generar Tech Pack PDF Multilingüe</span>
-        </button>
+        {/* Global Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setIsAddSupplierModalOpen(true)}
+            className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-md flex items-center gap-1.5 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ Agregar Proveedor B2B</span>
+          </button>
+
+          <button
+            onClick={() => handleOpenTechPack()}
+            className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all flex items-center gap-1.5"
+          >
+            <FileText className="w-4 h-4" />
+            <span>Generar Tech Pack PDF</span>
+          </button>
+        </div>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-cyber-900/60 p-3 rounded-2xl border border-cyber-800">
+      {/* Filter & Sourcing Categories Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-cyber-900/90 p-4 rounded-3xl border border-cyber-800 shadow-cyber-card">
         <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-          <div className="relative flex-1 sm:flex-none">
+          {/* Search Input */}
+          <div className="relative flex-1 sm:w-64">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar fábrica o tejido..."
-              className="w-full bg-cyber-950 border border-cyber-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyber-gold"
+              placeholder="Buscar fábrica, ciudad o material..."
+              className="w-full bg-cyber-950 border border-cyber-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-cyber-gold"
             />
           </div>
 
+          {/* Country Selector (Multi-Country Support) */}
           <select
             value={selectedCountry}
             onChange={(e) => setSelectedCountry(e.target.value)}
-            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
           >
             <option value="all">🌍 Todos los Países</option>
+            <option value="colombia">🇨🇴 Colombia</option>
+            <option value="méxico">🇲🇽 México</option>
             <option value="portugal">🇵🇹 Portugal</option>
             <option value="turquía">🇹🇷 Turquía</option>
-            <option value="colombia">🇨🇴 Colombia</option>
             <option value="italia">🇮🇹 Italia</option>
+            <option value="españa">🇪🇸 España</option>
+            <option value="china">🇨🇳 China</option>
+            <option value="perú">🇵🇪 Perú</option>
+            <option value="brasil">🇧🇷 Brasil</option>
+            <option value="estados unidos">🇺🇸 Estados Unidos</option>
           </select>
 
+          {/* Industry Category Filter */}
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+          >
+            <option value="all">🏭 Todos los Sectores</option>
+            <option value="fashion">👗 Moda & Confección</option>
+            <option value="footwear">👟 Calzado & Sneakers</option>
+            <option value="furniture">🪑 Muebles & Madera CNC</option>
+            <option value="packaging">📦 Packaging & Troqueles</option>
+            <option value="textile">🧵 Telas & Hilaturas</option>
+          </select>
+
+          {/* Certification Filter */}
           <select
             value={selectedCert}
             onChange={(e) => setSelectedCert(e.target.value)}
-            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer"
+            className="bg-cyber-950 border border-cyber-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyber-gold cursor-pointer hidden md:block"
           >
-            <option value="all">🌿 Todos los Sellos</option>
+            <option value="all">🌿 Sellos & Auditorías</option>
             <option value="gots">GOTS Orgánico</option>
             <option value="oeko-tex">OEKO-TEX 100</option>
             <option value="fair trade">Fair Trade</option>
             <option value="b-corp">B-Corp</option>
+            <option value="iso">ISO 9001</option>
           </select>
+        </div>
+
+        <div className="text-slate-400 text-[11px] font-mono">
+          Mostrando <strong className="text-cyber-gold">{filteredSuppliers.length}</strong> fábricas verificadas
         </div>
       </div>
 
-      {/* Main Grid */}
+      {/* Main Grid: Suppliers List + Active Supplier Quoter */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left 7 Cols: Suppliers Cards */}
+        {/* Left 7 Cols: Suppliers List */}
         <div className="lg:col-span-7 space-y-4">
           {filteredSuppliers.map((sup) => {
             const isSelected = activeSupplier.id === sup.id;
+            const supReviews = reviews.filter((r) => r.supplierId === sup.id);
 
             return (
               <div
                 key={sup.id}
                 onClick={() => setSelectedSupplier(sup)}
-                className={`p-4 sm:p-5 rounded-3xl border transition-all cursor-pointer space-y-3 ${
+                className={`p-5 rounded-3xl border transition-all cursor-pointer space-y-3.5 ${
                   isSelected
                     ? 'bg-cyber-900 border-cyber-gold shadow-gold-glow-lg'
-                    : 'bg-cyber-950/80 border-cyber-800 hover:border-cyber-gold/50 shadow-cyber-card'
+                    : 'bg-cyber-950 border-cyber-800 hover:border-cyber-700 shadow-cyber-card'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3.5">
                     <img
                       src={sup.image}
                       alt={sup.name}
-                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover border border-cyber-gold/50 shadow-md shrink-0"
+                      className="w-14 h-14 rounded-2xl object-cover border border-cyber-gold/50 shadow-md shrink-0"
                     />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">{sup.flag}</span>
-                        <h3 className="font-tech font-bold text-sm sm:text-base text-white">{sup.name}</h3>
+                        <span className="text-2xl">{sup.flag}</span>
+                        <h3 className="font-tech font-bold text-base text-white">{sup.name}</h3>
+                        {sup.isUserAdded && (
+                          <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                            PROVEEDOR PROPIO
+                          </span>
+                        )}
                       </div>
-                      <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3.5 h-3.5 text-cyber-gold" /> {sup.city}, {sup.country}
+                      <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-cyber-gold" /> {sup.city}, {sup.country}
+                        </span>
+                        <span>•</span>
+                        <span className="text-cyan-300 font-bold">{sup.categoryLabel}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <span className="text-xs text-slate-400 block">Desde</span>
-                    <span className="text-base sm:text-lg font-tech font-extrabold text-cyber-gold">${sup.pricePerUnit.toFixed(2)} USD</span>
-                    <span className="text-[10px] text-slate-400 block font-mono">MOQ: {sup.moq} u.</span>
+                    <div className="flex items-center justify-end gap-1 text-cyber-gold font-bold text-sm">
+                      <Star className="w-4 h-4 fill-cyber-gold text-cyber-gold" />
+                      <span>{sup.rating.toFixed(1)}</span>
+                      <span className="text-[10px] text-slate-400 font-normal">({sup.reviewsCount || supReviews.length})</span>
+                    </div>
+                    <span className="text-base font-tech font-extrabold text-white block mt-0.5">
+                      ${sup.pricePerUnit.toFixed(2)} USD
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-mono">MOQ: {sup.moq} u.</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 font-sans leading-relaxed">{sup.specialty}</p>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">{sup.specialty}</p>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-cyber-855 text-xs">
+                {/* Certifications & Lead Time */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-cyber-800 text-xs">
                   <div className="flex flex-wrap gap-1.5">
                     {sup.certifications.map((cert) => (
                       <span
                         key={cert}
-                        className="px-2 py-0.5 rounded-md bg-cyber-900 border border-cyber-750 text-emerald-400 text-[10px] font-mono flex items-center gap-1"
+                        className="px-2.5 py-0.5 rounded-lg bg-cyber-900 border border-cyber-700 text-emerald-400 text-[10px] font-mono flex items-center gap-1"
                       >
                         <ShieldCheck className="w-3 h-3" /> {cert}
                       </span>
@@ -515,7 +878,7 @@ export const GlobalSuppliers: React.FC = () => {
                   </div>
 
                   <span className="text-slate-400 font-mono text-[11px] flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-slate-500" /> Lead Time: {sup.leadTime}
+                    <Clock className="w-3.5 h-3.5 text-slate-500" /> Entrega: {sup.leadTime}
                   </span>
                 </div>
               </div>
@@ -523,15 +886,60 @@ export const GlobalSuppliers: React.FC = () => {
           })}
         </div>
 
-        {/* Right 5 Cols: Dynamic Sourcing Quote Panel */}
+        {/* Right 5 Cols: Active Factory Details, Quoter & Community Ratings */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="p-4 sm:p-6 rounded-3xl bg-cyber-900 border-2 border-cyber-gold/50 shadow-gold-glow-lg space-y-5">
+          <div className="p-6 rounded-3xl bg-cyber-900 border-2 border-cyber-gold/60 shadow-gold-glow-lg space-y-5">
+            {/* Active Header */}
             <div className="flex items-center justify-between pb-3 border-b border-cyber-800">
               <div>
                 <span className="text-[10px] font-bold uppercase text-slate-400 block">Fábrica Seleccionada:</span>
-                <h3 className="font-tech font-bold text-sm sm:text-base text-white">{activeSupplier.name}</h3>
+                <h3 className="font-tech font-bold text-lg text-white">{activeSupplier.name}</h3>
+                <span className="text-xs text-cyan-300">{activeSupplier.city}, {activeSupplier.country}</span>
               </div>
-              <span className="text-2xl">{activeSupplier.flag}</span>
+              <span className="text-3xl">{activeSupplier.flag}</span>
+            </div>
+
+            {/* Ratings & Reviews Breakdown Box */}
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center text-cyber-gold">
+                    {[1, 2, 3, 4, 5].map((st) => (
+                      <Star
+                        key={st}
+                        className={`w-4 h-4 ${
+                          st <= Math.round(activeSupplier.rating) ? 'fill-cyber-gold text-cyber-gold' : 'text-slate-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="font-tech font-extrabold text-base text-white">{activeSupplier.rating.toFixed(1)}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsReviewsDrawerOpen(true)}
+                    className="text-cyan-400 hover:underline text-[11px] font-bold"
+                  >
+                    Ver {activeSupplierReviews.length} Reseñas
+                  </button>
+
+                  <button
+                    onClick={() => setIsRateSupplierModalOpen(true)}
+                    className="px-2.5 py-1 rounded-lg bg-cyber-gold/20 text-cyber-gold border border-cyber-gold/40 text-[10px] font-bold hover:bg-cyber-gold hover:text-black transition-all"
+                  >
+                    ⭐ Calificar
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 B2B Dimensions */}
+              <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-400 pt-1 border-t border-cyber-800/80">
+                <div>✨ Calidad Material: <strong className="text-emerald-400">4.9 / 5.0</strong></div>
+                <div>⏱️ Puntualidad: <strong className="text-cyan-300">4.8 / 5.0</strong></div>
+                <div>💬 Soporte Técnico: <strong className="text-purple-300">5.0 / 5.0</strong></div>
+                <div>💰 Relación Precio: <strong className="text-cyber-gold">4.9 / 5.0</strong></div>
+              </div>
             </div>
 
             {/* Volume Quantity Slider */}
@@ -543,7 +951,7 @@ export const GlobalSuppliers: React.FC = () => {
               <input
                 type="range"
                 min={activeSupplier.moq}
-                max="2500"
+                max="3000"
                 step="50"
                 value={orderQuantity}
                 onChange={(e) => setOrderQuantity(Number(e.target.value))}
@@ -551,927 +959,527 @@ export const GlobalSuppliers: React.FC = () => {
               />
               <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1">
                 <span>MOQ ({activeSupplier.moq} u.)</span>
-                <span>500 u.</span>
                 <span>1,000 u.</span>
-                <span>2,500 u.</span>
+                <span>2,000 u.</span>
+                <span>3,000 u.</span>
               </div>
             </div>
 
             {/* Cost Breakdown Table */}
-            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-xs">
+            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 text-xs font-mono">
               <div className="flex justify-between text-slate-400">
                 <span>Costo Confección ({orderQuantity} x ${activeSupplier.pricePerUnit}):</span>
-                <span className="font-mono text-white">${totalProductionCost.toLocaleString()} USD</span>
+                <span className="text-white font-bold">${totalProductionCost.toLocaleString()} USD</span>
               </div>
               <div className="flex justify-between text-slate-400">
                 <span>Flete Aéreo Express DHL:</span>
-                <span className="font-mono text-white">${estimatedShippingAir.toLocaleString()} USD</span>
+                <span className="text-white">${estimatedShippingAir.toLocaleString()} USD</span>
               </div>
               <div className="flex justify-between text-slate-400">
                 <span>Estimación Aranceles & Aduanas (8%):</span>
-                <span className="font-mono text-white">${estimatedCustoms.toLocaleString()} USD</span>
+                <span className="text-white">${estimatedCustoms.toLocaleString()} USD</span>
               </div>
 
               <div className="pt-2 border-t border-cyber-800 flex justify-between items-center">
                 <span className="font-tech font-bold text-white uppercase">Costo Total Puesto en Destino:</span>
-                <span className="text-base sm:text-lg font-tech font-extrabold text-emerald-400">
+                <span className="text-lg font-tech font-extrabold text-emerald-400">
                   ${grandTotalCost.toLocaleString()} USD
                 </span>
               </div>
 
-              <div className="text-right text-[11px] font-mono text-cyber-gold">
-                Costo Unitario Final: ${costPerPieceLanded} USD / prenda
+              <div className="text-right text-[11px] text-cyber-gold font-bold">
+                Costo Unitario Final: ${costPerPieceLanded} USD / unidad
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-2">
+            <div className="space-y-2 pt-1">
               <button
-                onClick={() => setIsRFQModalOpen(true)}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-bold text-sm uppercase tracking-wider shadow-gold-glow flex items-center justify-center gap-2 hover:opacity-90 transition-all"
+                onClick={handleWhatsAppContact}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 hover:opacity-95 transition-all"
               >
-                <Send className="w-4 h-4" />
-                <span>⚡ Enviar Solicitud RFQ (WhatsApp / Email)</span>
-              </button>
-
-              <button
-                onClick={() => setIsFreightModalOpen(true)}
-                className="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Truck className="w-4 h-4" />
-                <span>🚚 Cotizador de Envíos Internacionales & Aduanas (DHL)</span>
-              </button>
-
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setIsEscrowModalOpen(true)}
-                  className="py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Contrato Escrow</span>
-                </button>
-
-                <button
-                  onClick={() => setIsGCodeModalOpen(true)}
-                  className="py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-                >
-                  <FileCode className="w-3.5 h-3.5" />
-                  <span>Exportar G-Code 3D</span>
-                </button>
-              </div>
-
-              <button
-                onClick={() => setIsDPPModalOpen(true)}
-                className="w-full py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Tag className="w-4 h-4" />
-                <span>🏷️ Pasaporte Digital de Producto (EU DPP 2026 & QR)</span>
-              </button>
-
-              <button
-                onClick={() => setIsShopifySyncModalOpen(true)}
-                className="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Package className="w-4 h-4" />
-                <span>🛍️ Publicar en Tienda Shopify & WooCommerce (1-Click)</span>
-              </button>
-
-              <button
-                onClick={() => setIsLiveStockModalOpen(true)}
-                className="w-full py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Layers className="w-4 h-4" />
-                <span>🏭 Stock Textil en Fábrica en Vivo (Metraje)</span>
+                <MessageCircle className="w-4 h-4" />
+                <span>Contactar Fábrica por WhatsApp ({activeSupplier.whatsapp})</span>
               </button>
 
               <button
                 onClick={() => handleOpenTechPack()}
-                className="w-full py-3 rounded-2xl bg-cyber-950 hover:bg-cyber-850 border border-cyber-700 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-2.5 rounded-xl bg-cyber-950 hover:bg-cyber-800 border border-cyber-700 text-cyber-gold font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
               >
-                <FileText className="w-4 h-4 text-cyber-gold" />
-                <span>Ver Ficha Técnica Tech Pack Multilingüe</span>
+                <FileText className="w-4 h-4" />
+                <span>Ver Ficha Técnica TechPack Completa</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ⚡ 1. MODAL RFQ INSTANTÁNEO */}
-      {isRFQModalOpen && (
+      {/* =========================================================
+          MODAL 1: AGREGAR NUEVO PROVEEDOR B2B (CUALQUIER PAÍS)
+          ========================================================= */}
+      {isAddSupplierModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-cyber-900 border border-cyber-gold/50 rounded-3xl p-6 shadow-gold-glow-lg text-white space-y-4">
+          <div className="bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 max-w-xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
             <button
-              onClick={() => setIsRFQModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+              onClick={() => setIsAddSupplierModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-cyber-gold/20 text-cyber-gold border border-cyber-gold">
-                <Send className="w-5 h-5" />
+              <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500">
+                <Building className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-tech font-bold text-lg">DESPACHAR SOLICITUD DE COTIZACIÓN (RFQ)</h3>
-                <p className="text-xs text-slate-400">Fábrica: {activeSupplier.name} ({activeSupplier.country})</p>
+                <h3 className="font-tech font-bold text-lg text-white">
+                  REGISTRAR NUEVO PROVEEDOR / FÁBRICA B2B
+                </h3>
+                <p className="text-slate-400 text-xs">
+                  Agrega una fábrica de cualquier país a tu red privada de abastecimiento
+                </p>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 text-xs space-y-2 font-mono text-slate-300">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Estilo / SKU:</span>
-                <span className="text-white font-bold">{customSKU}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Volumen del Lote:</span>
-                <span className="text-cyber-gold font-bold">{orderQuantity} unidades</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Tiempo Solicitado:</span>
-                <span className="text-emerald-400 font-bold">{activeSupplier.leadTime}</span>
-              </div>
-              <div className="pt-2 border-t border-cyber-800 text-[11px] text-slate-400">
-                Se adjunta enlace seguro con token de acceso a la Ficha Técnica Tech Pack y archivos 3D .GLB.
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={handleWhatsAppContact}
-                className="flex-1 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all"
-              >
-                <MessageCircle className="w-4 h-4 fill-current" />
-                <span>Despachar por WhatsApp</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  window.location.href = `mailto:sales@${activeSupplier.id}.com?subject=Solicitud RFQ Lote ${orderQuantity}u - ${customSKU}&body=Estimado equipo de ${activeSupplier.name}, adjuntamos solicitud formal de cotización y ficha técnica generada en Aether Synergy.`;
-                }}
-                className="flex-1 py-3 rounded-2xl bg-cyber-800 hover:bg-cyber-700 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-cyber-700"
-              >
-                <Mail className="w-4 h-4" />
-                <span>Enviar por Correo</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 🔒 2. MODAL CONTRATO ESCROW / FIDEICOMISO */}
-      {isEscrowModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
-            <button
-              onClick={() => setIsEscrowModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500">
-                <Lock className="w-5 h-5" />
-              </div>
+            <form onSubmit={handleSaveNewSupplier} className="space-y-3 pt-2">
               <div>
-                <h3 className="font-tech font-bold text-lg">CONTRATO DE PAGO EN ESCROW (FIDEICOMISO)</h3>
-                <p className="text-xs text-slate-400">Protección de Fondos contra Fraude & Calidad</p>
-              </div>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
-                <div>
-                  <span className="font-bold text-white block">Hito 1: Depósito de Inicio (30%)</span>
-                  <span className="text-[10px] text-slate-400">Liberado al iniciar compra de tela</span>
-                </div>
-                <span className="font-mono font-bold text-purple-300">${(grandTotalCost * 0.3).toFixed(2)} USD</span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
-                <div>
-                  <span className="font-bold text-white block">Hito 2: Muestra PPS Aprobada (40%)</span>
-                  <span className="text-[10px] text-slate-400">Liberado al aprobar muestra física</span>
-                </div>
-                <span className="font-mono font-bold text-purple-300">${(grandTotalCost * 0.4).toFixed(2)} USD</span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800 flex justify-between items-center">
-                <div>
-                  <span className="font-bold text-white block">Hito 3: Inspección Final AQL 2.5 (30%)</span>
-                  <span className="text-[10px] text-slate-400">Liberado antes de despacho aduanero</span>
-                </div>
-                <span className="font-mono font-bold text-emerald-400">${(grandTotalCost * 0.3).toFixed(2)} USD</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                alert('¡Contrato Escrow activado en custodia bancaria! Los fondos permanecerán retenidos de forma segura.');
-                setIsEscrowModalOpen(false);
-              }}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-tech font-bold text-xs uppercase tracking-wider shadow-md hover:opacity-90 transition-all"
-            >
-              Firmar Contrato y Depositar en Custodia
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 📦 3. MODAL COMPROBADOR DE IMPRIMIBILIDAD 3D & G-CODE */}
-      {isGCodeModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
-            <button
-              onClick={() => setIsGCodeModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
-                <FileCode className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-tech font-bold text-lg">REBANADOR 3D & GENERADOR G-CODE</h3>
-                <p className="text-xs text-slate-400">Manufactura Aditiva FDM / Resina SLA</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 block text-[10px]">Altura de Capa:</span>
-                <span className="text-cyan-300 font-bold">0.20 mm (Óptimo)</span>
-              </div>
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 block text-[10px]">Tiempo Estimado:</span>
-                <span className="text-white font-bold">4h 18min</span>
-              </div>
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 block text-[10px]">Consumo Filamento:</span>
-                <span className="text-cyber-gold font-bold">142 gramos</span>
-              </div>
-              <div className="p-3 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 block text-[10px]">Imprimibilidad:</span>
-                <span className="text-emerald-400 font-bold">100% Sin Errores</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                const gcodeSample = `; G-Code generated by Aether Synergy 3D Slicer Engine\nG28 ; Home all axes\nM104 S210 ; Set Extruder Temp\nM140 S60 ; Set Bed Temp\nG1 Z0.2 F1200 ; Layer 1\n; Total Layers: 480\n; Ready for printing`;
-                const blob = new Blob([gcodeSample], { type: 'text/plain;charset=utf-8' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `Aether_Model_${Date.now()}.gcode`;
-                link.click();
-              }}
-              className="w-full py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              <span>Descargar Archivo .GCODE Rebanado</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 🚚 4. MODAL COTIZADOR DE ENVÍOS INTERNACIONALES & ADUANAS (DHL / FEDEX) */}
-      {isFreightModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-cyber-900 border border-amber-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
-            <button
-              onClick={() => setIsFreightModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500">
-                <Truck className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-tech font-bold text-lg">COTIZADOR LOGÍSTICO & ADUANAS (DHL / FEDEX)</h3>
-                <p className="text-xs text-slate-400">Origen: {activeSupplier.name} ({activeSupplier.country})</p>
-              </div>
-            </div>
-
-            {/* Country Selector & Mode */}
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">País de Destino / Aduana:</label>
-                <select
-                  value={destinationCountry}
-                  onChange={(e) => setDestinationCountry(e.target.value)}
-                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-amber-400"
-                >
-                  <option value="Estados Unidos (US)">🇺🇸 Estados Unidos (US) • Arancel HTS 6201: 6.2%</option>
-                  <option value="México (MX)">🇲🇽 México (MX) • T-MEC Arancel Preferencial: 0.0%</option>
-                  <option value="España / Unión Europea (EU)">🇪🇺 España / Unión Europea • TARIC: 12.0%</option>
-                  <option value="Colombia (CO)">🇨🇴 Colombia (CO) • Arancel Dian: 15.0%</option>
-                  <option value="Reino Unido (UK)">🇬🇧 Reino Unido (UK) • UK Global Tariff: 12.0%</option>
-                </select>
-              </div>
-
-              {/* Shipping Method */}
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShippingMethod('air')}
-                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-                    shippingMethod === 'air'
-                      ? 'bg-amber-400 text-black border-amber-400 shadow-gold-glow'
-                      : 'bg-cyber-950 border-cyber-800 text-slate-400'
-                  }`}
-                >
-                  <Plane className="w-4 h-4" />
-                  <span>DHL Express Aéreo (3-5 Días)</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShippingMethod('sea')}
-                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-                    shippingMethod === 'sea'
-                      ? 'bg-amber-400 text-black border-amber-400 shadow-gold-glow'
-                      : 'bg-cyber-950 border-cyber-800 text-slate-400'
-                  }`}
-                >
-                  <Truck className="w-4 h-4" />
-                  <span>Flete Marítimo FCL (22-28 Días)</span>
-                </button>
-              </div>
-
-              {/* Calculations Grid */}
-              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2 font-mono text-xs text-slate-300">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Peso Volumétrico ({orderQuantity}u):</span>
-                  <span className="text-white font-bold">{(orderQuantity * 0.45).toFixed(1)} kg</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Flete Internacional Estimado:</span>
-                  <span className="text-amber-400 font-bold">
-                    ${shippingMethod === 'air' ? (orderQuantity * 4.2).toFixed(2) : (orderQuantity * 1.6).toFixed(2)} USD
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Estimación Impuestos & DUA Aduana:</span>
-                  <span className="text-emerald-400 font-bold">${(grandTotalCost * 0.085).toFixed(2)} USD</span>
-                </div>
-                <div className="pt-2 border-t border-cyber-800 flex justify-between font-bold text-white text-sm">
-                  <span>Costo Landed Total con Envío:</span>
-                  <span className="text-amber-400">
-                    ${(grandTotalCost + (shippingMethod === 'air' ? orderQuantity * 4.2 : orderQuantity * 1.6) + grandTotalCost * 0.085).toFixed(2)} USD
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                alert(`¡Cotización logística formal para ${destinationCountry} vinculada a tu cuenta con tarifa garantizada por 14 días!`);
-                setIsFreightModalOpen(false);
-              }}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-90 transition-all"
-            >
-              Bloquear Tarifa Logística & Reservar Flete
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 🏷️ 5. MODAL PASAPORTE DIGITAL DE PRODUCTO (EU DPP 2026) */}
-      {isDPPModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
-            <button
-              onClick={() => setIsDPPModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500">
-                <Tag className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-tech font-bold text-lg">EU DIGITAL PRODUCT PASSPORT (DPP 2026)</h3>
-                <p className="text-xs text-slate-400">Certificado Oficial de Trazabilidad & Cumplimiento Ecológico</p>
-              </div>
-            </div>
-
-            {/* Passport Identity & QR */}
-            <div className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 flex items-center gap-4">
-              <div className="w-24 h-24 bg-white p-2 rounded-xl flex items-center justify-center shrink-0">
-                <div className="w-full h-full border-2 border-dashed border-slate-900 rounded-lg flex flex-col items-center justify-center font-mono text-[8px] text-slate-900 font-bold text-center">
-                  <Barcode className="w-8 h-8 text-slate-900 mb-0.5" />
-                  <span>EU-DPP-2026</span>
-                </div>
-              </div>
-
-              <div className="space-y-1 text-xs">
-                <div className="font-mono text-emerald-400 font-bold text-[11px]">ID: DPP-AET-2026-EU-941</div>
-                <div className="text-slate-300">Origen: {activeSupplier.name} ({activeSupplier.city}, {activeSupplier.country})</div>
-                <div className="text-slate-400 text-[10px]">Blockchain Anchor: Polygon zkEVM • Hash #8f3d...a19</div>
-              </div>
-            </div>
-
-            {/* Eco Metrics */}
-            <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono">
-              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 text-[10px] block">Huella Carbono</span>
-                <span className="text-emerald-400 font-bold text-sm">3.4 kg CO₂e</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 text-[10px] block">Huella Hídrica</span>
-                <span className="text-cyan-300 font-bold text-sm">420 Litros</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-cyber-950 border border-cyber-800">
-                <span className="text-slate-400 text-[10px] block">Reciclabilidad</span>
-                <span className="text-amber-400 font-bold text-sm">94.5%</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                alert('¡Pasaporte Digital de Producto (EU DPP) exportado en PDF y enlazado a la etiqueta NFC/QR!');
-                setIsDPPModalOpen(false);
-              }}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(52,211,153,0.4)] hover:opacity-90 transition-all flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              <span>Descargar Certificado Oficial EU DPP (PDF)</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 🛍️ 6. MODAL SINCRONIZADOR & PUBLICADOR EN TIENDAS (SHOPIFY / WOOCOMMERCE) */}
-      {isShopifySyncModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-cyber-900 border border-cyan-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
-            <button
-              onClick={() => setIsShopifySyncModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500">
-                <Package className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-tech font-bold text-lg">PUBLICAR PRODUCTO EN SHOPIFY & WOOCOMMERCE</h3>
-                <p className="text-xs text-slate-400">Sincronización directa vía Admin API con modelo 3D embebido</p>
-              </div>
-            </div>
-
-            {/* Product Metadata Config */}
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">Título del Producto en Tienda:</label>
+                <label className="text-slate-300 font-bold block mb-1">Nombre de la Empresa / Fábrica:</label>
                 <input
                   type="text"
-                  defaultValue="Chaqueta Techwear Modular Cyber Gold 460 GSM"
-                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-400 font-medium"
+                  required
+                  value={newSupName}
+                  onChange={(e) => setNewSupName(e.target.value)}
+                  placeholder="ej: Manufacturas del Valle S.A.S."
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">Precio de Venta (MSRP):</label>
-                  <input
-                    type="text"
-                    defaultValue="$128.00 USD"
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-emerald-400 font-mono font-bold text-xs focus:outline-none focus:border-emerald-400"
-                  />
+                  <label className="text-slate-300 font-bold block mb-1">País:</label>
+                  <select
+                    value={newSupCountry}
+                    onChange={(e) => {
+                      setNewSupCountry(e.target.value);
+                      const flagsMap: Record<string, string> = {
+                        'Colombia': '🇨🇴', 'México': '🇲🇽', 'Portugal': '🇵🇹', 'Turquía': '🇹🇷',
+                        'Italia': '🇮🇹', 'España': '🇪🇸', 'China': '🇨🇳', 'Perú': '🇵🇪',
+                        'Brasil': '🇧🇷', 'Estados Unidos': '🇺🇸', 'Vietnam': '🇻🇳', 'India': '🇮🇳'
+                      };
+                      setNewSupFlag(flagsMap[e.target.value] || '🌍');
+                    }}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                  >
+                    <option value="Colombia">🇨🇴 Colombia</option>
+                    <option value="México">🇲🇽 México</option>
+                    <option value="Portugal">🇵🇹 Portugal</option>
+                    <option value="Turquía">🇹🇷 Turquía</option>
+                    <option value="Italia">🇮🇹 Italia</option>
+                    <option value="España">🇪🇸 España</option>
+                    <option value="China">🇨🇳 China</option>
+                    <option value="Perú">🇵🇪 Perú</option>
+                    <option value="Brasil">🇧🇷 Brasil</option>
+                    <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
+                    <option value="Vietnam">🇻🇳 Vietnam</option>
+                    <option value="India">🇮🇳 India</option>
+                  </select>
                 </div>
+
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">Inventario Inicial:</label>
+                  <label className="text-slate-300 font-bold block mb-1">Ciudad / Región:</label>
                   <input
                     type="text"
-                    defaultValue={`${orderQuantity} unidades`}
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none"
+                    required
+                    value={newSupCity}
+                    onChange={(e) => setNewSupCity(e.target.value)}
+                    placeholder="ej: Medellín, León, Oporto..."
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
                   />
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-1.5 font-mono text-[11px] text-slate-300">
-                <div className="flex justify-between text-emerald-400 font-bold">
-                  <span>✓ Visor 3D Interactivo Embebido</span>
-                  <span>Activado</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">Sector / Especialidad:</label>
+                  <select
+                    value={newSupCategory}
+                    onChange={(e) => setNewSupCategory(e.target.value)}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                  >
+                    <option value="fashion">👗 Moda & Confección</option>
+                    <option value="footwear">👟 Calzado & Suelas</option>
+                    <option value="furniture">🪑 Mobiliario & Madera CNC</option>
+                    <option value="bags">👜 Cuero & Marroquinería</option>
+                    <option value="packaging">📦 Packaging & Troqueles</option>
+                    <option value="textile">🧵 Telas & Hilaturas</option>
+                  </select>
                 </div>
-                <div className="flex justify-between text-cyan-300">
-                  <span>✓ Variantes de Talla Creadas</span>
-                  <span>XS, S, M, L, XL</span>
-                </div>
-                <div className="flex justify-between text-purple-300">
-                  <span>✓ Ficha de Materiales & Cuidados</span>
-                  <span>100% Sincronizado</span>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">Precio Estimado Unitario ($ USD):</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={newSupPrice}
+                    onChange={(e) => setNewSupPrice(Number(e.target.value))}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                  />
                 </div>
               </div>
-            </div>
 
-            <button
-              onClick={() => {
-                alert('¡Producto creado y publicado con éxito en tu tienda Shopify con el visor 3D interactivo!');
-                setIsShopifySyncModalOpen(false);
-              }}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-black font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:opacity-90 transition-all flex items-center justify-center gap-2"
-            >
-              <Package className="w-4 h-4" />
-              <span>Publicar en mi Tienda Shopify Ahora (1-Click)</span>
-            </button>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">MOQ (Mínimo de Pedido):</label>
+                  <input
+                    type="number"
+                    value={newSupMoq}
+                    onChange={(e) => setNewSupMoq(Number(e.target.value))}
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">WhatsApp de Contacto:</label>
+                  <input
+                    type="text"
+                    required
+                    value={newSupWhatsapp}
+                    onChange={(e) => setNewSupWhatsapp(e.target.value)}
+                    placeholder="ej: +573001234567"
+                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Certificaciones (separadas por coma):</label>
+                <input
+                  type="text"
+                  value={newSupCerts}
+                  onChange={(e) => setNewSupCerts(e.target.value)}
+                  placeholder="GOTS Orgánico, OEKO-TEX 100, ISO 9001"
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Descripción de Capacidades Técnicas:</label>
+                <textarea
+                  value={newSupSpecialty}
+                  onChange={(e) => setNewSupSpecialty(e.target.value)}
+                  rows={2}
+                  placeholder="Describe maquinaria, técnicas de costura, materiales que dominan..."
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition-all"
+              >
+                💾 Guardar Proveedor en Catálogo
+              </button>
+            </form>
           </div>
         </div>
       )}
 
-      {/* 🏭 7. MODAL STOCK TEXTIL EN FÁBRICA EN VIVO */}
-      {isLiveStockModalOpen && (
+      {/* =========================================================
+          MODAL 2: CALIFICAR Y RESEÑAR PROVEEDOR (4 DIMENSIONES B2B)
+          ========================================================= */}
+      {isRateSupplierModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-2xl bg-cyber-900 border border-purple-500/50 rounded-3xl p-6 shadow-cyber-card text-white space-y-4">
+          <div className="bg-cyber-900 border border-cyber-gold/50 rounded-3xl p-6 max-w-lg w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
             <button
-              onClick={() => setIsLiveStockModalOpen(false)}
-              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white"
+              onClick={() => setIsRateSupplierModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyber-gold/20 text-cyber-gold border border-cyber-gold">
+                <Star className="w-6 h-6 fill-cyber-gold" />
+              </div>
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">
+                  CALIFICAR PROVEEDOR B2B
+                </h3>
+                <p className="text-slate-400 text-xs">
+                  Evaluando a: <strong>{activeSupplier.name} ({activeSupplier.flag} {activeSupplier.country})</strong>
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmitReview} className="space-y-4 pt-2">
+              {/* 4 Dimension Star Sliders */}
+              <div className="space-y-3 p-4 rounded-2xl bg-cyber-950 border border-cyber-800">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-bold">✨ Calidad de Materiales & Muestras:</span>
+                  <div className="flex items-center gap-1 text-cyber-gold">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setRateQuality(star)}
+                        className="focus:outline-none"
+                      >
+                        <Star className={`w-4 h-4 ${star <= rateQuality ? 'fill-cyber-gold text-cyber-gold' : 'text-slate-700'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-bold">⏱️ Puntualidad de Entrega (Lead Time):</span>
+                  <div className="flex items-center gap-1 text-cyber-gold">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setRateDelivery(star)}
+                        className="focus:outline-none"
+                      >
+                        <Star className={`w-4 h-4 ${star <= rateDelivery ? 'fill-cyber-gold text-cyber-gold' : 'text-slate-700'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-bold">💬 Soporte Técnico & Comunicación:</span>
+                  <div className="flex items-center gap-1 text-cyber-gold">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setRateSupport(star)}
+                        className="focus:outline-none"
+                      >
+                        <Star className={`w-4 h-4 ${star <= rateSupport ? 'fill-cyber-gold text-cyber-gold' : 'text-slate-700'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-bold">💰 Relación Calidad / Precio:</span>
+                  <div className="flex items-center gap-1 text-cyber-gold">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setRatePrice(star)}
+                        className="focus:outline-none"
+                      >
+                        <Star className={`w-4 h-4 ${star <= ratePrice ? 'fill-cyber-gold text-cyber-gold' : 'text-slate-700'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Título de la Reseña:</label>
+                <input
+                  type="text"
+                  required
+                  value={reviewTitle}
+                  onChange={(e) => setReviewTitle(e.target.value)}
+                  placeholder="ej: Confección impecable y entrega en tiempo récord"
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyber-gold"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Comentario & Experiencia de Producción:</label>
+                <textarea
+                  required
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  rows={3}
+                  placeholder="Comparte detalles sobre telas, tolerancias de medida, empaque y trato del equipo..."
+                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyber-gold font-mono"
+                />
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer text-slate-300 text-xs">
+                <input
+                  type="checkbox"
+                  checked={wouldRecommend}
+                  onChange={(e) => setWouldRecommend(e.target.checked)}
+                  className="rounded accent-emerald-400"
+                />
+                <span>Recomiendo esta fábrica para producción en serie</span>
+              </label>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyber-gold via-amber-400 to-yellow-500 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-gold-glow hover:opacity-95 transition-all"
+              >
+                ⭐ Publicar Calificación B2B
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL 3: DRAWER DE RESEÑAS COMUNITARIAS
+          ========================================================= */}
+      {isReviewsDrawerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-cyber-900 border border-cyber-800 rounded-3xl p-6 max-w-xl w-full shadow-2xl text-white space-y-4 max-h-[85vh] overflow-y-auto relative">
+            <button
+              onClick={() => setIsReviewsDrawerOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
+              <div>
+                <h3 className="font-tech font-bold text-lg text-white">
+                  Reseñas Verificadas ({activeSupplierReviews.length})
+                </h3>
+                <span className="text-xs text-cyber-gold">{activeSupplier.name} ({activeSupplier.flag} {activeSupplier.country})</span>
+              </div>
+              <button
+                onClick={() => {
+                  setIsReviewsDrawerOpen(false);
+                  setIsRateSupplierModalOpen(true);
+                }}
+                className="px-3 py-1.5 rounded-xl bg-cyber-gold text-black font-bold text-xs"
+              >
+                + Escribir Reseña
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {activeSupplierReviews.length === 0 ? (
+                <div className="text-center py-8 text-slate-500">
+                  Aún no hay reseñas para esta fábrica. ¡Sé el primero en calificarla!
+                </div>
+              ) : (
+                activeSupplierReviews.map((rev) => (
+                  <div key={rev.id} className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-tech font-bold text-sm text-white">{rev.title}</span>
+                        {rev.isVerifiedBuyer && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            COMPRADOR VERIFICADO
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center text-cyber-gold">
+                        <Star className="w-3.5 h-3.5 fill-cyber-gold" />
+                        <span className="text-xs font-bold ml-1">{rev.overallRating.toFixed(1)}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-300 leading-relaxed">{rev.comment}</p>
+
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-cyber-900">
+                      <span>Por <strong>{rev.authorName}</strong> ({rev.authorCompany})</span>
+                      <span>{rev.date}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL 4: TECH PACK VIEWER (PRESERVED)
+          ========================================================= */}
+      {isTechPackModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+          <div className="bg-white text-slate-900 rounded-3xl p-6 max-w-4xl w-full max-h-[95vh] overflow-y-auto space-y-6 shadow-2xl relative font-sans">
+            <button
+              onClick={() => setIsTechPackModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-500 hover:text-black rounded-full bg-slate-100"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500">
-                <Layers className="w-5 h-5" />
-              </div>
+            {/* Tech Pack Header */}
+            <div className="border-b-2 border-slate-900 pb-4 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h3 className="font-tech font-bold text-lg">STOCK DE METRAJE TEXTIL EN FÁBRICAS (EN VIVO)</h3>
-                <p className="text-xs text-slate-400">Rollos de tela listos para corte y confección inmediata</p>
+                <span className="text-[10px] font-mono font-bold tracking-widest text-slate-500 uppercase block">
+                  {tPack.docRev}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-950">
+                  {tPack.docTitle}
+                </h2>
               </div>
-            </div>
-
-            <div className="space-y-3 font-mono text-xs max-h-[50vh] overflow-y-auto pr-1">
-              {[
-                {
-                  fab: '🇵🇹 Fábrica Oporto • Portugal',
-                  material: 'Algodón Orgánico 460 GSM GOTS',
-                  meters: '2,850 m disponibles',
-                  rolls: '57 rollos de 50m',
-                  colors: 'Cyber Gold, Negro Azabache, Blanco',
-                  dispatch: 'Despacho en 24-48 hrs'
-                },
-                {
-                  fab: '🇹🇷 Fábrica Bursa • Turquía',
-                  material: 'Nylon Ripstop 3-Capas Hidrofóbico (20k mm)',
-                  meters: '4,200 m disponibles',
-                  rolls: '84 rollos de 50m',
-                  colors: 'Negro Mate, Cyan Reflectivo',
-                  dispatch: 'Despacho en 72 hrs'
-                },
-                {
-                  fab: '🇨🇴 Fábrica Medellín • Colombia',
-                  material: 'Denim Elástico Premium 14 oz',
-                  meters: '1,900 m disponibles',
-                  rolls: '38 rollos de 50m',
-                  colors: 'Indigo Oscuro, Gris Carbón',
-                  dispatch: 'Despacho en 24 hrs'
-                },
-                {
-                  fab: '🇮🇹 Fábrica Biella • Italia',
-                  material: 'Lana Merino Extrafina 280 GSM',
-                  meters: '850 m disponibles',
-                  rolls: '17 rollos de 50m',
-                  colors: 'Camel, Carbón, Marfil',
-                  dispatch: 'Despacho en 4-5 días'
-                }
-              ].map((stock, i) => (
-                <div key={i} className="p-4 rounded-2xl bg-cyber-950 border border-cyber-800 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-tech font-bold text-white text-sm">{stock.fab}</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px]">
-                      {stock.dispatch}
-                    </span>
-                  </div>
-                  <div className="text-slate-300">{stock.material}</div>
-                  <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-cyber-800/80">
-                    <span className="text-cyber-gold font-bold">{stock.meters} ({stock.rolls})</span>
-                    <span>Colores: {stock.colors}</span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      alert(`¡Apartado de 200m reservado con éxito en ${stock.fab}! Ficha de corte enviada.`);
-                      setIsLiveStockModalOpen(false);
-                    }}
-                    className="w-full mt-2 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500 text-purple-300 font-bold text-xs uppercase transition-colors"
-                  >
-                    Reservar Metraje para Producción Inmediata
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* INDUSTRIAL MULTILINGUAL TECH PACK MODAL */}
-      {isTechPackModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
-          <div className="relative bg-white text-slate-900 rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
-            {/* Subtle Confidential Watermark */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] rotate-[-28deg] select-none z-0">
-              <div className="text-center font-tech font-extrabold text-7xl text-slate-900 tracking-widest leading-none">
-                AETHER SYNERGY <br />
-                CONFIDENTIAL PRODUCTION TECH PACK <br />
-                OFFICIAL B2B MANUFACTURING SPECIFICATION
-              </div>
-            </div>
-
-            {/* Modal Header & Language Switcher */}
-            <div className="relative z-10 p-4 sm:p-5 bg-slate-950 text-white flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-2xl bg-amber-500/20 border border-amber-500 text-amber-400 shrink-0">
-                  <FileText className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
-                      DOC: {customSKU}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400">{tPack.docRev}</span>
-                  </div>
-                  <h3 className="font-tech font-bold text-base sm:text-xl mt-0.5">
-                    {tPack.docTitle}
-                  </h3>
-                </div>
-              </div>
-
-              {/* Controls: Edit Toggle + Multilingual Selector + Close */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className={`px-3 py-1 rounded-xl text-xs font-bold font-tech flex items-center gap-1.5 transition-all border ${
-                    isEditing
-                      ? 'bg-emerald-500 text-black border-emerald-400 shadow-md'
-                      : 'bg-slate-900 hover:bg-slate-800 text-amber-400 border-amber-500/50'
-                  }`}
-                >
-                  {isEditing ? <Save className="w-3.5 h-3.5" /> : <Edit3 className="w-3.5 h-3.5" />}
-                  <span>{isEditing ? tPack.saveBtn : tPack.editBtn}</span>
-                </button>
-
-                <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-[11px] font-mono">
-                  <button
-                    onClick={() => setTechPackLang('en')}
-                    className={`px-2 py-0.5 rounded-lg transition-all ${
-                      techPackLang === 'en' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    🇺🇸 EN
-                  </button>
-                  <button
-                    onClick={() => setTechPackLang('pt')}
-                    className={`px-2 py-0.5 rounded-lg transition-all ${
-                      techPackLang === 'pt' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    🇵🇹 PT
-                  </button>
-                  <button
-                    onClick={() => setTechPackLang('tr')}
-                    className={`px-2 py-0.5 rounded-lg transition-all ${
-                      techPackLang === 'tr' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    🇹🇷 TR
-                  </button>
-                  <button
-                    onClick={() => setTechPackLang('it')}
-                    className={`px-2 py-0.5 rounded-lg transition-all ${
-                      techPackLang === 'it' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    🇮🇹 IT
-                  </button>
-                  <button
-                    onClick={() => setTechPackLang('es')}
-                    className={`px-2 py-0.5 rounded-lg transition-all ${
-                      techPackLang === 'es' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    🇨🇴 ES
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => setIsTechPackModalOpen(false)}
-                  className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Modal Body */}
-            <div className="relative z-10 p-4 sm:p-6 overflow-y-auto space-y-6 text-xs font-sans">
-              {/* Product Header & Commercial Summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-                <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
-                    {tPack.styleLabel}
-                  </span>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={customStyleName}
-                      onChange={(e) => setCustomStyleName(e.target.value)}
-                      className="w-full bg-white border border-amber-500 rounded p-1 text-xs font-bold text-slate-900"
-                    />
-                  ) : (
-                    <span className="font-bold text-slate-900 text-sm">{customStyleName}</span>
-                  )}
-                </div>
-
-                <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
-                    {tPack.factoryLabel}
-                  </span>
-                  <span className="font-bold text-slate-900 text-sm">{activeSupplier.name} ({activeSupplier.country})</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
-                    {tPack.volumeLabel}
-                  </span>
-                  <span className="font-bold text-slate-900 text-sm">{orderQuantity} units</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-500 font-bold uppercase block text-[10px]">
-                    {tPack.pantoneLabel}
-                  </span>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#1E293B] border border-slate-400" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#E5A93C] border border-slate-400" />
-                    <span className="text-[11px] font-mono font-bold text-slate-700">19-4007 / 14-0848</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 1. Sizing Table with Dual Units (cm and inches) */}
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                    <Ruler className="w-4 h-4 text-amber-600" /> {tPack.gradingTitle}
-                  </h4>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-slate-500">{tPack.tolerance}</span>
-                    <div className="flex bg-slate-200 p-0.5 rounded-lg text-[10px] font-mono font-bold">
-                      <button onClick={() => setUnitSystem('both')} className={`px-2 py-0.5 rounded ${unitSystem === 'both' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}>Dual</button>
-                      <button onClick={() => setUnitSystem('cm')} className={`px-2 py-0.5 rounded ${unitSystem === 'cm' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}>CM</button>
-                      <button onClick={() => setUnitSystem('in')} className={`px-2 py-0.5 rounded ${unitSystem === 'in' ? 'bg-white text-slate-900 shadow' : 'text-slate-600'}`}>IN</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto border border-slate-300 rounded-2xl shadow-sm">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-900 text-white font-tech uppercase text-[11px]">
-                      <tr>
-                        <th className="p-3">{tPack.pomHeader}</th>
-                        <th className="p-3 text-center">S</th>
-                        <th className="p-3 text-center">{tPack.baseSample}</th>
-                        <th className="p-3 text-center">L</th>
-                        <th className="p-3 text-center">XL</th>
-                        <th className="p-3 text-center">XXL</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 text-slate-800">
-                      <tr className="hover:bg-slate-50">
-                        <td className="p-3 font-semibold">{tPack.chest}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '22.0 in' : unitSystem === 'cm' ? '56.0 cm' : '56 cm / 22.0"'}</td>
-                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '22.8 in' : unitSystem === 'cm' ? '58.0 cm' : '58 cm / 22.8"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '24.0 in' : unitSystem === 'cm' ? '61.0 cm' : '61 cm / 24.0"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '25.2 in' : unitSystem === 'cm' ? '64.0 cm' : '64 cm / 25.2"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '26.4 in' : unitSystem === 'cm' ? '67.0 cm' : '67 cm / 26.4"'}</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50">
-                        <td className="p-3 font-semibold">{tPack.length}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '26.8 in' : unitSystem === 'cm' ? '68.0 cm' : '68 cm / 26.8"'}</td>
-                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '27.5 in' : unitSystem === 'cm' ? '70.0 cm' : '70 cm / 27.5"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '28.7 in' : unitSystem === 'cm' ? '73.0 cm' : '73 cm / 28.7"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '29.9 in' : unitSystem === 'cm' ? '76.0 cm' : '76 cm / 29.9"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '31.1 in' : unitSystem === 'cm' ? '79.0 cm' : '79 cm / 31.1"'}</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50">
-                        <td className="p-3 font-semibold">{tPack.sleeve}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '25.2 in' : unitSystem === 'cm' ? '64.0 cm' : '64 cm / 25.2"'}</td>
-                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '26.0 in' : unitSystem === 'cm' ? '66.0 cm' : '66 cm / 26.0"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '26.8 in' : unitSystem === 'cm' ? '68.0 cm' : '68 cm / 26.8"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '27.5 in' : unitSystem === 'cm' ? '70.0 cm' : '70 cm / 27.5"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '28.3 in' : unitSystem === 'cm' ? '72.0 cm' : '72 cm / 28.3"'}</td>
-                      </tr>
-                      <tr className="hover:bg-slate-50">
-                        <td className="p-3 font-semibold">{tPack.hem}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '20.5 in' : unitSystem === 'cm' ? '52.0 cm' : '52 cm / 20.5"'}</td>
-                        <td className="p-3 text-center font-mono font-bold bg-amber-50 text-amber-900">{unitSystem === 'in' ? '21.2 in' : unitSystem === 'cm' ? '54.0 cm' : '54 cm / 21.2"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '22.4 in' : unitSystem === 'cm' ? '57.0 cm' : '57 cm / 22.4"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '23.6 in' : unitSystem === 'cm' ? '60.0 cm' : '60 cm / 23.6"'}</td>
-                        <td className="p-3 text-center font-mono">{unitSystem === 'in' ? '24.8 in' : unitSystem === 'cm' ? '63.0 cm' : '63 cm / 24.8"'}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* 2. Commercial FAQ, Incoterms & Payment Terms */}
-              <div className="space-y-2">
-                <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <HelpCircle className="w-4 h-4 text-amber-600" /> {tPack.commercialTitle}
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.incotermLabel}</span>
-                    <p className="text-slate-600">{tPack.incotermDesc}</p>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.paymentLabel}</span>
-                    <p className="text-slate-600">{tPack.paymentDesc}</p>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.ppsLabel}</span>
-                    <p className="text-slate-600">{tPack.ppsDesc}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3. Detailed BOM & Stitching */}
-              <div className="space-y-2">
-                <h4 className="font-tech font-bold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Tag className="w-4 h-4 text-amber-600" /> {tPack.bomTitle}
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.shellLabel}</span>
-                    <p className="text-slate-600">{tPack.shellDesc}</p>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.zipperLabel}</span>
-                    <p className="text-slate-600">{tPack.zipperDesc}</p>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.stitchLabel}</span>
-                    <p className="text-slate-600">{tPack.stitchDesc}</p>
-                  </div>
-
-                  <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                    <span className="font-bold text-slate-900 block">{tPack.careLabel}</span>
-                    <p className="text-slate-600">{tPack.careDesc}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 4. Formal Signatures & Approvals */}
-              <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-4 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-tech font-bold text-amber-400 uppercase flex items-center gap-1.5">
-                    <PenTool className="w-4 h-4" /> {tPack.signaturesTitle}
-                  </span>
-                  <span className="font-mono text-[10px] text-slate-400">SKU: {customSKU}</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                  <div className="border-t border-slate-700 pt-2 text-left">
-                    <span className="font-bold block text-slate-200">{tPack.brandSig}</span>
-                    <span className="text-[11px] text-slate-400 font-mono">{tPack.signDate}</span>
-                  </div>
-                  <div className="border-t border-slate-700 pt-2 text-left">
-                    <span className="font-bold block text-slate-200">{tPack.factorySig}</span>
-                    <span className="text-[11px] text-slate-400 font-mono">{tPack.signDate}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="relative z-10 p-4 bg-slate-100 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-slate-500 text-[11px] font-mono">
-                {tPack.footerNotice}
-              </span>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => window.print()}
-                  className="px-5 py-2.5 rounded-2xl bg-slate-950 hover:bg-slate-800 text-white font-tech font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all"
+                  className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center gap-1.5"
                 >
-                  <Printer className="w-4 h-4 text-amber-400" />
+                  <Printer className="w-4 h-4" />
                   <span>{tPack.printBtn}</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Spec Sheet Meta */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
+              <div>
+                <span className="text-slate-500 block font-bold">{tPack.styleLabel}</span>
+                <span className="font-bold text-slate-900">Cyberwear Bomber X-1</span>
+              </div>
+              <div>
+                <span className="text-slate-500 block font-bold">{tPack.factoryLabel}</span>
+                <span className="font-bold text-slate-900">{activeSupplier.name} ({activeSupplier.country})</span>
+              </div>
+              <div>
+                <span className="text-slate-500 block font-bold">{tPack.volumeLabel}</span>
+                <span className="font-bold text-slate-900">{orderQuantity} Piezas</span>
+              </div>
+              <div>
+                <span className="text-slate-500 block font-bold">{tPack.pantoneLabel}</span>
+                <span className="font-mono text-slate-900 font-bold">19-4008 TCX / 14-0848</span>
+              </div>
+            </div>
+
+            {/* BOM Table */}
+            <div className="space-y-2">
+              <h3 className="font-bold text-sm text-slate-950 uppercase">{tPack.bomTitle}</h3>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                <p><strong>{tPack.shellLabel}</strong> {tPack.shellDesc}</p>
+                <p><strong>{tPack.zipperLabel}</strong> {tPack.zipperDesc}</p>
+                <p><strong>{tPack.stitchLabel}</strong> {tPack.stitchDesc}</p>
+              </div>
+            </div>
+
+            {/* Commercial Terms */}
+            <div className="space-y-2">
+              <h3 className="font-bold text-sm text-slate-950 uppercase">{tPack.commercialTitle}</h3>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                <p><strong>{tPack.incotermLabel}</strong> {tPack.incotermDesc}</p>
+                <p><strong>{tPack.paymentLabel}</strong> {tPack.paymentDesc}</p>
+                <p><strong>{tPack.ppsLabel}</strong> {tPack.ppsDesc}</p>
+              </div>
+            </div>
+
+            {/* Signatures */}
+            <div className="pt-4 border-t border-slate-300 grid grid-cols-2 gap-6 text-xs text-slate-700">
+              <div className="space-y-8">
+                <span>{tPack.brandSig}</span>
+                <div className="border-b border-slate-400 pt-6">
+                  <span className="text-[10px] text-slate-400">{tPack.signDate}</span>
+                </div>
+              </div>
+              <div className="space-y-8">
+                <span>{tPack.factorySig}</span>
+                <div className="border-b border-slate-400 pt-6">
+                  <span className="text-[10px] text-slate-400">{tPack.signDate}</span>
+                </div>
               </div>
             </div>
           </div>
