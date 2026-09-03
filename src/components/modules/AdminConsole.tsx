@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
   ShieldAlert,
+  Sliders,
+  Layers3,
+  Camera,
+  Scissors,
+  Palette,
   Users,
   DollarSign,
   Cpu,
@@ -51,11 +56,16 @@ import { billingService, AutoBillingResult } from '../../services/billingService
 
 export const AdminConsole: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'financials' | 'telemetry' | 'users' | 'audit' | 'affiliates' | 'intelligence'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'financials' | 'module_costs' | 'telemetry' | 'users' | 'audit' | 'affiliates' | 'intelligence'>('analytics');
   const [usersList, setUsersList] = useState<StoredUser[]>(() => dbService.getAllUsers());
   const [searchQuery, setSearchQuery] = useState('');
   const [filterNiche, setFilterNiche] = useState('all');
   const [simulatedUsers, setSimulatedUsers] = useState<number>(500);
+
+  // Module Cost Breakdown Timeframe and Search
+  const [costTimeframe, setCostTimeframe] = useState<'today' | 'week' | 'month' | 'year'>('month');
+  const [moduleCostSearch, setModuleCostSearch] = useState('');
+  const [costAlertThreshold, setCostAlertThreshold] = useState<number>(800);
 
   // User Deletion & Billing Action States
   const [userToDelete, setUserToDelete] = useState<StoredUser | null>(null);
@@ -236,6 +246,262 @@ export const AdminConsole: React.FC = () => {
   const simulatedGrossProfit = simulatedRevenue - simulatedCost;
   const simulatedMarginPercent = simulatedRevenue > 0 ? ((simulatedGrossProfit / simulatedRevenue) * 100).toFixed(1) : '0';
 
+
+  interface ModuleCostMetric {
+    id: string;
+    name: string;
+    category: string;
+    icon: any;
+    color: string;
+    borderColor: string;
+    bgColor: string;
+    monthlyCostUSD: number;
+    monthlyGenerations: number;
+    unitCostUSD: number;
+    primaryAPIs: string[];
+    hardwareUsage: string;
+    profitContributionMargin: number;
+    trend: string;
+    trendType: 'up' | 'down' | 'neutral';
+    status: 'optimal' | 'warning' | 'high_volume';
+    desc: string;
+  }
+
+  const moduleCostsList: ModuleCostMetric[] = [
+    {
+      id: 'aurora_3d',
+      name: 'Aurora 3D Studio & Modelado Paramétrico',
+      category: 'Moda, Calzado, Muebles & Platos',
+      icon: Box,
+      color: 'text-amber-400',
+      borderColor: 'border-amber-500/40',
+      bgColor: 'bg-amber-500/10',
+      monthlyCostUSD: 648.50,
+      monthlyGenerations: 5404,
+      unitCostUSD: 0.12,
+      primaryAPIs: ['Tripo3D Fast GLB', 'Meshy Quad Retopo', 'Substance 3D PBR', 'Unreal Engine 5 Cloud'],
+      hardwareUsage: '142.5 Horas GPU H100 (WebGPU Clusters)',
+      profitContributionMargin: 88.4,
+      trend: '+12.4%',
+      trendType: 'up',
+      status: 'high_volume',
+      desc: 'Generación de mallas 3D .glb, suelas de calzado, costuras y renderizado WebGPU en tiempo real.'
+    },
+    {
+      id: 'product_photo_studio',
+      name: 'Foto Estudio IA & Viral Blast (Facebook & Redes)',
+      category: 'E-Commerce & Publicidad Viral',
+      icon: Camera,
+      color: 'text-cyan-400',
+      borderColor: 'border-cyan-500/40',
+      bgColor: 'bg-cyan-500/10',
+      monthlyCostUSD: 315.00,
+      monthlyGenerations: 9000,
+      unitCostUSD: 0.035,
+      primaryAPIs: ['Fal.ai FLUX.1 Pro', 'Alpha Matte Inpainting', 'Meta Graph API v20.0'],
+      hardwareUsage: '68.2 Horas GPU A100 TensorRT',
+      profitContributionMargin: 92.1,
+      trend: '+24.8%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Extracción de producto con cámara, 7 escenarios de estudio 4K y difusión en cientos de grupos de Facebook.'
+    },
+    {
+      id: 'video_commercials',
+      name: 'Generador de Video Ads 4K & Spots Cinemáticos',
+      category: 'Pasarelas & Spots Publicitarios',
+      icon: Video,
+      color: 'text-rose-400',
+      borderColor: 'border-rose-500/40',
+      bgColor: 'bg-rose-500/10',
+      monthlyCostUSD: 412.00,
+      monthlyGenerations: 1648,
+      unitCostUSD: 0.25,
+      primaryAPIs: ['Runway Gen-3 Alpha', 'Luma Dream Machine', 'Kling AI 4K', 'Cloud ffmpeg'],
+      hardwareUsage: '95.0 Horas H100 NVENC Render Farm',
+      profitContributionMargin: 81.6,
+      trend: '+8.2%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Producción de comerciales de 15s-30s para TikTok Ads, Reels y anuncios de comida con efectos de vapor.'
+    },
+    {
+      id: 'suno_audio_studio',
+      name: 'Suno AI Music Studio & Locuciones ElevenLabs',
+      category: 'Bandas Sonoras & Audio Ads',
+      icon: Radio,
+      color: 'text-pink-400',
+      borderColor: 'border-pink-500/40',
+      bgColor: 'bg-pink-500/10',
+      monthlyCostUSD: 186.00,
+      monthlyGenerations: 2100,
+      unitCostUSD: 0.088,
+      primaryAPIs: ['Suno AI v3.5 / v4 API', 'ElevenLabs Multilingual Voice Clone'],
+      hardwareUsage: '4.2M Tokens Audio Synthesis',
+      profitContributionMargin: 89.5,
+      trend: '+5.4%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Música Phonk, Lo-Fi y comercial con bajos 808 libre de derechos más voiceover ultra-realista.'
+    },
+    {
+      id: 'jarvis_core_agents',
+      name: 'Núcleo Holográfico J.A.R.V.I.S. & Swarm 6 Agentes',
+      category: 'Inteligencia & Orquestación Autónoma',
+      icon: Sparkles,
+      color: 'text-purple-400',
+      borderColor: 'border-purple-500/40',
+      bgColor: 'bg-purple-500/10',
+      monthlyCostUSD: 185.20,
+      monthlyGenerations: 23150,
+      unitCostUSD: 0.008,
+      primaryAPIs: ['Google Gemini 1.5 Pro / Flash', 'OpenAI GPT-4o', 'Pinecone Vector DB'],
+      hardwareUsage: '62.8M LLM Context Tokens',
+      profitContributionMargin: 94.2,
+      trend: '+18.1%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Toma de decisiones autónomas, auditoría de precios, predicción de tendencias de moda y copys AIDA.'
+    },
+    {
+      id: 'techpack_studio',
+      name: 'TechPack Studio (Patronaje 2D DXF & Fichas B2B)',
+      category: 'Confección & Fábrica Textil',
+      icon: Scissors,
+      color: 'text-emerald-400',
+      borderColor: 'border-emerald-500/40',
+      bgColor: 'bg-emerald-500/10',
+      monthlyCostUSD: 62.40,
+      monthlyGenerations: 4160,
+      unitCostUSD: 0.015,
+      primaryAPIs: ['CLO3D Cloud DXF Parser', 'Bézier Vector CAD Engine', 'PDF Generation Engine'],
+      hardwareUsage: '24.5 Horas CPU Compute Instance',
+      profitContributionMargin: 96.8,
+      trend: '-2.1%',
+      trendType: 'down',
+      status: 'optimal',
+      desc: 'Gradación de tallas (XS a XXL), consumos de tela por metro cuadrado y fichas técnicas listas para corte.'
+    },
+    {
+      id: 'brandkit_logo_studio',
+      name: 'BrandKit Studio & Logos Vectoriales SVG',
+      category: 'Identidad de Marca & Packaging',
+      icon: Palette,
+      color: 'text-yellow-400',
+      borderColor: 'border-yellow-500/40',
+      bgColor: 'bg-yellow-500/10',
+      monthlyCostUSD: 94.00,
+      monthlyGenerations: 2350,
+      unitCostUSD: 0.040,
+      primaryAPIs: ['Recraft.ai Vector SVG', 'Midjourney High Fashion Proxy'],
+      hardwareUsage: '18.2 Horas GPU T4 Worker',
+      profitContributionMargin: 93.5,
+      trend: '+3.5%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Logotipos vectoriales limpios, patrones textiles repetibles y guías de paletas cromáticas pantone.'
+    },
+    {
+      id: 'fashion_virtual_runway',
+      name: 'Pasarela de Moda Virtual & Modelos Holográficos',
+      category: 'Alta Costura & Lookbooks 8K',
+      icon: Layers,
+      color: 'text-indigo-400',
+      borderColor: 'border-indigo-500/40',
+      bgColor: 'bg-indigo-500/10',
+      monthlyCostUSD: 148.00,
+      monthlyGenerations: 2960,
+      unitCostUSD: 0.050,
+      primaryAPIs: ['FLUX.1 Fashion LoRA', 'Virtual Draping Cloth Simulator'],
+      hardwareUsage: '32.4 Horas GPU A100',
+      profitContributionMargin: 90.2,
+      trend: '+11.0%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Modelos virtuales multiétnicos posando con colecciones de ropa en escenarios de pasarela internacional.'
+    },
+    {
+      id: 'n8n_automations',
+      name: 'Automatizaciones n8n & Flujos Visuales por Nodos',
+      category: 'Integraciones & Webhooks',
+      icon: Zap,
+      color: 'text-orange-400',
+      borderColor: 'border-orange-500/40',
+      bgColor: 'bg-orange-500/10',
+      monthlyCostUSD: 42.10,
+      monthlyGenerations: 42100,
+      unitCostUSD: 0.001,
+      primaryAPIs: ['n8n Self-Hosted Node Runner', 'Webhook Receiver Cluster', 'Shopify Storefront Webhooks'],
+      hardwareUsage: '8 GB RAM Micro-Services Cluster',
+      profitContributionMargin: 98.2,
+      trend: '+31.2%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Disparo de eventos automáticos desde Shopify, Discord, TikTok Ads y pipelines de datos sin código.'
+    },
+    {
+      id: 'base_infrastructure',
+      name: 'Infraestructura Cloud, Base de Datos & Storage R2',
+      category: 'Hosting, CDN & Auth',
+      icon: Server,
+      color: 'text-blue-400',
+      borderColor: 'border-blue-500/40',
+      bgColor: 'bg-blue-500/10',
+      monthlyCostUSD: 117.00,
+      monthlyGenerations: 1,
+      unitCostUSD: 117.00,
+      primaryAPIs: ['Cloudflare R2 (4.8 TB)', 'Supabase PostgreSQL HA', 'Twilio SMS OTP Verify', 'Stripe Connect'],
+      hardwareUsage: 'Multi-Region High Availability Storage',
+      profitContributionMargin: 95.0,
+      trend: '+1.5%',
+      trendType: 'up',
+      status: 'optimal',
+      desc: 'Almacenamiento de archivos 3D pesados, autenticación con OTP, sincronización multi-dispositivo y base de datos.'
+    }
+  ];
+
+  const getTimeframeMultiplier = (tf: 'today' | 'week' | 'month' | 'year') => {
+    switch (tf) {
+      case 'today': return 0.033;
+      case 'week': return 0.23;
+      case 'month': return 1.0;
+      case 'year': return 12.0;
+    }
+  };
+
+  const currentMultiplier = getTimeframeMultiplier(costTimeframe);
+  const totalCalculatedModuleCost = moduleCostsList.reduce((acc, m) => acc + (m.monthlyCostUSD * currentMultiplier), 0);
+  const totalGenerationsTimeframe = moduleCostsList.reduce((acc, m) => acc + Math.round(m.monthlyGenerations * currentMultiplier), 0);
+  const avgProfitMarginGlobal = (moduleCostsList.reduce((acc, m) => acc + m.profitContributionMargin, 0) / moduleCostsList.length).toFixed(1);
+
+  const filteredModuleCosts = moduleCostsList.filter((m) =>
+    m.name.toLowerCase().includes(moduleCostSearch.toLowerCase()) ||
+    m.category.toLowerCase().includes(moduleCostSearch.toLowerCase()) ||
+    m.primaryAPIs.some((api) => api.toLowerCase().includes(moduleCostSearch.toLowerCase()))
+  );
+
+  const handleExportModuleCostsCSV = () => {
+    const headers = ['Modulo', 'Categoria', 'Costo USD (' + costTimeframe + ')', 'Generaciones', 'Costo Unitario USD', 'Margen %', 'APIs Principales', 'Hardware GPU'];
+    const rows = moduleCostsList.map((m) => [
+      '"' + m.name + '"',
+      '"' + m.category + '"',
+      (m.monthlyCostUSD * currentMultiplier).toFixed(2),
+      Math.round(m.monthlyGenerations * currentMultiplier),
+      m.unitCostUSD.toFixed(4),
+      m.profitContributionMargin + '%',
+      '"' + m.primaryAPIs.join(', ') + '"',
+      '"' + m.hardwareUsage + '"'
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Aether_Module_Costs_Report_' + costTimeframe + '_' + new Date().toISOString().split('T')[0] + '.csv';
+    link.click();
+  };
+
   return (
     <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-8 animate-fadeIn transition-colors">
       {/* Executive Header */}
@@ -300,6 +566,17 @@ export const AdminConsole: React.FC = () => {
           }`}
         >
           <DollarSign className="w-4 h-4" /> Finanzas & Costos de APIs
+        </button>
+
+        <button
+          onClick={() => setActiveTab('module_costs')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-tech font-bold text-xs sm:text-sm uppercase tracking-wider transition-all ${
+            activeTab === 'module_costs'
+              ? 'bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 text-black shadow-gold-glow font-extrabold'
+              : 'text-amber-300 hover:text-white bg-amber-500/10 border border-amber-500/30'
+          }`}
+        >
+          <Zap className="w-4 h-4 text-amber-400" /> Costos por Módulo & Consumo IA
         </button>
 
         <button
@@ -622,6 +899,232 @@ export const AdminConsole: React.FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* =========================================================
+          TAB: INDEPENDENT MODULE COSTS & AI CONSUMPTION ANALYTICS
+          ========================================================= */}
+      {activeTab === 'module_costs' && (
+        <div className="space-y-6 animate-fadeIn font-mono text-xs">
+          {/* Executive Header Banner */}
+          <div className="p-6 rounded-3xl bg-cyber-900 border border-cyber-gold/50 shadow-cyber-card space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-cyber-gold text-cyber-gold shadow-gold-glow">
+                  <Zap className="w-7 h-7" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h3 className="text-xl font-tech font-bold text-white tracking-wider">
+                      DESGLOSE INDEPENDIENTE DE COSTOS & CONSUMO POR MÓDULO
+                    </h3>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                      TELEMETRÍA EN VIVO 2026
+                    </span>
+                  </div>
+                  <p className="text-slate-400 text-xs mt-1">
+                    Monitoreo granular de tokens LLM, horas GPU H100/A100, llamadas API externas y márgenes de rentabilidad de cada módulo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center bg-cyber-950 p-1 rounded-xl border border-cyber-800">
+                  {(['today', 'week', 'month', 'year'] as const).map((tf) => (
+                    <button
+                      key={tf}
+                      onClick={() => setCostTimeframe(tf)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-tech font-bold uppercase transition-all ${
+                        costTimeframe === tf
+                          ? 'bg-cyber-gold text-black shadow-gold-glow'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {tf === 'today' ? 'Hoy' : tf === 'week' ? '7 Días' : tf === 'month' ? 'Mes Actual' : 'Anual (x12)'}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleExportModuleCostsCSV}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-tech font-bold text-xs uppercase shadow-md transition-all"
+                >
+                  <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Exportar CSV</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick KPI Summary Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-amber-500/30 space-y-1">
+                <span className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>Gasto Total de APIs:</span>
+                  <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+                </span>
+                <span className="text-2xl font-tech font-extrabold text-amber-400 block">
+                  ${totalCalculatedModuleCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                </span>
+                <span className="text-[10px] text-slate-500">Periodo seleccionado: {costTimeframe}</span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-cyan-500/30 space-y-1">
+                <span className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>Invocaciones / Tareas:</span>
+                  <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                </span>
+                <span className="text-2xl font-tech font-extrabold text-cyan-400 block">
+                  {totalGenerationsTimeframe.toLocaleString()}
+                </span>
+                <span className="text-[10px] text-slate-500">Mallas 3D, fotos, videos y copys</span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-emerald-500/30 space-y-1">
+                <span className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>Margen Promedio:</span>
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                </span>
+                <span className="text-2xl font-tech font-extrabold text-emerald-400 block">
+                  {avgProfitMarginGlobal}%
+                </span>
+                <span className="text-[10px] text-slate-500">Retorno vs precio suscripción</span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-cyber-950 border border-purple-500/30 space-y-1">
+                <span className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>Módulo Más Usado:</span>
+                  <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                </span>
+                <span className="text-lg font-tech font-extrabold text-purple-300 block truncate">
+                  Aurora 3D Studio
+                </span>
+                <span className="text-[10px] text-slate-500">29.1% del consumo global</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Filter & Search Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 bg-cyber-900 p-4 rounded-2xl border border-cyber-800">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={moduleCostSearch}
+                onChange={(e) => setModuleCostSearch(e.target.value)}
+                placeholder="Buscar módulo, API (ej: Tripo3D, Runway, H100)..."
+                className="w-full bg-cyber-950 border border-cyber-700 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyber-gold"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 text-xs text-slate-400">
+              <span>Límite de Alerta de Consumo:</span>
+              <span className="font-bold text-cyber-gold font-tech text-sm">${costAlertThreshold} USD</span>
+              <input
+                type="range"
+                min="300"
+                max="2000"
+                step="50"
+                value={costAlertThreshold}
+                onChange={(e) => setCostAlertThreshold(Number(e.target.value))}
+                className="w-32 accent-cyber-gold cursor-pointer"
+              />
+            </div>
+          </div>
+
+          {/* Grid of Independent Module Cost Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredModuleCosts.map((mod) => {
+              const IconComponent = mod.icon;
+              const calculatedCost = mod.monthlyCostUSD * currentMultiplier;
+              const calculatedGenerations = Math.round(mod.monthlyGenerations * currentMultiplier);
+              const costPercentOfTotal = totalCalculatedModuleCost > 0 ? ((calculatedCost / totalCalculatedModuleCost) * 100).toFixed(1) : '0';
+              const isOverAlert = calculatedCost > costAlertThreshold;
+
+              return (
+                <div
+                  key={mod.id}
+                  className={`p-5 rounded-3xl border transition-all space-y-4 shadow-cyber-card bg-cyber-900 ${
+                    isOverAlert ? 'border-rose-500/70 shadow-rose-500/10' : mod.borderColor
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className={`p-3 rounded-2xl border ${mod.bgColor} ${mod.borderColor} ${mod.color}`}>
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="font-tech font-bold text-base text-white">{mod.name}</h4>
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-cyber-950 border border-cyber-800 text-slate-400">
+                            {mod.category}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{mod.desc}</p>
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span className="text-xl font-tech font-extrabold text-amber-400 block">
+                        ${calculatedCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                      <span className="text-[10px] text-slate-500">{costPercentOfTotal}% del gasto total</span>
+                    </div>
+                  </div>
+
+                  {/* Cost Details Grid */}
+                  <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-cyber-950 border border-cyber-800/80 text-center">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Invocaciones</span>
+                      <span className="text-sm font-tech font-bold text-white">{calculatedGenerations.toLocaleString()}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Costo Unitario</span>
+                      <span className="text-sm font-tech font-bold text-cyan-400">${mod.unitCostUSD.toFixed(3)} USD</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">Margen Neto</span>
+                      <span className="text-sm font-tech font-bold text-emerald-400">{mod.profitContributionMargin}%</span>
+                    </div>
+                  </div>
+
+                  {/* APIs & Hardware Infrastructure Used */}
+                  <div className="space-y-2 pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                      <span>APIs & Modelos Conectados:</span>
+                      <span className="text-purple-300 font-bold">{mod.hardwareUsage}</span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {mod.primaryAPIs.map((api, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 rounded-lg bg-cyber-950 border border-cyber-700 text-[10px] text-slate-300 flex items-center gap-1"
+                        >
+                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" /> {api}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Visual Cost Fill Bar */}
+                  <div className="space-y-1 pt-1 border-t border-cyber-800">
+                    <div className="flex justify-between text-[10px] text-slate-500">
+                      <span>Proporción de Consumo:</span>
+                      <span className="text-amber-400 font-bold">{costPercentOfTotal}% del presupuesto</span>
+                    </div>
+                    <div className="h-1.5 bg-cyber-950 rounded-full overflow-hidden border border-cyber-800">
+                      <div
+                        className="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-cyber-gold rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, Number(costPercentOfTotal) * 2.5)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
