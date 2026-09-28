@@ -1417,6 +1417,17 @@ export const ProjectRoadmapChecklist: React.FC = () => {
     }
   }, [personalGoals]);
 
+  // Force inject the new MVP Roadmap goal if the user has an old cache in LocalStorage
+  useEffect(() => {
+    setPersonalGoals(prev => {
+      if (!prev.find(g => g.id === 'roadmap_mvp_2026')) {
+        const mvpGoal = INITIAL_PERSONAL_GOALS.find(g => g.id === 'roadmap_mvp_2026');
+        if (mvpGoal) return [mvpGoal, ...prev];
+      }
+      return prev;
+    });
+  }, []);
+
   const toggleGoalCompleted = (id: string) => {
     setPersonalGoals((prev) =>
       prev.map((g) => (g.id === id ? { ...g, isCompleted: !g.isCompleted } : g))
