@@ -1267,6 +1267,23 @@ const CHECKLIST_DATA: ChecklistItem[] = [
 
 export const INITIAL_PERSONAL_GOALS: UserPersonalGoal[] = [
   {
+    id: 'roadmap_mvp_2026',
+    title: '🚀 Ruta a la Realidad: Lanzamiento POXXI STUDIO (TikTok Design)',
+    description: 'Proceso paso a paso para desarrollar el MVP en 4 meses utilizando Claude 5.5 y GPT-6 Astra, enfocándose en el Feed Estilo TikTok.',
+    category: 'product_launch',
+    priority: 'high',
+    targetDate: '2026-12-31',
+    isCompleted: false,
+    createdAt: new Date().toISOString(),
+    isFinancialGoal: false,
+    subtasks: [
+      { id: 'st_1', title: 'Mes 1: UI Base (Next.js/React Native) y Auth (Supabase)', completed: false },
+      { id: 'st_2', title: 'Mes 2: Lógica de Feed Infinito y Base de Datos Post/Likes', completed: false },
+      { id: 'st_3', title: 'Mes 3: Integración Mágica de IA (Claude/Seedance) para Crear', completed: false },
+      { id: 'st_4', title: 'Mes 4: Publicación en Vercel (Web) y Testing de Usuarios', completed: false }
+    ]
+  },
+  {
     id: 'goal_001',
     title: 'Lanzar Colección Cápsula Cyberpunk Verano 2026',
     description: 'Diseñar 6 prendas completas en 3D con patrones de corte DXF y exportación de fichas técnicas para fábrica.',
@@ -1622,6 +1639,17 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('aether_roadmap_checklist_v6', JSON.stringify(checkedItems));
   }, [checkedItems]);
+  const handleCheckAll = () => {
+    const allChecked: Record<string, boolean> = {};
+    CHECKLIST_DATA.forEach(t => { allChecked[t.id] = true; });
+    setCheckedItems(allChecked);
+  };
+
+  const handleClearAll = () => {
+    const allCleared: Record<string, boolean> = {};
+    CHECKLIST_DATA.forEach(t => { allCleared[t.id] = false; });
+    setCheckedItems(allCleared);
+  };
 
   const toggleItem = (id: string) => {
     setCheckedItems((prev) => ({
@@ -2130,18 +2158,16 @@ export const ProjectRoadmapChecklist: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => {
-                  if (confirm('¿Deseas restablecer las casillas al estado recomendado por defecto?')) {
-                    const initial: Record<string, boolean> = {};
-                    CHECKLIST_DATA.forEach((item) => {
-                      if (item.isInitialDone) initial[item.id] = true;
-                    });
-                    setCheckedItems(initial);
-                  }
-                }}
-                className="text-xs text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-cyber-800"
+                onClick={handleCheckAll}
+                className="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
               >
-                <RotateCcw className="w-3.5 h-3.5" /> Restablecer
+                <CheckSquare className="w-3.5 h-3.5" /> Chulear Todo
+              </button>
+              <button
+                onClick={handleClearAll}
+                className="px-3 py-1.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Borrar Todo
               </button>
             </div>
           </div>
