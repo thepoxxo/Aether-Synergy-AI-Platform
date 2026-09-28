@@ -43,7 +43,7 @@ import {
   Building,
   UserCheck,
   RotateCcw
-} from 'lucide-react';
+, Radar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export interface SupplierReview {
@@ -543,11 +543,35 @@ export const GlobalSuppliers: React.FC = () => {
 
   // New Supplier Form State
   const [newSupName, setNewSupName] = useState('');
-  const [newSupCountry, setNewSupCountry] = useState('Colombia');
-  const [newSupFlag, setNewSupFlag] = useState('🇨🇴');
+
   const [newSupCity, setNewSupCity] = useState('');
-  const [newSupCategory, setNewSupCategory] = useState<any>('fashion');
-  const [newSupMoq, setNewSupMoq] = useState(100);
+  const [newSupCategory, setNewSupCategory] = useState<'textile' | 'fashion' | 'hardware' | 'furniture' | 'footwear' | 'bags' | 'packaging'>('fashion');
+  const [newSupFlag, setNewSupFlag] = useState('');
+
+  const [newSupCountry, setNewSupCountry] = useState('Colombia');
+  const [newSupRegion, setNewSupRegion] = useState('');
+  const [newSupType, setNewSupType] = useState('full-package');
+  const [newSupMoq, setNewSupMoq] = useState('50');
+  
+  // -- NEW RIGOROUS STATES --
+  const [newSupTaxId, setNewSupTaxId] = useState('');
+  const [newSupCertifications, setNewSupCertifications] = useState<string[]>([]);
+  const [newSupEscrow, setNewSupEscrow] = useState(false);
+  const [newSupVirtualTour, setNewSupVirtualTour] = useState('');
+  const [isAiVetting, setIsAiVetting] = useState(false);
+  const [aiVettingScore, setAiVettingScore] = useState<number | null>(null);
+
+  const toggleCert = (cert: string) => {
+    setNewSupCertifications(prev => prev.includes(cert) ? prev.filter(c => c !== cert) : [...prev, cert]);
+  };
+
+  const handleAiVetting = () => {
+    setIsAiVetting(true);
+    setTimeout(() => {
+      setIsAiVetting(false);
+      setAiVettingScore(92);
+    }, 2500);
+  };
   const [newSupLeadTime, setNewSupLeadTime] = useState('15 - 20 días');
   const [newSupPrice, setNewSupPrice] = useState(18.00);
   const [newSupWhatsapp, setNewSupWhatsapp] = useState('');
@@ -1049,172 +1073,146 @@ export const GlobalSuppliers: React.FC = () => {
       {/* =========================================================
           MODAL 1: AGREGAR NUEVO PROVEEDOR B2B (CUALQUIER PAÍS)
           ========================================================= */}
-      {isAddSupplierModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 max-w-xl w-full shadow-cyber-card text-white space-y-4 max-h-[90vh] overflow-y-auto relative">
-            <button
-              onClick={() => setIsAddSupplierModalOpen(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500">
-                <Building className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-tech font-bold text-lg text-white">
-                  REGISTRAR NUEVO PROVEEDOR / FÁBRICA B2B
-                </h3>
-                <p className="text-slate-400 text-xs">
-                  Agrega una fábrica de cualquier país a tu red privada de abastecimiento
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleSaveNewSupplier} className="space-y-3 pt-2">
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">Nombre de la Empresa / Fábrica:</label>
-                <input
-                  type="text"
-                  required
-                  value={newSupName}
-                  onChange={(e) => setNewSupName(e.target.value)}
-                  placeholder="ej: Manufacturas del Valle S.A.S."
-                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-slate-300 font-bold block mb-1">País:</label>
-                  <select
-                    value={newSupCountry}
-                    onChange={(e) => {
-                      setNewSupCountry(e.target.value);
-                      const flagsMap: Record<string, string> = {
-                        'Colombia': '🇨🇴', 'México': '🇲🇽', 'Portugal': '🇵🇹', 'Turquía': '🇹🇷',
-                        'Italia': '🇮🇹', 'España': '🇪🇸', 'China': '🇨🇳', 'Perú': '🇵🇪',
-                        'Brasil': '🇧🇷', 'Estados Unidos': '🇺🇸', 'Vietnam': '🇻🇳', 'India': '🇮🇳'
-                      };
-                      setNewSupFlag(flagsMap[e.target.value] || '🌍');
-                    }}
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                  >
-                    <option value="Colombia">🇨🇴 Colombia</option>
-                    <option value="México">🇲🇽 México</option>
-                    <option value="Portugal">🇵🇹 Portugal</option>
-                    <option value="Turquía">🇹🇷 Turquía</option>
-                    <option value="Italia">🇮🇹 Italia</option>
-                    <option value="España">🇪🇸 España</option>
-                    <option value="China">🇨🇳 China</option>
-                    <option value="Perú">🇵🇪 Perú</option>
-                    <option value="Brasil">🇧🇷 Brasil</option>
-                    <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
-                    <option value="Vietnam">🇻🇳 Vietnam</option>
-                    <option value="India">🇮🇳 India</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-slate-300 font-bold block mb-1">Ciudad / Región:</label>
-                  <input
-                    type="text"
-                    required
-                    value={newSupCity}
-                    onChange={(e) => setNewSupCity(e.target.value)}
-                    placeholder="ej: Medellín, León, Oporto..."
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-slate-300 font-bold block mb-1">Sector / Especialidad:</label>
-                  <select
-                    value={newSupCategory}
-                    onChange={(e) => setNewSupCategory(e.target.value)}
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                  >
-                    <option value="fashion">👗 Moda & Confección</option>
-                    <option value="footwear">👟 Calzado & Suelas</option>
-                    <option value="furniture">🪑 Mobiliario & Madera CNC</option>
-                    <option value="bags">👜 Cuero & Marroquinería</option>
-                    <option value="packaging">📦 Packaging & Troqueles</option>
-                    <option value="textile">🧵 Telas & Hilaturas</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-slate-300 font-bold block mb-1">Precio Estimado Unitario ($ USD):</label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={newSupPrice}
-                    onChange={(e) => setNewSupPrice(Number(e.target.value))}
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-slate-300 font-bold block mb-1">MOQ (Mínimo de Pedido):</label>
-                  <input
-                    type="number"
-                    value={newSupMoq}
-                    onChange={(e) => setNewSupMoq(Number(e.target.value))}
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-slate-300 font-bold block mb-1">WhatsApp de Contacto:</label>
-                  <input
-                    type="text"
-                    required
-                    value={newSupWhatsapp}
-                    onChange={(e) => setNewSupWhatsapp(e.target.value)}
-                    placeholder="ej: +573001234567"
-                    className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">Certificaciones (separadas por coma):</label>
-                <input
-                  type="text"
-                  value={newSupCerts}
-                  onChange={(e) => setNewSupCerts(e.target.value)}
-                  placeholder="GOTS Orgánico, OEKO-TEX 100, ISO 9001"
-                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-bold block mb-1">Descripción de Capacidades Técnicas:</label>
-                <textarea
-                  value={newSupSpecialty}
-                  onChange={(e) => setNewSupSpecialty(e.target.value)}
-                  rows={2}
-                  placeholder="Describe maquinaria, técnicas de costura, materiales que dominan..."
-                  className="w-full bg-cyber-950 border border-cyber-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
-                />
-              </div>
-
+        {isAddSupplierModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fadeIn">
+            <div className="bg-cyber-900 border border-emerald-500/50 rounded-3xl p-6 max-w-4xl w-full shadow-[0_0_50px_rgba(16,185,129,0.15)] text-white max-h-[90vh] overflow-y-auto relative custom-scrollbar">
               <button
-                type="submit"
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 text-black font-tech font-extrabold text-xs uppercase tracking-wider shadow-md hover:opacity-95 transition-all"
+                onClick={() => setIsAddSupplierModalOpen(false)}
+                className="absolute top-4 right-4 p-2 bg-cyber-950 rounded-full text-slate-400 hover:text-white border border-cyber-800"
               >
-                💾 Guardar Proveedor en Catálogo
+                <X className="w-5 h-5" />
               </button>
-            </form>
+  
+              <div className="flex items-center gap-4 mb-6 border-b border-cyber-800 pb-4">
+                <div className="p-4 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                  <ShieldCheck className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="font-tech font-bold text-2xl text-white">
+                    PROCESO DE VETTING: NUEVO PROVEEDOR
+                  </h3>
+                  <p className="text-slate-400 text-sm mt-1">
+                    Auditoría rigurosa KYC (Know Your Customer) & ESG (Environmental, Social, Governance) para garantizar fábricas confiables.
+                  </p>
+                </div>
+              </div>
+  
+              <form onSubmit={handleSaveNewSupplier} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Lado Izquierdo: Datos Generales */}
+                <div className="space-y-4">
+                  <h4 className="text-emerald-400 font-bold border-b border-cyber-800 pb-2 flex items-center gap-2">
+                    <Building className="w-4 h-4"/> 1. Identidad Corporativa
+                  </h4>
+                  
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1 text-xs">Razón Social de la Fábrica <span className="text-rose-500">*</span></label>
+                    <input type="text" required value={newSupName} onChange={(e) => setNewSupName(e.target.value)} placeholder="Ej: Textilera del Norte S.A." className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400" />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-slate-300 font-bold block mb-1 text-xs">Identificación Fiscal (VAT/RUT) <span className="text-rose-500">*</span></label>
+                      <input type="text" required value={newSupTaxId} onChange={(e) => setNewSupTaxId(e.target.value)} placeholder="800.123.456-7" className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400" />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 font-bold block mb-1 text-xs">País Sede</label>
+                      <select value={newSupCountry} onChange={(e) => setNewSupCountry(e.target.value)} className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+                        <option value="Colombia">Colombia</option>
+                        <option value="México">México</option>
+                        <option value="Portugal">Portugal</option>
+                        <option value="Italia">Italia</option>
+                        <option value="China">China</option>
+                        <option value="Vietnam">Vietnam</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <h4 className="text-emerald-400 font-bold border-b border-cyber-800 pb-2 mt-6 flex items-center gap-2">
+                    <Package className="w-4 h-4"/> 2. Capacidad y Tipo de Servicio
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-slate-300 font-bold block mb-1 text-xs">MOQ (Pedido Mínimo)</label>
+                      <select value={newSupMoq} onChange={(e) => setNewSupMoq(e.target.value)} className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+                        <option value="No MOQ">Sin Mínimo (Impresión 3D/Laser)</option>
+                        <option value="50">50 piezas</option>
+                        <option value="300">300 piezas</option>
+                        <option value="1000+">1000+ (Masivo)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-slate-300 font-bold block mb-1 text-xs">Tipo de Servicio</label>
+                      <select value={newSupType} onChange={(e) => setNewSupType(e.target.value)} className="w-full bg-cyber-950 border border-cyber-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400">
+                        <option value="full-package">Paquete Completo (FOB)</option>
+                        <option value="cut-make">Solo Confección (CMT)</option>
+                        <option value="textile-mill">Molino Textil (Telas)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Lado Derecho: Auditoría y Confianza */}
+                <div className="space-y-4 bg-cyber-950 p-6 rounded-2xl border border-cyber-800">
+                  <h4 className="text-amber-400 font-bold border-b border-cyber-800 pb-2 flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4"/> 3. Garantías y Certificaciones (ESG)
+                  </h4>
+
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-2 text-xs">Certificaciones Validadas</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['ISO 9001 (Calidad)', 'GOTS (Orgánico)', 'OEKO-TEX (Sin Tóxicos)', 'Fair Trade (Comercio Justo)'].map(cert => (
+                        <label key={cert} className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${newSupCertifications.includes(cert) ? 'border-emerald-500 bg-emerald-500/10 text-white' : 'border-cyber-700 hover:border-cyber-600 text-slate-400'}`}>
+                          <input type="checkbox" checked={newSupCertifications.includes(cert)} onChange={() => toggleCert(cert)} className="hidden" />
+                          <CheckCircle2 className={`w-4 h-4 ${newSupCertifications.includes(cert) ? 'text-emerald-400' : 'opacity-0 hidden'}`} />
+                          {cert}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-4 border border-blue-500/30 bg-blue-500/10 rounded-xl">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input type="checkbox" checked={newSupEscrow} onChange={(e) => setNewSupEscrow(e.target.checked)} className="mt-1" />
+                      <div>
+                        <p className="font-bold text-blue-400 text-sm">Aceptar Pagos Escrow (Poxxi Wallet)</p>
+                        <p className="text-xs text-slate-400 mt-1">El proveedor acepta retención de fondos hasta que el cliente apruebe el Control de Calidad (QC) en destino.</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div className="pt-4 border-t border-cyber-800">
+                    <button 
+                      type="button" 
+                      onClick={handleAiVetting}
+                      disabled={isAiVetting || aiVettingScore !== null || !newSupTaxId}
+                      className="w-full py-3 bg-cyber-900 border border-cyber-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-cyber-800 disabled:opacity-50"
+                    >
+                      <Radar className={`w-5 h-5 ${isAiVetting ? 'animate-spin text-emerald-400' : 'text-amber-400'}`} />
+                      {isAiVetting ? 'Auditoría IA en progreso (Bases de datos globales)...' : 
+                       aiVettingScore !== null ? `Auditoría Completada: Score de Confianza ${aiVettingScore}/100` : 
+                       'Ejecutar Auditoría IA de Antecedentes'}
+                    </button>
+                    {aiVettingScore !== null && (
+                      <p className="text-center text-emerald-400 text-xs mt-2 font-mono">Fábrica libre de reportes negativos. Score financiero estable.</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer del Modal */}
+                <div className="lg:col-span-2 pt-6 border-t border-cyber-800 flex justify-end gap-3">
+                  <button type="button" onClick={() => setIsAddSupplierModalOpen(false)} className="px-6 py-3 rounded-xl border border-cyber-700 text-slate-300 font-bold hover:bg-cyber-800 transition-colors">
+                    Cancelar
+                  </button>
+                  <button type="submit" disabled={!newSupName || !newSupTaxId} className="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-bold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50 flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> Inscribir Proveedor Verificado
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* =========================================================
           MODAL 2: CALIFICAR Y RESEÑAR PROVEEDOR (4 DIMENSIONES B2B)

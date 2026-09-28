@@ -62,6 +62,8 @@ const ShopifyWidgetBuilder = lazy(() => import('./components/modules/ShopifyWidg
 const TrendSpiderAgent = lazy(() => import('./components/modules/TrendSpiderAgent').then(m => ({ default: m.TrendSpiderAgent })));
 
 import { MobileAppBottomNav } from './components/layout/MobileAppBottomNav';
+import { CommandPalette } from './components/common/CommandPalette';
+
 import { DesktopWindowHeader } from './components/layout/DesktopWindowHeader';
 import { DeviceModeSimulator } from './components/common/DeviceModeSimulator';
 import { AdminMasterModuleHubModal } from './components/common/AdminMasterModuleHubModal';
@@ -96,6 +98,7 @@ const MainLayout: React.FC = () => {
         />
         <LoginModal />
         <UpgradeModal />
+        <CommandPalette />
         <UserProfileModal />
 
         {/* Floating Quick Demo Access Pill for Direct Testing (Mobile Optimized) */}
@@ -285,6 +288,7 @@ const MainLayout: React.FC = () => {
 
       <LoginModal />
       <UpgradeModal />
+        <CommandPalette />
       <UserProfileModal />
       <WorldLanguageModal />
 
