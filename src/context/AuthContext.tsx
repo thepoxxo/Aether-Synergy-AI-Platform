@@ -80,8 +80,10 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
 const ROLE_PRIORITY: Record<UserRole, number> = {
   guest: 0,
   free: 1,
-  pro: 2,
-  agency: 3,
+  creator: 2,
+  pro: 3,
+  studio: 4,
+  agency: 5,
   admin: 99
 };
 
