@@ -1270,7 +1270,7 @@ export const INITIAL_PERSONAL_GOALS: UserPersonalGoal[] = [
     id: 'roadmap_mvp_2026',
     title: '🚀 Ruta a la Realidad: Lanzamiento POXXI STUDIO (TikTok Design)',
     description: 'Proceso paso a paso para desarrollar el MVP en 4 meses utilizando Claude 5.5 y GPT-6 Astra, enfocándose en el Feed Estilo TikTok.',
-    category: 'product_launch',
+    category: 'design_brand',
     priority: 'high',
     targetDate: '2026-12-31',
     isCompleted: false,
@@ -1420,6 +1420,7 @@ export const ProjectRoadmapChecklist: React.FC = () => {
   // Force inject the new MVP Roadmap goal if the user has an old cache in LocalStorage
   useEffect(() => {
     setPersonalGoals(prev => {
+      if (!Array.isArray(prev)) return INITIAL_PERSONAL_GOALS;
       if (!prev.find(g => g.id === 'roadmap_mvp_2026')) {
         const mvpGoal = INITIAL_PERSONAL_GOALS.find(g => g.id === 'roadmap_mvp_2026');
         if (mvpGoal) return [mvpGoal, ...prev];
