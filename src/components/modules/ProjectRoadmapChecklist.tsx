@@ -1267,6 +1267,24 @@ const CHECKLIST_DATA: ChecklistItem[] = [
 
 export const INITIAL_PERSONAL_GOALS: UserPersonalGoal[] = [
   {
+    id: 'arquitectura_escala_2026',
+    title: '🧠 Pilares de Arquitectura Empresarial (Escala a Unicornio)',
+    description: 'Implementación de las 5 tuberías de backend y físicas estructurales para reemplazar el localStorage y prepararnos para 100,000 usuarios recurrentes.',
+    category: 'design_brand',
+    priority: 'high',
+    targetDate: '2027-03-30',
+    isCompleted: false,
+    createdAt: new Date().toISOString(),
+    isFinancialGoal: false,
+    subtasks: [
+      { id: 'arq_1', title: 'Fase 1: Migración a Supabase (PostgreSQL) + DB Vectorial Pinecone', completed: false },
+      { id: 'arq_2', title: 'Fase 2: Motor Físico WebGPU (Simulación matemática de Telas CLO3D killer)', completed: false },
+      { id: 'arq_3', title: 'Fase 3: API Stripe Connect (Brokerage Automático de pagos a Fábricas)', completed: false },
+      { id: 'arq_4', title: 'Fase 4: Portal B2B Autónomo para Fabricantes (Recepción de Tech Packs)', completed: false },
+      { id: 'arq_5', title: 'Fase 5: Edge Computing Vercel y Compresión 3D Draco (.GLB de 20MB a 2MB)', completed: false }
+    ]
+  },
+  {
     id: 'roadmap_mvp_2026',
     title: '🚀 Ruta a la Realidad: Lanzamiento POXXI STUDIO (TikTok Design)',
     description: 'Proceso paso a paso para desarrollar el MVP en 4 meses utilizando Claude 5.5 y GPT-6 Astra, enfocándose en el Feed Estilo TikTok.',
