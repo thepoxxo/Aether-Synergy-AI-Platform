@@ -39,7 +39,7 @@ import {
   Sliders,
   Award,
   GraduationCap
-, Wallet } from 'lucide-react';
+, Wallet , Radar, Code, QrCode } from 'lucide-react';
 import { moduleStagingService } from '../../services/moduleStagingService';
 
 interface SidebarProps {
@@ -152,6 +152,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
 
+
+    {
+      id: 'enterprise_b2b',
+      title: 'Enterprise & B2B (2026)',
+      icon: '🏢',
+      items: [
+        { id: 'trend_spider', nameKey: 'Trend Spider AI', icon: Radar, requiredRole: 'admin', badge: 'LIVE', isLiteralLabel: true },
+        { id: 'dxf_engine', nameKey: 'AI to .DXF Export', icon: Scissors, requiredRole: 'admin', isLiteralLabel: true },
+        { id: 'shopify_widget', nameKey: 'Shopify Widget', icon: Code, requiredRole: 'admin', isLiteralLabel: true },
+        { id: 'dpp_eu', nameKey: 'EU DPP Generator', icon: QrCode, requiredRole: 'admin', badge: 'ESPR', isLiteralLabel: true },
+      ]
+    },
     {
       id: 'ecosystem',
       title: 'Ecosistema & Admin',
