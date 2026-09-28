@@ -191,11 +191,11 @@ export const AdminConsole: React.FC = () => {
       color: 'text-cyber-gold'
     },
     {
-      category: 'API Generación Video Ads & Turntables 4K',
-      provider: 'Runway Gen-3 / Luma Dream Machine API',
-      usage: '1,450 clips de 15 segundos',
-      unitCost: '$0.25 / clip 4K',
-      totalCost: 362.50,
+      category: '🎥 Generación de Video 4K & Turntables',
+      provider: 'Seedance 2.5 API / Luma',
+      usage: '2,800 clips hiperrealistas de 20s',
+      unitCost: '$0.02 / clip 4K (↓ 92% ahorro)',
+      totalCost: 56.00,
       icon: Video,
       color: 'text-cyan-400'
     },
@@ -209,11 +209,11 @@ export const AdminConsole: React.FC = () => {
       color: 'text-indigo-400'
     },
     {
-      category: 'Orquestador Swarm 6 Agentes IA 24/7',
-      provider: 'OpenAI GPT-4o / Gemini 1.5 Pro Interconnect',
-      usage: '1.2M tokens / mes',
-      unitCost: '$0.10 / 1K tokens',
-      totalCost: 120.00,
+      category: '🧠 Orquestador Swarm IA (Lógica y Razón)',
+      provider: 'OpenAI GPT-6 Astra / Claude 5.5 Opus',
+      usage: '8.5M tokens / mes (Contexto de 2M)',
+      unitCost: '$0.005 / 1K tokens (↓ 95% ahorro)',
+      totalCost: 42.50,
       icon: Sparkles,
       color: 'text-purple-400'
     },
@@ -327,7 +327,7 @@ export const AdminConsole: React.FC = () => {
       monthlyCostUSD: 412.00,
       monthlyGenerations: 1648,
       unitCostUSD: 0.25,
-      primaryAPIs: ['Runway Gen-3 Alpha', 'Luma Dream Machine', 'Kling AI 4K', 'Cloud ffmpeg'],
+      primaryAPIs: ['Seedance 2.5 API', 'Luma Dream Machine', 'Kling AI 4K', 'Cloud ffmpeg'],
       hardwareUsage: '95.0 Horas H100 NVENC Render Farm',
       profitContributionMargin: 81.6,
       trend: '+8.2%',
@@ -365,7 +365,7 @@ export const AdminConsole: React.FC = () => {
       monthlyCostUSD: 185.20,
       monthlyGenerations: 23150,
       unitCostUSD: 0.008,
-      primaryAPIs: ['Google Gemini 1.5 Pro / Flash', 'OpenAI GPT-4o', 'Pinecone Vector DB'],
+      primaryAPIs: ['Google Gemini 1.5 Pro / Flash', 'GPT-6 Astra', 'Pinecone Vector DB'],
       hardwareUsage: '62.8M LLM Context Tokens',
       profitContributionMargin: 94.2,
       trend: '+18.1%',
@@ -795,6 +795,22 @@ export const AdminConsole: React.FC = () => {
           ========================================================= */}
       {activeTab === 'financials' && (
         <div className="space-y-6 animate-fadeIn">
+          {/* GPT-6 ASTRA & CLAUDE 5.5 BANNER */}
+          <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <h3 className="font-tech font-bold text-lg text-emerald-400 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-emerald-400 animate-pulse" />
+                Actualización de Infraestructura IA: GPT-6 Astra, Claude 5.5 y Seedance 2.5
+              </h3>
+              <p className="text-sm text-emerald-200/80 mt-1">
+                La migración a las nuevas arquitecturas de razonamiento nativo multimodal (GPT-6 Astra y Claude 5.5) y generación de video (Seedance 2.5) ha reducido los costos de API en un <strong>86%</strong>, permitiendo aumentar las generaciones de la plataforma sin afectar el margen de beneficio.
+              </p>
+            </div>
+            <div className="text-right ml-4 shrink-0">
+              <span className="text-[10px] text-emerald-500 font-bold uppercase block mb-1">Impacto en Costos</span>
+              <span className="text-2xl font-tech font-black text-emerald-400">-86% COGS</span>
+            </div>
+          </div>
           {/* Detailed Costs Table */}
           <div className="bg-cyber-900 rounded-3xl border border-cyber-800 shadow-cyber-card overflow-hidden">
             <div className="p-5 bg-cyber-950 border-b border-cyber-800 flex flex-wrap items-center justify-between gap-3">
