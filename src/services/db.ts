@@ -1,5 +1,6 @@
 import { StoredUser, UserRegistrationData, CloudProject, R2BucketAsset } from '../types/database';
 import { UserRole } from '../types/auth';
+import { SecurityVault } from '../utils/security';
 
 const DB_KEY = 'aether_users_database_v1';
 
@@ -131,14 +132,14 @@ class DatabaseService {
       return INITIAL_USERS;
     }
     try {
-      return JSON.parse(raw);
+      return SecurityVault.decrypt(raw);
     } catch {
       return INITIAL_USERS;
     }
   }
 
   private saveStorage(users: StoredUser[]) {
-    localStorage.setItem(DB_KEY, JSON.stringify(users));
+    localStorage.setItem(DB_KEY, SecurityVault.encrypt(users));
     window.dispatchEvent(new Event('aether_database_updated'));
   }
 
@@ -253,11 +254,11 @@ class DatabaseService {
           status: 'synced'
         }
       ];
-      localStorage.setItem('aether_cloud_projects_v1', JSON.stringify(initial));
+      localStorage.setItem('aether_cloud_projects_v1', SecurityVault.encrypt(initial));
       return initial;
     }
     try {
-      return JSON.parse(raw);
+      return SecurityVault.decrypt(raw);
     } catch {
       return [];
     }
@@ -273,7 +274,7 @@ class DatabaseService {
       status: 'synced'
     };
     projects.unshift(newProject);
-    localStorage.setItem('aether_cloud_projects_v1', JSON.stringify(projects));
+    localStorage.setItem('aether_cloud_projects_v1', SecurityVault.encrypt(projects));
     window.dispatchEvent(new Event('aether_cloud_projects_updated'));
     return newProject;
   }
@@ -281,7 +282,7 @@ class DatabaseService {
   public deleteProject(id: string): boolean {
     const projects = this.getAllProjects();
     const filtered = projects.filter((p) => p.id !== id);
-    localStorage.setItem('aether_cloud_projects_v1', JSON.stringify(filtered));
+    localStorage.setItem('aether_cloud_projects_v1', SecurityVault.encrypt(filtered));
     window.dispatchEvent(new Event('aether_cloud_projects_updated'));
     return true;
   }
