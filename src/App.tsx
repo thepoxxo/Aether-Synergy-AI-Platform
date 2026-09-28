@@ -55,6 +55,12 @@ import { moduleStagingService } from './services/moduleStagingService';
 const ProductPhotoStudioViralPublisher = lazy(() => import('./components/modules/ProductPhotoStudioViralPublisher').then(m => ({ default: m.ProductPhotoStudioViralPublisher })));
 const AetherReelsTikTok = lazy(() => import('./components/modules/AetherReelsTikTok').then(m => ({ default: m.AetherReelsTikTok })));
 const ExpertConsultationsHub = lazy(() => import('./components/modules/ExpertConsultationsHub').then(m => ({ default: m.ExpertConsultationsHub })));
+
+const DigitalProductPassport = lazy(() => import('./components/modules/DigitalProductPassport').then(m => ({ default: m.DigitalProductPassport })));
+const DXFExportEngine = lazy(() => import('./components/modules/DXFExportEngine').then(m => ({ default: m.DXFExportEngine })));
+const ShopifyWidgetBuilder = lazy(() => import('./components/modules/ShopifyWidgetBuilder').then(m => ({ default: m.ShopifyWidgetBuilder })));
+const TrendSpiderAgent = lazy(() => import('./components/modules/TrendSpiderAgent').then(m => ({ default: m.TrendSpiderAgent })));
+
 import { MobileAppBottomNav } from './components/layout/MobileAppBottomNav';
 import { DesktopWindowHeader } from './components/layout/DesktopWindowHeader';
 import { DeviceModeSimulator } from './components/common/DeviceModeSimulator';
@@ -208,6 +214,15 @@ const MainLayout: React.FC = () => {
         return <SynthetixMascot />;
       case 'admin':
         return <AdminConsole />;
+      case 'dpp_eu':
+        return <DigitalProductPassport />;
+      case 'dxf_engine':
+        return <DXFExportEngine />;
+      case 'shopify_widget':
+        return <ShopifyWidgetBuilder />;
+      case 'trend_spider':
+        return <TrendSpiderAgent />;
+
       case 'staging_manager':
         return <ModuleStagingAdmin />;
       case 'apigateway':
