@@ -151,19 +151,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'expert_consultations', nameKey: 'Red de Expertos & Mentoría', icon: Award, requiredRole: 'free', badge: 'PRO 1-ON-1', isLiteralLabel: true }
       ]
     },
-    {
-      id: 'monetization',
-      title: 'Monetización & Scale (IA)',
-      icon: '💸',
-      items: [
-        { id: 'revenue_engine', nameKey: 'Poxxi Revenue Engine', icon: Wallet, requiredRole: 'pro', badge: 'REVENUE', isLiteralLabel: true }
-      ]
-    },
+
     {
       id: 'ecosystem',
       title: 'Ecosistema & Admin',
       icon: '🌐',
       items: [
+        { id: 'revenue_engine', nameKey: 'Poxxi Revenue Engine', icon: Wallet, requiredRole: 'admin', badge: 'ADMIN', isLiteralLabel: true },
         { id: 'community', nameKey: 'Comunidad & Remix', icon: Sparkles, requiredRole: 'free', badge: 'OPEN', isLiteralLabel: true },
         { id: 'mascot', nameKey: 'sidebar.mascot', icon: Smile, requiredRole: 'free', badge: 'HUB' },
         { id: 'admin', nameKey: 'sidebar.admin', icon: ShieldAlert, requiredRole: 'admin', badge: 'ADMIN' },

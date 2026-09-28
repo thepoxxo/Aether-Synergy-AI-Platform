@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DeviceModeProvider, useDeviceMode } from './context/DeviceModeContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -16,45 +16,45 @@ import { WorldLanguageModal } from './components/common/WorldLanguageModal';
 import { LandingPage } from './components/landing/LandingPage';
 
 // Internal Workspace Modules
-import { Aurora3DStudio } from './components/modules/Aurora3DStudio';
+const Aurora3DStudio = lazy(() => import('./components/modules/Aurora3DStudio').then(m => ({ default: m.Aurora3DStudio })));
 import { MobileAurora3D } from './components/mobile/MobileAurora3D';
 import { MobilePoxxiReels } from './components/mobile/MobilePoxxiReels';
 import { MobilePatternCutting2D } from './components/mobile/MobilePatternCutting2D';
 import { MobileGlobalSuppliers } from './components/mobile/MobileGlobalSuppliers';
 import { MobileExpertConsultations } from './components/mobile/MobileExpertConsultations';
-import { Scanner3D } from './components/modules/Scanner3D';
-import { AdGenAI } from './components/modules/AdGenAI';
-import { ClothifySourcing } from './components/modules/ClothifySourcing';
-import { SolesmithFootwear } from './components/modules/SolesmithFootwear';
-import { AutomoCalendar } from './components/modules/AutomoCalendar';
-import { GlobalSuppliers } from './components/modules/GlobalSuppliers';
-import { SynthetixMascot } from './components/modules/SynthetixMascot';
-import { AdminConsole } from './components/modules/AdminConsole';
-import { PoxxiRevenueEngine } from './components/modules/PoxxiRevenueEngine';
-import { ProjectRoadmapChecklist } from './components/modules/ProjectRoadmapChecklist';
-import { CommunityExplore } from './components/modules/CommunityExplore';
-import { VirtualRunwayLive } from './components/modules/VirtualRunwayLive';
-import { PatternCutting2D } from './components/modules/PatternCutting2D';
-import { AILookbookStudio } from './components/modules/AILookbookStudio';
-import { TrendForecaster } from './components/modules/TrendForecaster';
-import { AgencyWorkspaces } from './components/modules/AgencyWorkspaces';
-import { CinematicTurntable } from './components/modules/CinematicTurntable';
-import { ShopifyLandingBuilderAI } from './components/modules/ShopifyLandingBuilderAI';
-import { AutonomousAgentSwarm } from './components/modules/AutonomousAgentSwarm';
-import { BrandKitStudio } from './components/modules/BrandKitStudio';
-import { MediaBuyerCampaigns } from './components/modules/MediaBuyerCampaigns';
-import { VersionControl3D } from './components/modules/VersionControl3D';
-import { MetaverseGamingExporter } from './components/modules/MetaverseGamingExporter';
-import { TextileEngineeringLab } from './components/modules/TextileEngineeringLab';
-import { JarvisHologramVoiceCore } from './components/modules/JarvisHologramVoiceCore';
-import { APIGatewayHub } from './components/modules/APIGatewayHub';
-import { WorkflowAutomationsN8N } from './components/modules/WorkflowAutomationsN8N';
+const Scanner3D = lazy(() => import('./components/modules/Scanner3D').then(m => ({ default: m.Scanner3D })));
+const AdGenAI = lazy(() => import('./components/modules/AdGenAI').then(m => ({ default: m.AdGenAI })));
+const ClothifySourcing = lazy(() => import('./components/modules/ClothifySourcing').then(m => ({ default: m.ClothifySourcing })));
+const SolesmithFootwear = lazy(() => import('./components/modules/SolesmithFootwear').then(m => ({ default: m.SolesmithFootwear })));
+const AutomoCalendar = lazy(() => import('./components/modules/AutomoCalendar').then(m => ({ default: m.AutomoCalendar })));
+const GlobalSuppliers = lazy(() => import('./components/modules/GlobalSuppliers').then(m => ({ default: m.GlobalSuppliers })));
+const SynthetixMascot = lazy(() => import('./components/modules/SynthetixMascot').then(m => ({ default: m.SynthetixMascot })));
+const AdminConsole = lazy(() => import('./components/modules/AdminConsole').then(m => ({ default: m.AdminConsole })));
+const PoxxiRevenueEngine = lazy(() => import('./components/modules/PoxxiRevenueEngine').then(m => ({ default: m.PoxxiRevenueEngine })));
+const ProjectRoadmapChecklist = lazy(() => import('./components/modules/ProjectRoadmapChecklist').then(m => ({ default: m.ProjectRoadmapChecklist })));
+const CommunityExplore = lazy(() => import('./components/modules/CommunityExplore').then(m => ({ default: m.CommunityExplore })));
+const VirtualRunwayLive = lazy(() => import('./components/modules/VirtualRunwayLive').then(m => ({ default: m.VirtualRunwayLive })));
+const PatternCutting2D = lazy(() => import('./components/modules/PatternCutting2D').then(m => ({ default: m.PatternCutting2D })));
+const AILookbookStudio = lazy(() => import('./components/modules/AILookbookStudio').then(m => ({ default: m.AILookbookStudio })));
+const TrendForecaster = lazy(() => import('./components/modules/TrendForecaster').then(m => ({ default: m.TrendForecaster })));
+const AgencyWorkspaces = lazy(() => import('./components/modules/AgencyWorkspaces').then(m => ({ default: m.AgencyWorkspaces })));
+const CinematicTurntable = lazy(() => import('./components/modules/CinematicTurntable').then(m => ({ default: m.CinematicTurntable })));
+const ShopifyLandingBuilderAI = lazy(() => import('./components/modules/ShopifyLandingBuilderAI').then(m => ({ default: m.ShopifyLandingBuilderAI })));
+const AutonomousAgentSwarm = lazy(() => import('./components/modules/AutonomousAgentSwarm').then(m => ({ default: m.AutonomousAgentSwarm })));
+const BrandKitStudio = lazy(() => import('./components/modules/BrandKitStudio').then(m => ({ default: m.BrandKitStudio })));
+const MediaBuyerCampaigns = lazy(() => import('./components/modules/MediaBuyerCampaigns').then(m => ({ default: m.MediaBuyerCampaigns })));
+const VersionControl3D = lazy(() => import('./components/modules/VersionControl3D').then(m => ({ default: m.VersionControl3D })));
+const MetaverseGamingExporter = lazy(() => import('./components/modules/MetaverseGamingExporter').then(m => ({ default: m.MetaverseGamingExporter })));
+const TextileEngineeringLab = lazy(() => import('./components/modules/TextileEngineeringLab').then(m => ({ default: m.TextileEngineeringLab })));
+const JarvisHologramVoiceCore = lazy(() => import('./components/modules/JarvisHologramVoiceCore').then(m => ({ default: m.JarvisHologramVoiceCore })));
+const APIGatewayHub = lazy(() => import('./components/modules/APIGatewayHub').then(m => ({ default: m.APIGatewayHub })));
+const WorkflowAutomationsN8N = lazy(() => import('./components/modules/WorkflowAutomationsN8N').then(m => ({ default: m.WorkflowAutomationsN8N })));
 import { ModuleMaintenanceScreen } from './components/common/ModuleMaintenanceScreen';
-import { ModuleStagingAdmin } from './components/modules/ModuleStagingAdmin';
+const ModuleStagingAdmin = lazy(() => import('./components/modules/ModuleStagingAdmin').then(m => ({ default: m.ModuleStagingAdmin })));
 import { moduleStagingService } from './services/moduleStagingService';
-import { ProductPhotoStudioViralPublisher } from './components/modules/ProductPhotoStudioViralPublisher';
-import { AetherReelsTikTok } from './components/modules/AetherReelsTikTok';
-import { ExpertConsultationsHub } from './components/modules/ExpertConsultationsHub';
+const ProductPhotoStudioViralPublisher = lazy(() => import('./components/modules/ProductPhotoStudioViralPublisher').then(m => ({ default: m.ProductPhotoStudioViralPublisher })));
+const AetherReelsTikTok = lazy(() => import('./components/modules/AetherReelsTikTok').then(m => ({ default: m.AetherReelsTikTok })));
+const ExpertConsultationsHub = lazy(() => import('./components/modules/ExpertConsultationsHub').then(m => ({ default: m.ExpertConsultationsHub })));
 import { MobileAppBottomNav } from './components/layout/MobileAppBottomNav';
 import { DesktopWindowHeader } from './components/layout/DesktopWindowHeader';
 import { DeviceModeSimulator } from './components/common/DeviceModeSimulator';
@@ -250,7 +250,16 @@ const MainLayout: React.FC = () => {
         />
 
         <main className="flex-1 min-w-0 pb-20 sm:pb-12 overflow-y-auto">
-          {renderWorkspaceModule()}
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-full w-full">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-cyber-800 border-t-emerald-500 rounded-full animate-spin"></div>
+                <p className="text-emerald-400 font-tech font-bold text-sm tracking-widest animate-pulse">OPTIMIZANDO MÓDULO...</p>
+              </div>
+            </div>
+          }>
+            {renderWorkspaceModule()}
+          </Suspense>
         </main>
       </div>
 
