@@ -30,6 +30,7 @@ import { AutomoCalendar } from './components/modules/AutomoCalendar';
 import { GlobalSuppliers } from './components/modules/GlobalSuppliers';
 import { SynthetixMascot } from './components/modules/SynthetixMascot';
 import { AdminConsole } from './components/modules/AdminConsole';
+import { PoxxiRevenueEngine } from './components/modules/PoxxiRevenueEngine';
 import { ProjectRoadmapChecklist } from './components/modules/ProjectRoadmapChecklist';
 import { CommunityExplore } from './components/modules/CommunityExplore';
 import { VirtualRunwayLive } from './components/modules/VirtualRunwayLive';
@@ -213,6 +214,8 @@ const MainLayout: React.FC = () => {
         return <APIGatewayHub />;
       case 'roadmap':
         return <ProjectRoadmapChecklist />;
+      case 'revenue_engine':
+        return <PoxxiRevenueEngine />;
       case 'expert_consultations':
         return isMobile ? <MobileExpertConsultations /> : <ExpertConsultationsHub />;
       default:

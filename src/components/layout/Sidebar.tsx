@@ -39,7 +39,7 @@ import {
   Sliders,
   Award,
   GraduationCap
-} from 'lucide-react';
+, Wallet } from 'lucide-react';
 import { moduleStagingService } from '../../services/moduleStagingService';
 
 interface SidebarProps {
@@ -149,6 +149,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: '🎓',
       items: [
         { id: 'expert_consultations', nameKey: 'Red de Expertos & Mentoría', icon: Award, requiredRole: 'free', badge: 'PRO 1-ON-1', isLiteralLabel: true }
+      ]
+    },
+    {
+      id: 'monetization',
+      title: 'Monetización & Scale (IA)',
+      icon: '💸',
+      items: [
+        { id: 'revenue_engine', nameKey: 'Poxxi Revenue Engine', icon: Wallet, requiredRole: 'pro', badge: 'REVENUE', isLiteralLabel: true }
       ]
     },
     {
