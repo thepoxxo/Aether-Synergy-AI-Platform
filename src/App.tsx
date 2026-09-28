@@ -77,6 +77,13 @@ const MainLayout: React.FC = () => {
   const [isAdminHubModalOpen, setIsAdminHubModalOpen] = useState(false);
 
   useEffect(() => {
+    const handleNavigate = (e: any) => setCurrentView(e.detail);
+    window.addEventListener('aether_navigate', handleNavigate);
+    return () => window.removeEventListener('aether_navigate', handleNavigate);
+  }, []);
+
+
+  useEffect(() => {
     const handleStagingUpdate = () => setStagingVersion((v) => v + 1);
     window.addEventListener('aether_staging_updated', handleStagingUpdate);
     return () => window.removeEventListener('aether_staging_updated', handleStagingUpdate);

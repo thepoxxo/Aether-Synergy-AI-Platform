@@ -70,6 +70,18 @@ export const DesktopWindowHeader: React.FC = () => {
 
       {/* Right: Hardware & GPU Status */}
       <div className="flex items-center gap-3">
+        
+        <button
+          onClick={() => window.dispatchEvent(new Event('aether_open_search'))}
+          className="flex items-center gap-2 px-3 py-1 bg-cyber-900 hover:bg-cyber-800 border border-cyber-800 rounded-lg text-slate-300 hover:text-white transition-colors group"
+          title="Buscar Módulos (Cmd/Ctrl + K)"
+        >
+          <Search className="w-3 h-3 text-emerald-400 group-hover:animate-pulse" />
+          <span className="text-[10px]">Buscar...</span>
+          <kbd className="hidden md:inline-block px-1.5 py-0.5 bg-cyber-950 rounded text-[9px] border border-cyber-700 ml-1">⌘K</kbd>
+        </button>
+        <span className="text-slate-600 ml-1">|</span>
+
         <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[10px]">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>WebGPU HW-Accelerated (60 FPS)</span>
