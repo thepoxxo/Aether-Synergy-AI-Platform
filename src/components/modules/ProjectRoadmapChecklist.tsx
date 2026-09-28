@@ -223,15 +223,15 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     id: 'ad_runway_gen3_api',
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
-    title: 'Conexión Real con API de Runway Gen-3 Alpha',
+    title: 'Conexión Real con API de Seedance 2.5',
     desc: 'Generación cinemática de videos de producto con aceleración GPU en la nube.',
     isInitialDone: true
   },
   {
-    id: 'ad_sora_kling_api',
+    id: 'ad_seedance_api',
     module: 'Video Marketing IA (AdGen)',
     category: 'intermediate',
-    title: 'Conexión con OpenAI Sora y Kling AI 1.5 HD',
+    title: 'Conexión con API de Seedance 2.5 Pro',
     desc: 'Generación hiperrealista con modelos humanos en pasarela para TikTok y Reels.',
     isInitialDone: true
   },
@@ -1028,7 +1028,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     module: 'Master API Gateway & Conectores IA',
     category: 'advanced',
     title: 'Hub Maestro de 18 Motores de IA Real con Alternador Live/Demo',
-    desc: 'Conexión y orquestación con Tripo3D, Meshy, Runway, Luma, Suno, ElevenLabs, Gemini, Fal.ai y Shopify.',
+    desc: 'Conexión y orquestación con Tripo3D, Meshy, Seedance 2.5, Suno, ElevenLabs, Gemini, Fal.ai y Shopify.',
     isInitialDone: true
   },
   {
@@ -1068,7 +1068,7 @@ const CHECKLIST_DATA: ChecklistItem[] = [
     module: 'Master API Gateway & Conectores IA',
     category: 'advanced',
     title: 'Conector de Video 4K para Restaurantes & Anuncios Gastronómicos',
-    desc: 'Tomas cinemáticas macro con vapor, movimiento de salsas y apetitocidad hiperrealista con Runway Gen-3.',
+    desc: 'Tomas cinemáticas macro con vapor, movimiento de salsas y apetitocidad hiperrealista con Seedance 2.5.',
     isInitialDone: true
   },
   {

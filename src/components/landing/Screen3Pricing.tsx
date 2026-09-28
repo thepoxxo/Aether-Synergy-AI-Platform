@@ -52,7 +52,7 @@ export const Screen3Pricing: React.FC<Screen3PricingProps> = ({ onSelectPlan }) 
       btnText: 'Comenzar Plan Pro',
       features: [
         'Exportación 4K sin marcas de agua (.GLB / PNG)',
-        '50 Créditos de Video AdGen con Sora & Gen-3',
+        '50 Créditos de Video AdGen con Seedance 2.5',
         'Texturizado PBR & Cel-Shaded Pro',
         'Copiloto IA Kai con voz ilimitada'
       ]

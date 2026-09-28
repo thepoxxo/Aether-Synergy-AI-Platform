@@ -54,7 +54,7 @@ export const Screen4About: React.FC<Screen4AboutProps> = ({ onGetStarted }) => {
                 <div className="p-2 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400">
                   <Video className="w-4 h-4" />
                 </div>
-                <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">02 // SORA V2</span>
+                <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">02 // SEEDANCE 2.5</span>
               </div>
               <span className="font-tech font-bold text-sm text-slate-900 dark:text-white block">
                 {t('about.pillar2')}

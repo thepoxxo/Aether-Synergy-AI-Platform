@@ -192,7 +192,7 @@ export const AdminConsole: React.FC = () => {
     },
     {
       category: '🎥 Generación de Video 4K & Turntables',
-      provider: 'Seedance 2.5 API / Luma',
+      provider: 'Seedance 2.5 API',
       usage: '2,800 clips hiperrealistas de 20s',
       unitCost: '$0.02 / clip 4K (↓ 92% ahorro)',
       totalCost: 56.00,
@@ -327,7 +327,7 @@ export const AdminConsole: React.FC = () => {
       monthlyCostUSD: 412.00,
       monthlyGenerations: 1648,
       unitCostUSD: 0.25,
-      primaryAPIs: ['Seedance 2.5 API', 'Luma Dream Machine', 'Kling AI 4K', 'Cloud ffmpeg'],
+      primaryAPIs: ['Seedance 2.5 API', 'Cloud ffmpeg'],
       hardwareUsage: '95.0 Horas H100 NVENC Render Farm',
       profitContributionMargin: 81.6,
       trend: '+8.2%',
@@ -931,7 +931,7 @@ export const AdminConsole: React.FC = () => {
                 {[
                   { name: 'Inferencia GPU H100 (Aurora 3D)', cost: 576, pct: 30.5, color: 'bg-emerald-400' },
                   { name: 'API Generación 3D (Tripo3D/Meshy)', cost: 456, pct: 24.2, color: 'bg-amber-400' },
-                  { name: 'Video Ads & Turntables 4K (Runway)', cost: 362.5, pct: 19.2, color: 'bg-cyan-400' },
+                  { name: 'Video Ads & Turntables 4K (Seedance 2.5)', cost: 362.5, pct: 19.2, color: 'bg-cyan-400' },
                   { name: 'Cloud Baking Unreal Engine 5 Nanite', cost: 142.5, pct: 7.5, color: 'bg-indigo-400' },
                   { name: 'Orquestador Swarm 6 Agentes IA', cost: 120, pct: 6.4, color: 'bg-purple-400' },
                   { name: 'Cloud Storage & CDN (Cloudflare R2)', cost: 72, pct: 3.8, color: 'bg-blue-400' },
@@ -1098,7 +1098,7 @@ export const AdminConsole: React.FC = () => {
                 type="text"
                 value={moduleCostSearch}
                 onChange={(e) => setModuleCostSearch(e.target.value)}
-                placeholder="Buscar módulo, API (ej: Tripo3D, Runway, H100)..."
+                placeholder="Buscar módulo, API (ej: Tripo3D, Seedance, H100)..."
                 className="w-full bg-cyber-950 border border-cyber-700 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyber-gold"
               />
             </div>
@@ -1809,7 +1809,7 @@ export const AdminConsole: React.FC = () => {
               </div>
             )}
 
-            {/* News Card 3: Video Generativo Runway Gen-4 & Sora v2 */}
+            {/* News Card 3: Video Generativo Seedance 2.5 Pro */}
             {(aiRadarFilter === 'all' || aiRadarFilter === 'video') && (
               <div className="p-5 rounded-3xl bg-cyber-900 border border-rose-500/40 space-y-3 shadow-cyber-card flex flex-col justify-between">
                 <div className="space-y-2">
@@ -1820,7 +1820,7 @@ export const AdminConsole: React.FC = () => {
                     <span className="text-[10px] text-slate-500">Hace 1 hora</span>
                   </div>
                   <h4 className="font-tech font-bold text-base text-white">
-                    Runway Gen-4 & Sora v2: Control Cinemático de Cámaras 360°
+                    Seedance 2.5 Pro: Control Cinemático de Cámaras 360°
                   </h4>
                   <p className="text-slate-300 text-xs leading-relaxed">
                     Soporte nativo de trayectorias de cámara orbitales, transiciones de ángulo y consistencia geométrica sin deformación de prendas ni calzado durante el movimiento del modelo.
@@ -1831,7 +1831,7 @@ export const AdminConsole: React.FC = () => {
                     💡 <strong>Impacto en Aether:</strong> Generación automática de videos 9:16 para el feed Poxxi 3D y campañas de Meta Ads.
                   </div>
                   <button
-                    onClick={() => alert('¡Poxxi 3D conectado al pipeline de Runway Gen-4!')}
+                    onClick={() => alert('¡Poxxi 3D conectado al pipeline de Seedance 2.5!')}
                     className="w-full py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-tech font-bold text-xs uppercase flex items-center justify-center gap-1.5 transition-all"
                   >
                     <span>⚡ Activar en Poxxi 3D Studio</span>
@@ -1977,8 +1977,8 @@ export const AdminConsole: React.FC = () => {
                     <td className="py-2.5 text-emerald-400 font-bold">🟢 CONECTADO (Activo)</td>
                   </tr>
                   <tr>
-                    <td className="py-2.5 font-bold text-white">Runway Gen-4</td>
-                    <td className="py-2.5 text-slate-300">RunwayML</td>
+                    <td className="py-2.5 font-bold text-white">Seedance 2.5</td>
+                    <td className="py-2.5 text-slate-300">Seedance</td>
                     <td className="py-2.5 text-amber-300">~ 14.0 s (Video 4K)</td>
                     <td className="py-2.5 text-cyan-300">97.2% (Consistencia)</td>
                     <td className="py-2.5 text-emerald-400 font-bold">🟢 CONECTADO (Activo)</td>
@@ -2344,7 +2344,7 @@ export const AdminConsole: React.FC = () => {
                 🧠 <strong>2. Razonamiento Multimodal Híbrido:</strong> Gemini 2.5 Flash y Claude 3.7 Sonnet reducen a cero los errores en fichas técnicas, calculando márgenes de costura y tolerancias de moldería con precisión matemática.
               </p>
               <p>
-                👗 <strong>3. Pasarelas de Video 4K:</strong> Con Runway Gen-4 y Sora v2, los diseñadores pueden transformar cualquier boceto 3D en un reel viral de pasarela con movimiento de tela hiperrealista para Poxxi 3D.
+                👗 <strong>3. Pasarelas de Video 4K:</strong> Con Seedance 2.5 y Seedance 2.5, los diseñadores pueden transformar cualquier boceto 3D en un reel viral de pasarela con movimiento de tela hiperrealista para Poxxi 3D.
               </p>
               <p>
                 ⚖️ <strong>4. Cumplimiento Normativo:</strong> El Pasaporte Digital de Producto (DPP) de la UE refuerza la propuesta de valor de Aether Synergy frente a competidores tradicionales.

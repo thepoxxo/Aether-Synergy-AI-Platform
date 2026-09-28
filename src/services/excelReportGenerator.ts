@@ -155,7 +155,7 @@ export const generateExecutiveExcelReport = (users: StoredUser[]) => {
     [''],
     ['RECURSO / SERVICIO', 'PROVEEDOR NATIVO', 'CONSUMO MENSUAL', 'TARIFA UNITARIA', 'COSTO TOTAL ($ USD)', '% DEL PRESUPUESTO', 'EFICIENCIA'],
     ['NVIDIA H100 GPU Clusters (3D & NeRF)', 'RunPod / Lambda Cloud', '310 Horas GPU SXM5', '$2.00 / hora', 620.0, '41.0%', 'ALTA (89.5% Utilización)'],
-    ['API Generación Video Ads (Sora & Gen-3)', 'OpenAI & RunwayML', '1,900 Segundos Video 4K', '$0.20 / segundo', 380.0, '25.1%', 'OPTIMIZADO (Cache Activa)'],
+    ['API Generación Video Ads (Seedance 2.5)', 'Seedance AI', '1,900 Segundos Video 4K', '$0.20 / segundo', 380.0, '25.1%', 'OPTIMIZADO (Cache Activa)'],
     ['API Mallas 3D & Reconstrucción (Meshy)', 'Tripo3D & Meshy Pro API', '480 Modelos .GLB', '$0.50 / malla', 240.0, '15.9%', 'RÁPIDA (Sub-30s)'],
     ['Almacenamiento 3D & CDN Global', 'Cloudflare R2 Enterprise', '2.5 TB Datos Servidos', '$0.045 / GB', 112.5, '7.4%', 'GLOBAL (Zero Egress)'],
     ['Base de Datos PostgreSQL Cloud', 'Supabase Pro Tier Replicated', '3 Nodos Alta Disponibilidad', '$33.00 / nodo', 99.0, '6.6%', '99.99% UPTIME'],

@@ -31,7 +31,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 
-export type AIVideoEngine = 'sora' | 'runway' | 'kling' | 'luma' | 'midjourney';
+export type AIVideoEngine = 'seedance' | 'seedance_pro' | 'seedance_turbo' | 'seedance_base' | 'midjourney';
 export type CameraMove = 'orbit' | 'fpv' | 'zoom' | 'whippan' | 'dutch' | 'tracking';
 export type VideoAspectRatio = '9:16' | '16:9' | '1:1' | '4:5';
 export type VideoQuality = '4K' | '1080p' | '720p' | 'prores';
@@ -42,7 +42,7 @@ export const AdGenAI: React.FC = () => {
   const { t } = useLanguage();
 
   // Generation Configuration
-  const [selectedEngine, setSelectedEngine] = useState<AIVideoEngine>('sora');
+  const [selectedEngine, setSelectedEngine] = useState<AIVideoEngine>('seedance');
   const [cameraMove, setCameraMove] = useState<CameraMove>('zoom');
   const [prompt, setPrompt] = useState(
     'Hyper-realistic cinematic 4K commercial: A futuristic techwear jacket with glowing amber seams in a rainy Tokyo street at night. Neon reflections on wet asphalt, volumetric fog, dynamic camera whip pan around the product with cinematic slow motion.'
@@ -107,8 +107,8 @@ export const AdGenAI: React.FC = () => {
 
   const engines = [
     {
-      id: 'sora' as AIVideoEngine,
-      name: 'OpenAI Sora v2',
+      id: 'seedance' as AIVideoEngine,
+      name: 'Seedance 2.5',
       badge: 'HIPERREALISMO 4K',
       color: 'border-emerald-500 text-emerald-400',
       desc: 'Máxima física de fluidos, telas realistas e iluminación raytraced.'
@@ -121,15 +121,15 @@ export const AdGenAI: React.FC = () => {
       desc: 'Control de cámara cinematográfico y transiciones ultra dinámicas.'
     },
     {
-      id: 'kling' as AIVideoEngine,
-      name: 'Kling AI 1.5 HD',
+      id: 'seedance_turbo' as AIVideoEngine,
+      name: 'Seedance 2.5 Turbo',
       badge: 'MODELOS & MOVIMIENTO',
       color: 'border-purple-500 text-purple-400',
       desc: 'Comportamiento humano natural y simulación de prendas en pasarela.'
     },
     {
-      id: 'luma' as AIVideoEngine,
-      name: 'Luma Dream Machine',
+      id: 'seedance_base' as AIVideoEngine,
+      name: 'Seedance 2.5 Base',
       badge: '3D PRODUCT REVEAL',
       color: 'border-cyan-500 text-cyan-400',
       desc: 'Rotación orbital suave ideal para catálogos y e-commerce.'
@@ -190,7 +190,7 @@ export const AdGenAI: React.FC = () => {
                 AD-GEN AI • MOTOR MULTIMODELO DE VIDEO MARKETING
               </h2>
               <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                SORA v2 + GEN-3 + KLING HD
+                SEEDANCE 2.5 API PRO
               </span>
             </div>
             <p className="text-xs text-slate-400">

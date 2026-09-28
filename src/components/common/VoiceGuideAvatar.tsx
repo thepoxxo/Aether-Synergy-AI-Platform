@@ -72,7 +72,7 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
       speechText: 'Explora tu modelo con los controles táctiles, prueba la iluminación de estudio y desliza el control de despiece.'
     },
     {
-      title: 'Paso 4: Video Marketing con Sora & Gen-3 en AdGen',
+      title: 'Paso 4: Video Marketing con Seedance 2.5 en AdGen',
       desc: 'Genera anuncios en video 9:16 para TikTok y Reels con movimientos de cámara cinemáticos (FPV Drone, 360 Orbit).',
       speechText: 'En AdGen AI puedes crear videos publicitarios cinematográficos conectando con los mejores modelos de video de inteligencia artificial.'
     },
@@ -209,8 +209,8 @@ export const VoiceGuideAvatar: React.FC<{ onNavigateToModule?: (mod: string) => 
       responseText = 'Puedes presionar la tecla S en tu teclado para rotar entre los 5 shaders (Cel-Shaded, PBR, Clay, Wireframe y X-Ray) o presionar R para girar en 360 grados.';
     } else if (lower.includes('fabrica') || lower.includes('proveedor') || lower.includes('tech pack') || lower.includes('precio')) {
       responseText = 'En el módulo de Proveedores Globales B2B puedes generar tu Ficha Técnica Tech Pack con medidas duales en centímetros y pulgadas, y contactar a las fábricas de Portugal, Turquía y Colombia por WhatsApp.';
-    } else if (lower.includes('video') || lower.includes('sora') || lower.includes('tiktok') || lower.includes('adgen')) {
-      responseText = 'En AdGen AI puedes conectar con OpenAI Sora v2, Runway Gen-3 o Kling AI para generar comerciales cinematográficos en formato vertical 9:16 con movimientos de cámara tipo FPV Drone.';
+    } else if (lower.includes('video') || lower.includes('seedance') || lower.includes('tiktok') || lower.includes('adgen')) {
+      responseText = 'En AdGen AI puedes conectar con Seedance 2.5 API para generar comerciales cinematográficos en formato vertical 9:16 con movimientos de cámara tipo FPV Drone.';
     } else {
       responseText = `Entendido: "${msg}". Estoy a tu servicio para asistirte en modelado 3D, video marketing con IA y conexión con fabricantes globales.`;
     }

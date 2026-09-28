@@ -154,7 +154,7 @@ export const AdminMasterModuleHubModal: React.FC<AdminMasterModuleHubModalProps>
     },
     {
       id: 'adgen',
-      name: 'AdGen AI • Generador de Video Marketing (Sora/Runway)',
+      name: 'AdGen AI • Generador de Video Marketing (Seedance 2.5)',
       category: 'Marketing & Redes',
       icon: Film,
       status: 'Operativo 100%',

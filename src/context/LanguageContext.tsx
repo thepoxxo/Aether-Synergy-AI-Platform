@@ -102,13 +102,13 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.title': 'REDEFINIENDO EL CICLO DE CREACIÓN DE PRODUCTO',
     'about.desc': 'De la idea al render 3D, del video publicitario viral a la cotización con fábricas en minutos.',
     'about.pillar1': '1. Ideación & Modelado 3D',
-    'about.pillar2': '2. Video Marketing con IA (Sora & Gen-3)',
+    'about.pillar2': '2. Video Marketing con IA (Seedance 2.5)',
     'about.pillar3': '3. Sourcing Global con Fábricas Auditadas',
 
     // Workspace & Sidebar
     'sidebar.title': 'Módulos del Ecosistema',
     'sidebar.aurora3d': 'Motor 3D & Shaders',
-    'sidebar.scanner3d': 'Escáner 3D IA (Luma)',
+    'sidebar.scanner3d': 'Escáner 3D IA (Seedance)',
     'sidebar.adgen': 'Video Marketing (AdGen)',
     'sidebar.clothify': 'Sourcing Textil (Clothify)',
     'sidebar.solesmith': 'Diseño Calzado (SoleSmith)',
@@ -191,13 +191,13 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.title': 'REDEFINING THE PRODUCT CREATION LIFECYCLE',
     'about.desc': 'From concept to 3D render, from viral video ads to factory sourcing in minutes.',
     'about.pillar1': '1. 3D Ideation & Modeling',
-    'about.pillar2': '2. Video Marketing with AI (Sora & Gen-3)',
+    'about.pillar2': '2. Video Marketing with AI (Seedance 2.5)',
     'about.pillar3': '3. Global Sourcing with Audited Factories',
 
     // Workspace & Sidebar
     'sidebar.title': 'Ecosystem Modules',
     'sidebar.aurora3d': '3D Engine & Shaders',
-    'sidebar.scanner3d': '3D AI Scanner (Luma)',
+    'sidebar.scanner3d': '3D AI Scanner (Seedance)',
     'sidebar.adgen': 'Video Marketing (AdGen)',
     'sidebar.clothify': 'Textile Sourcing (Clothify)',
     'sidebar.solesmith': 'Footwear Design (SoleSmith)',
@@ -274,7 +274,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.title': '製品開発サイクルを再定義する',
     'about.desc': 'アイデアから3Dレンダリング、バイラル動画から工場発注まで数分で完了。',
     'about.pillar1': '1. 3Dモデリング＆デザイン',
-    'about.pillar2': '2. AI動画マーケティング (Sora & Gen-3)',
+    'about.pillar2': '2. AI動画マーケティング (Seedance 2.5)',
     'about.pillar3': '3. 認証済み工場とのグローバル調達',
 
     'sidebar.title': 'エコシステム機能',
@@ -344,7 +344,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.title': 'REDEFININDO O CICLO DE CRIAÇÃO',
     'about.desc': 'Do conceito ao render 3D, do anúncio viral à confecção em minutos.',
     'about.pillar1': '1. Ideação & Modelagem 3D',
-    'about.pillar2': '2. Video Marketing IA (Sora/Gen-3)',
+    'about.pillar2': '2. Video Marketing IA (Seedance 2.5)',
     'about.pillar3': '3. Sourcing Global com Fábricas',
 
     'sidebar.title': 'Módulos do Ecossistema',
@@ -414,7 +414,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.title': 'REDÉFINIR LE CYCLE DE CRÉATION',
     'about.desc': 'Du concept au rendu 3D, de la vidéo virale à l\'usine en quelques minutes.',
     'about.pillar1': '1. Modélisation 3D & Idéation',
-    'about.pillar2': '2. Vidéo Marketing IA (Sora/Gen-3)',
+    'about.pillar2': '2. Vidéo Marketing IA (Seedance 2.5)',
     'about.pillar3': '3. Sourcing Mondial d\'Usines',
 
     'sidebar.title': 'Modules de l\'Écosystème',
@@ -624,7 +624,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'about.title': '重构产品设计与制造全生命周期',
     'about.desc': '数分钟内实现从概念草图到 3D 渲染、从爆款短视频到全球工厂打样。',
     'about.pillar1': '1. 3D 概念与模型设计',
-    'about.pillar2': '2. AI 视频广告营销 (Sora/Gen-3)',
+    'about.pillar2': '2. AI 视频广告营销 (Seedance 2.5)',
     'about.pillar3': '3. 优质认证代工厂全球直连',
 
     'sidebar.title': '生态系统模块',

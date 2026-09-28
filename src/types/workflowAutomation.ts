@@ -4,7 +4,7 @@ export type NodeType =
   | 'trigger_event'
   | 'ai_gemini_vision'
   | 'ai_tripo_3d'
-  | 'ai_runway_video'
+  | 'ai_seedance_video'
   | 'ai_suno_music'
   | 'ai_elevenlabs_voice'
   | 'ai_flux_image'

@@ -85,54 +85,54 @@ class APIGatewayService {
 
     // 2. Video Ads & Commercial Generation
     {
-      id: 'runway',
-      name: 'Runway Gen-3 Alpha',
-      provider: 'Runway AI, Inc.',
+      id: 'seedance',
+      name: 'Seedance 2.5',
+      provider: 'Seedance AI',
       category: 'video_ads',
       categoryLabel: 'Video Publicitario',
       iconName: 'Video',
-      envKey: 'VITE_RUNWAY_API_KEY',
+      envKey: 'VITE_SEEDANCE_API_KEY',
       description: 'Generación de videos publicitarios 4K en formato 9:16 con control cinemático de cámara.',
       capabilities: ['Camera Motion Control', 'Motion Brush', 'Text/Image-to-Video 4K', 'Director Mode'],
       supportedDomains: ['Anuncios TikTok Moda', 'Reels de Sneakers', 'Comerciales de Restaurantes', 'Fashion Films'],
       pricingTier: 'API Standard',
       estimatedCostPerCall: '$0.25 USD / clip 15s',
       status: 'simulated',
-      docUrl: 'https://dev.runwayml.com/',
+      docUrl: 'https://seedance.ai/docs',
       isConfigured: false
     },
     {
-      id: 'luma_dream',
-      name: 'Luma Dream Machine API',
-      provider: 'Luma AI',
+      id: 'seedance_pro',
+      name: 'Seedance 2.5 Pro',
+      provider: 'Seedance AI',
       category: 'video_ads',
       categoryLabel: 'Video Publicitario',
       iconName: 'Film',
-      envKey: 'VITE_LUMA_API_KEY',
+      envKey: 'VITE_SEEDANCE_PRO_API_KEY',
       description: 'Giros cinemáticos en 360°, dinámica de fluidos y simulación realista de telas ondeando.',
       capabilities: ['360 Turntable Loops', 'Fluid Dynamics', 'Keyframe Camera Tracks', 'Fast Rendering'],
       supportedDomains: ['Turntable 360 Prendas', 'Anuncios de Bebidas/Restaurante', 'Mobiliario 3D'],
       pricingTier: 'Commercial API',
       estimatedCostPerCall: '$0.20 USD / video',
       status: 'simulated',
-      docUrl: 'https://lumalabs.ai/',
+      docUrl: 'https://seedance.ai/docs',
       isConfigured: false
     },
     {
-      id: 'kling_ai',
-      name: 'Kling AI Motion Engine',
-      provider: 'Kuaishou Kling',
+      id: 'seedance_turbo',
+      name: 'Seedance 2.5 Turbo',
+      provider: 'Seedance AI',
       category: 'video_ads',
       categoryLabel: 'Video Publicitario',
       iconName: 'Activity',
-      envKey: 'VITE_KLING_API_KEY',
+      envKey: 'VITE_SEEDANCE_TURBO_API_KEY',
       description: 'Simulación de física corporal humana hiperrealista para modelos caminando en pasarelas.',
       capabilities: ['Full Body Runway Walk', 'Complex Clothing Physics', '1080p 60fps Output'],
       supportedDomains: ['Pasarela Virtual en Vivo', 'Pruebas de Ropa en Movimiento'],
       pricingTier: 'Enterprise API',
       estimatedCostPerCall: '$0.18 USD / render',
       status: 'simulated',
-      docUrl: 'https://klingai.org/',
+      docUrl: 'https://seedance.ai/docs',
       isConfigured: false
     },
 
@@ -456,8 +456,8 @@ class APIGatewayService {
     roasPredicted: string;
   }> {
     const mode = this.getGatewayMode();
-    const runwayKey = this.getStoredKey('runway');
-    const lumaKey = this.getStoredKey('luma_dream');
+    const seedanceKey = this.getStoredKey('seedance');
+    const seedanceProKey = this.getStoredKey('seedance_pro');
 
     await new Promise((r) => setTimeout(r, mode === 'live_production' ? 3000 : 1400));
 
@@ -465,7 +465,7 @@ class APIGatewayService {
       videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-fashion-model-in-neon-lighting-39875-large.mp4',
       duration: req.durationSeconds,
       resolution: '4K Ultra HD (2160x3840 9:16)',
-      engineUsed: runwayKey ? 'Runway Gen-3 Alpha (Live)' : lumaKey ? 'Luma Dream Machine (Live)' : 'Aether Cinematic Video Core',
+      engineUsed: seedanceKey ? 'Seedance 2.5 (Live)' : seedanceProKey ? 'Seedance 2.5 Pro (Live)' : 'Aether Cinematic Video Core',
       roasPredicted: '5.4x ROAS (+42% CTR)'
     };
   }

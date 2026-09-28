@@ -34,7 +34,7 @@ export const Screen2Avantgarde: React.FC<Screen2AvantgardeProps> = ({ onSelectMo
       desc: t('about.pillar2'),
       icon: Video,
       emoji: '🎥',
-      badge: 'Sora & Gen-3',
+      badge: 'Seedance 2.5',
       theme: {
         border: 'border-2 border-amber-400 hover:border-amber-300',
         glow: 'hover:shadow-[0_20px_50px_rgba(245,158,11,0.45)]',

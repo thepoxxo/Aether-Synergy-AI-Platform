@@ -47,7 +47,7 @@ export const Scanner3D: React.FC = () => {
   const [stylePreset, setStylePreset] = useState<'cel' | 'pbr' | 'clay' | 'cyberpunk'>('cel');
 
   // External API Configuration State
-  const [selectedApiProvider, setSelectedApiProvider] = useState<'tripo' | 'meshy' | 'runway' | 'instantmesh'>('tripo');
+  const [selectedApiProvider, setSelectedApiProvider] = useState<'tripo' | 'meshy' | 'seedance' | 'instantmesh'>('tripo');
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [isApiKeySaved, setIsApiKeySaved] = useState(false);
   const [meshQuality, setMeshQuality] = useState<'standard' | 'high' | 'ultra_4k'>('high');
@@ -190,7 +190,7 @@ export const Scanner3D: React.FC = () => {
                   {activeInputMode === 'video' && 'RECONSTRUCCIÓN DE VIDEO 360° & FOTOGRAMETRÍA'}
                   {activeInputMode === 'files' && 'CONVERSOR UNIVERSAL DE ARCHIVOS A 3D (PNG, SVG, PDF)'}
                   {activeInputMode === 'text' && 'SÍNTESIS DE MALLAS 3D POR PROMPT IA'}
-                  {activeInputMode === 'api' && 'GATEWAY DE APIS 3D (TRIPO3D, MESHY, RUNWAY)'}
+                  {activeInputMode === 'api' && 'GATEWAY DE APIS 3D (TRIPO3D, MESHY, SEEDANCE)'}
                 </span>
               </div>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-950 text-cyan-400 border border-cyan-500/30">
@@ -335,7 +335,7 @@ export const Scanner3D: React.FC = () => {
                   <Key className="w-4 h-4 text-cyber-gold shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-white block">Conector de APIs 3D Profesionales</span>
-                    Conecta tus credenciales de Tripo3D, Meshy AI o Runway para aceleración por GPU directa en producción.
+                    Conecta tus credenciales de Tripo3D, Meshy AI o Seedance 2.5 para aceleración por GPU directa en producción.
                   </div>
                 </div>
 
@@ -343,7 +343,7 @@ export const Scanner3D: React.FC = () => {
                   {[
                     { id: 'tripo', name: 'Tripo3D API', speed: '30s Malla' },
                     { id: 'meshy', name: 'Meshy AI 4', speed: 'HD PBR' },
-                    { id: 'runway', name: 'Runway 3D', speed: 'Cinematic' },
+                    { id: 'seedance', name: 'Seedance 3D', speed: 'Cinematic' },
                     { id: 'instantmesh', name: 'InstantMesh', speed: 'Ultra Rápido' }
                   ].map((api) => (
                     <button
