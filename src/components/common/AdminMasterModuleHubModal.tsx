@@ -232,14 +232,7 @@ export const AdminMasterModuleHubModal: React.FC<AdminMasterModuleHubModalProps>
       status: 'Operativo 100%',
       desc: 'Desfiles de moda digitales con avatares animados y contadores de pre-venta en directo.'
     },
-    {
-      id: 'jarvis',
-      name: 'J.A.R.V.I.S. Voz Holográfica Core & Copiloto',
-      category: 'IA & Agentes',
-      icon: Zap,
-      status: 'Operativo 100%',
-      desc: 'Asistente de diseño por voz con reconocimiento de intenciones y automatización de comandos.'
-    },
+
     {
       id: 'agentswarm',
       name: 'Enjambre Autónomo de 6 Agentes IA 24/7',

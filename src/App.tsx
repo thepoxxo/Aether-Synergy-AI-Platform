@@ -46,7 +46,6 @@ import { VersionControl3D } from './components/modules/VersionControl3D';
 import { MetaverseGamingExporter } from './components/modules/MetaverseGamingExporter';
 import { TextileEngineeringLab } from './components/modules/TextileEngineeringLab';
 import { JarvisHologramVoiceCore } from './components/modules/JarvisHologramVoiceCore';
-import { JarvisFloatingWidget } from './components/common/JarvisFloatingWidget';
 import { APIGatewayHub } from './components/modules/APIGatewayHub';
 import { WorkflowAutomationsN8N } from './components/modules/WorkflowAutomationsN8N';
 import { ModuleMaintenanceScreen } from './components/common/ModuleMaintenanceScreen';
@@ -321,8 +320,7 @@ const MainLayout: React.FC = () => {
       {/* Native Mobile App Bottom Navigation Bar (Dock) */}
       <MobileAppBottomNav currentView={currentView} setCurrentView={setCurrentView} />
 
-      {/* Global Persistent Floating JARVIS Hologram Widget */}
-      <JarvisFloatingWidget onNavigateView={(v) => setCurrentView(v)} />
+      
     </div>
   );
 };

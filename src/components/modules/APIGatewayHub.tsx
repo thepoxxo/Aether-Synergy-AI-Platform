@@ -1399,7 +1399,7 @@ export const APIGatewayHub: React.FC = () => {
                   {isGeneratingVideo ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Renderizando Video 4K (Runway Gen-3)...</span>
+                      <span>Renderizando Video 4K (Seedance 2.5)...</span>
                     </>
                   ) : (
                     <>
