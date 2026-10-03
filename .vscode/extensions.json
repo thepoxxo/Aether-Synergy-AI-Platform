@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "zhuangtongfa.material-theme",
+    "PKief.material-icon-theme",
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "naumovs.color-highlight",
+    "streetsidesoftware.code-spell-checker-spanish",
+    "ms-vsliveshare.vsliveshare",
+    "humao.rest-client",
+    "eamodio.gitlens"
+  ]
+}
