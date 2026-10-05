@@ -1,8 +1,8 @@
 # agents.md — POXXI STUDIO: Briefing Completo para Agentes de IA
 
-> **Versión del documento:** 1.0.0 · Generado automáticamente el 3 de octubre de 2026  
+> **Versión del documento:** 2.0.0 · Actualizado el 3 de octubre de 2026  
 > **Repositorio:** `thepoxxo/Aether-Synergy-AI-Platform` (rama `main`)  
-> **Propósito:** Orientar a cualquier LLM/agente (Claude 5.5, GPT-6 Astra, Gemini 2.5 Pro) que tome este proyecto desde cero para que entienda su estructura, convenciones, límites y flujo de trabajo sin requerir contexto adicional.
+> **Propósito:** Orientar a cualquier LLM/agente (Claude 5.5, GPT-6 Astra, Gemini 2.5 Pro) que tome este proyecto desde cero. Lee este fichero entero antes de tocar una sola línea de código.
 
 ---
 
@@ -16,36 +16,83 @@
 | **Versión actual** | V2.5 |
 | **Tipo** | SaaS Multimodal — Diseño de Moda AI + B2B Industrial |
 | **Industria objetivo** | Moda urbana, textil, calzado, restaurantes, e-commerce |
-| **Fundamento** | Prototipo React/Vite → Blueprint para migrar a producción real con modelos de 2026/2027 |
+| **Fundamento** | Prototipo React/Vite → Blueprint para migrar a producción real con modelos 2027 |
+| **Rama principal** | `main` (no existe `develop` ni `staging` aún) |
+| **Deploy** | Vercel (SPA rewrite → `index.html`) |
 
 ---
 
-## 2. STACK TECNOLÓGICO
+## 2. STACK TECNOLÓGICO COMPLETO
 
-### Frontend (único stack — no hay backend separado)
+### Frontend (único stack — sin backend separado)
 
 ```
 React 18.3.1         → UI framework principal (SPA)
-TypeScript 5.6.3     → Tipado estricto en todo el proyecto
-Vite 6.0.1           → Bundler / Dev Server (puerto 5173)
-Tailwind CSS 3.4.15  → Sistema de diseño (tema custom: "cyber")
-Lucide React 0.468   → Iconografía única (NO usar otros icon packs)
-Recharts 3.10.1      → Gráficas del Admin Console (SOLO esta librería)
+TypeScript 5.6.3     → Tipado estricto — modo "strict": true en tsconfig
+Vite 6.0.1           → Bundler / Dev Server — puerto 5173
+Tailwind CSS 3.4.15  → Sistema de diseño — tema custom "cyber" (NO actualizar a 4.x)
+Lucide React 0.468   → Única librería de iconos (NO instalar alternativas)
+Recharts 3.10.1      → Gráficas del Admin Console (ÚNICA librería de charts)
 Three.js 0.170.0     → Renderizado 3D WebGL
 xlsx 0.18.5          → Exportación de reportes Excel
-DOMPurify 3.4.16     → Sanitización de HTML (XSS prevention)
+DOMPurify 3.4.16     → Sanitización XSS de HTML dinámico
 crypto-js 4.2.0      → Cifrado local de datos sensibles
 canvas-confetti      → Animaciones de celebración (registro, upgrades)
+clsx + tailwind-merge → Composición condicional de clases CSS
 ```
 
-### Servicios en la Nube (aún simulados en prototipo)
+### Configuración TypeScript (`tsconfig.json`)
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true
+  }
+}
+```
+> `strict: true` activa `strictNullChecks`, `noImplicitAny`, y todos los checks estrictos de TS. Los tipos deben ser explícitos.
+
+### Configuración Vite
+
+```ts
+// vite.config.ts
+export default defineConfig({
+  plugins: [react()],
+  server: { port: 5173, host: true }
+});
+```
+
+### Configuración de Deploy — Vercel (`vercel.json`)
+
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+      { "key": "X-XSS-Protection", "value": "1; mode=block" }
+    ]}
+  ]
+}
+```
+> Vercel sirve el SPA con SPA-fallback + headers de seguridad. No hay SSR. No hay API routes en Vercel.
+
+### Servicios en la Nube (simulados en prototipo)
 
 ```
-Supabase             → PostgreSQL + Auth + Storage (VITE_SUPABASE_URL)
-Cloudflare R2        → CDN almacenamiento modelos .GLB y texturas 8K
-Stripe               → Suscripciones SaaS (Pro $49/mo, Agency $149/mo)
-LemonSqueezy         → Alternativa Stripe (Merchant of Record global)
-Vercel               → Deploy y edge functions (vercel.json presente)
+Supabase         → PostgreSQL + Auth + Storage
+Cloudflare R2    → CDN modelos .GLB y texturas 8K
+Stripe           → Suscripciones SaaS Pro/Agency
+LemonSqueezy     → Alternativa Stripe (Merchant of Record global)
 ```
 
 ---
@@ -55,124 +102,128 @@ Vercel               → Deploy y edge functions (vercel.json presente)
 ```
 PROYECTO WEB DE DISEÑO CON IA/
 │
-├── .vscode/                        # Configuración VS Code del equipo
-│   ├── settings.json               # File nesting, formateo, temas
-│   ├── extensions.json             # Extensiones recomendadas
-│   ├── launch.json                 # Debug → Chrome en localhost:5173
-│   └── tasks.json                  # Tareas: Dev, TSCheck, Build
+├── .vscode/
+│   ├── settings.json          # Formateo automático, File Nesting, tema
+│   ├── extensions.json        # Extensiones recomendadas del equipo
+│   ├── launch.json            # Debug Chrome → localhost:5173
+│   └── tasks.json             # Tareas: Dev Server, TS Check, Build
 │
 ├── docs/
-│   ├── context/PROJECT_MASTER_CONTEXT.md  # Contexto maestro del proyecto
-│   └── ROADMAP_CHECKLIST.md               # Lista de tareas pendientes
+│   ├── context/
+│   │   └── PROJECT_MASTER_CONTEXT.md   # Contexto maestro ampliado
+│   └── ROADMAP_CHECKLIST.md            # Estado de funcionalidades
 │
 ├── scripts/
-│   ├── backup/                     # old_admin_source.txt, create_pdf_backup.py
-│   └── utils/                      # analyze_channel.py, extract_systems.py
+│   ├── backup/                # create_pdf_backup.py, old_admin_source.txt
+│   └── utils/                 # analyze_channel.py, extract_systems.py
 │
 ├── src/
 │   ├── components/
-│   │   ├── common/                 # Modales globales reutilizables
-│   │   │   ├── CommandPalette.tsx  # Buscador universal Ctrl+K
+│   │   ├── common/            # Modales globales reutilizables
+│   │   │   ├── CommandPalette.tsx          # Búsqueda universal Ctrl+K
 │   │   │   ├── LoginModal.tsx
 │   │   │   ├── UpgradeModal.tsx
 │   │   │   ├── UserProfileModal.tsx
 │   │   │   ├── AdminMasterModuleHubModal.tsx
 │   │   │   └── ModuleMaintenanceScreen.tsx
 │   │   │
-│   │   ├── layout/                 # Estructura visual persistente
-│   │   │   ├── Sidebar.tsx         # ← ARCHIVO CRÍTICO: categorías y permisos por rol
-│   │   │   ├── Footer.tsx          # Pie con modales legales interactivos
-│   │   │   ├── DesktopWindowHeader.tsx  # Barra superior estilo MacOS
+│   │   ├── layout/            # Estructura visual persistente
+│   │   │   ├── Sidebar.tsx              # ← CRÍTICO: menú + permisos por rol
+│   │   │   ├── Footer.tsx               # Pie con modales legales interactivos
+│   │   │   ├── DesktopWindowHeader.tsx  # Barra superior estilo MacOS + lupa
 │   │   │   └── MobileAppBottomNav.tsx
 │   │   │
-│   │   ├── mobile/                 # Versiones adaptadas para móvil
+│   │   ├── mobile/            # Versiones adaptadas para móvil
 │   │   │   ├── MobileAurora3D.tsx
 │   │   │   ├── MobilePoxxiReels.tsx
 │   │   │   ├── MobileGlobalSuppliers.tsx
 │   │   │   ├── MobileExpertConsultations.tsx
 │   │   │   └── MobilePatternCutting2D.tsx
 │   │   │
-│   │   └── modules/                # ← 35+ MÓDULOS FUNCIONALES (core del producto)
-│   │       ├── AdminConsole.tsx           # Solo admin — Recharts + métricas
-│   │       ├── Aurora3DStudio.tsx         # Módulo principal MVP (Three.js)
-│   │       ├── AdGenAI.tsx                # Generador de anuncios video Seedance
-│   │       ├── AetherReelsTikTok.tsx      # Feed vertical 9:16
-│   │       ├── AgencyWorkspaces.tsx       # Multi-marca (rol: agency)
-│   │       ├── AILookbookStudio.tsx       # FLUX.1 modelos hiperrealistas
-│   │       ├── APIGatewayHub.tsx          # 18 APIs con switch Live/Sim
-│   │       ├── AutomoCalendar.tsx         # Publicación multicanal automática
-│   │       ├── AutonomousAgentSwarm.tsx   # 4 agentes cooperando
-│   │       ├── BrandKitStudio.tsx         # Paletas, logos, tipografía
-│   │       ├── CinematicTurntable.tsx     # Loops 360° para anuncios
-│   │       ├── ClothifySourcing.tsx       # Fichas técnicas y COGS
-│   │       ├── CommunityExplore.tsx       # Galería pública + fork
-│   │       ├── DigitalProductPassport.tsx # EU ESPR DPP QR blockchain
-│   │       ├── DXFExportEngine.tsx        # AI → .DXF corte láser
-│   │       ├── ExpertConsultationsHub.tsx # Red de expertos 1-on-1
-│   │       ├── GlobalSuppliers.tsx        # Red B2B + vetting KYC/ESG
-│   │       ├── JarvisHologramVoiceCore.tsx# Asistente voz bidireccional
-│   │       ├── MediaBuyerCampaigns.tsx    # ROAS predictor, ads 4K
-│   │       ├── MetaverseGamingExporter.tsx# Unreal / Roblox / Nanite USD
-│   │       ├── ModuleStagingAdmin.tsx     # Control de despliegue gradual
-│   │       ├── PatternCutting2D.tsx       # Patronaje con graduación XS-XXL
-│   │       ├── PoxxiRevenueEngine.tsx     # Solo admin — Monetización
-│   │       ├── ProductPhotoStudioViralPublisher.tsx # Facebook Graph API v20
-│   │       ├── ProjectRoadmapChecklist.tsx# Estado del proyecto
-│   │       ├── Scanner3D.tsx              # LiDAR escáner de prendas
-│   │       ├── ShopifyLandingBuilderAI.tsx# Landing pages AI 1-clic
-│   │       ├── ShopifyWidgetBuilder.tsx   # Generador iframe widget B2B
-│   │       ├── SolesmithFootwear.tsx      # Calzado y suelas 3D
-│   │       ├── SynthetixMascot.tsx        # Mascota animada asistente
-│   │       ├── TextileEngineeringLab.tsx  # Simulación AATCC textil
-│   │       ├── TrendForecaster.tsx        # Monitoreo pasarelas mundiales
-│   │       ├── TrendSpiderAgent.tsx       # Scraping TikTok/Pinterest viral
-│   │       ├── VersionControl3D.tsx       # Diff antes/después 3D
-│   │       ├── VirtualRunwayLive.tsx      # Pasarela virtual con público
-│   │       └── WorkflowAutomationsN8N.tsx # n8n orquestador visual
+│   │   └── modules/           # ← 35+ MÓDULOS FUNCIONALES (core del producto)
+│   │       ├── AdminConsole.tsx
+│   │       ├── Aurora3DStudio.tsx         # MVP principal — Three.js
+│   │       ├── AdGenAI.tsx
+│   │       ├── AetherReelsTikTok.tsx
+│   │       ├── AgencyWorkspaces.tsx
+│   │       ├── AILookbookStudio.tsx
+│   │       ├── APIGatewayHub.tsx
+│   │       ├── AutomoCalendar.tsx
+│   │       ├── AutonomousAgentSwarm.tsx
+│   │       ├── BrandKitStudio.tsx
+│   │       ├── CinematicTurntable.tsx
+│   │       ├── ClothifySourcing.tsx
+│   │       ├── CommunityExplore.tsx
+│   │       ├── DigitalProductPassport.tsx # EU ESPR 2026
+│   │       ├── DXFExportEngine.tsx        # AI → corte láser
+│   │       ├── ExpertConsultationsHub.tsx
+│   │       ├── GlobalSuppliers.tsx
+│   │       ├── JarvisHologramVoiceCore.tsx
+│   │       ├── MediaBuyerCampaigns.tsx
+│   │       ├── MetaverseGamingExporter.tsx
+│   │       ├── ModuleStagingAdmin.tsx
+│   │       ├── PatternCutting2D.tsx
+│   │       ├── PoxxiRevenueEngine.tsx     # Solo admin
+│   │       ├── ProductPhotoStudioViralPublisher.tsx
+│   │       ├── ProjectRoadmapChecklist.tsx
+│   │       ├── Scanner3D.tsx
+│   │       ├── ShopifyLandingBuilderAI.tsx
+│   │       ├── ShopifyWidgetBuilder.tsx
+│   │       ├── SolesmithFootwear.tsx
+│   │       ├── SynthetixMascot.tsx
+│   │       ├── TextileEngineeringLab.tsx
+│   │       ├── TrendForecaster.tsx
+│   │       ├── TrendSpiderAgent.tsx
+│   │       ├── VersionControl3D.tsx
+│   │       ├── VirtualRunwayLive.tsx
+│   │       └── WorkflowAutomationsN8N.tsx
 │   │
 │   ├── context/
-│   │   ├── AuthContext.tsx         # ← CENTRAL: roles, viewMode, user state
-│   │   ├── DeviceModeContext.tsx   # Simulador: auto/mobile/tablet
-│   │   ├── LanguageContext.tsx     # i18n (ES por defecto)
-│   │   └── ThemeContext.tsx        # Tema visual (cyber dark)
+│   │   ├── AuthContext.tsx        # ← CENTRAL: roles, viewMode, user
+│   │   ├── DeviceModeContext.tsx  # Simulador: auto/mobile/tablet
+│   │   ├── LanguageContext.tsx    # i18n — ES por defecto
+│   │   └── ThemeContext.tsx       # Tema visual (cyber dark)
 │   │
 │   ├── services/
-│   │   ├── moduleStagingService.ts # Gestor de despliegue gradual (singleton)
-│   │   ├── apiGateway.ts           # Centralizador de llamadas a APIs externas
-│   │   ├── billingService.ts       # Lógica de Stripe y suscripciones
-│   │   ├── db.ts                   # Abstracción de base de datos (Supabase/localStorage)
-│   │   ├── excelReportGenerator.ts # Export XLSX para reportes admin
-│   │   ├── facebookPublisherService.ts  # Graph API v20.0 publicación masiva
-│   │   └── ambientAudio444Hz.ts    # Audio ambiente (ondas 444Hz en estudio)
+│   │   ├── moduleStagingService.ts      # Singleton de despliegue gradual
+│   │   ├── apiGateway.ts                # Centralizador de APIs externas
+│   │   ├── billingService.ts            # Stripe / LemonSqueezy
+│   │   ├── db.ts                        # Abstracción DB (Supabase / localStorage)
+│   │   ├── excelReportGenerator.ts      # Export XLSX admin
+│   │   ├── facebookPublisherService.ts  # Graph API v20.0
+│   │   └── ambientAudio444Hz.ts         # Audio ambiente 444Hz
 │   │
 │   ├── types/
-│   │   ├── auth.ts                 # UserRole, User, DemoAccount, PlanFeature
-│   │   ├── moduleStaging.ts        # ModuleAvailabilityStatus, RolloutPreset
-│   │   ├── database.ts             # UserRegistrationData, StoredUser
-│   │   ├── apiGateway.ts           # Tipos de respuesta de APIs
-│   │   ├── adobe3dTools.ts         # Tipos 3D y mallas
-│   │   ├── i18n.ts                 # Tipos de internacionalización
-│   │   ├── theme.ts                # Tipos del sistema de temas
-│   │   ├── productPhotoStudio.ts   # Tipos del estudio fotográfico
-│   │   ├── userGoals.ts            # Objetivos y metas del usuario
-│   │   └── workflowAutomation.ts   # Tipos de flujos n8n
+│   │   ├── auth.ts               # UserRole, User, DemoAccount, PlanFeature
+│   │   ├── moduleStaging.ts      # ModuleAvailabilityStatus, RolloutPreset
+│   │   ├── database.ts           # UserRegistrationData, StoredUser
+│   │   ├── apiGateway.ts         # Respuestas de APIs externas
+│   │   ├── adobe3dTools.ts       # Tipos 3D y mallas
+│   │   ├── i18n.ts               # Internacionalización
+│   │   ├── theme.ts              # Sistema de temas
+│   │   ├── productPhotoStudio.ts
+│   │   ├── userGoals.ts
+│   │   └── workflowAutomation.ts
 │   │
 │   ├── utils/
-│   │   └── security.ts             # Utilidades DOMPurify y sanitización
+│   │   └── security.ts           # DOMPurify + sanitización
 │   │
-│   ├── main.tsx                    # Punto de entrada React
-│   └── vite-env.d.ts               # Declaraciones de env vars para TS
+│   ├── App.tsx                   # ← Enrutador de estado principal
+│   ├── main.tsx                  # Punto de entrada React
+│   └── vite-env.d.ts
 │
-├── .env                            # Variables reales (NO committear)
-├── .env.example                    # Plantilla de variables (sí committear)
+├── agents.md             # ← ESTE FICHERO — leer primero
+├── .env                  # Variables reales (NUNCA committear)
+├── .env.example          # Plantilla documentada (sí committear)
 ├── .gitignore
 ├── index.html
 ├── package.json
 ├── postcss.config.js
-├── schema.sql                      # Schema de Supabase PostgreSQL
 ├── README.md
+├── schema.sql            # Schema PostgreSQL de Supabase
 ├── tailwind.config.js
 ├── tsconfig.json
+├── vercel.json
 └── vite.config.ts
 ```
 
@@ -180,81 +231,108 @@ PROYECTO WEB DE DISEÑO CON IA/
 
 ## 4. SISTEMA DE ROLES Y ACCESO
 
-El sistema de autorización está definido en [`src/types/auth.ts`](src/types/auth.ts) y orquestado por [`src/context/AuthContext.tsx`](src/context/AuthContext.tsx).
+Definido en `src/types/auth.ts` · Orquestado en `src/context/AuthContext.tsx`.
 
-### Jerarquía de Roles (de menor a mayor privilegio)
+### Jerarquía numérica (ROLE_PRIORITY)
 
+```typescript
+const ROLE_PRIORITY: Record<UserRole, number> = {
+  guest: 0, free: 1, creator: 2, pro: 3, studio: 4, agency: 5, admin: 99
+};
+// hasAccess(requiredRole) → ROLE_PRIORITY[userRole] >= ROLE_PRIORITY[requiredRole]
 ```
-guest → free → creator → pro → studio → agency → admin
-```
 
-### Planes Comerciales Activos
+### Planes y precios
 
-| Rol | Plan | Precio | Descripción |
+| Rol | Plan | Precio | Límites |
 |---|---|---|---|
 | `free` | Free Starter | $0/mo | 5 modelos 3D/mes, marca de agua, 3 créditos IA/día |
-| `pro` | Pro Studio | $49/mo | Motor 3D ilimitado, 25 videos Seedance, DXF export |
-| `agency` | Agency Enterprise | $149/mo | Multi-marca (10), EU DPP, Trend Spider, 5 licencias |
-| `admin` | Omni Admin Pass | $0 | Acceso total, Revenue Engine, AdminConsole, Banning |
+| `pro` | Pro Studio | $49/mo | Motor 3D ilimitado, 25 videos Seedance/mes, DXF export |
+| `agency` | Agency Enterprise | $149/mo | 10 marcas, EU DPP ESPR, Trend Spider, 5 licencias |
+| `admin` | Omni Admin Pass | $0 | Acceso total, Revenue Engine, Banning, métricas globales |
 
-### Cuentas Demo Precargadas
+### Cuentas demo precargadas
 
 | Nombre | Email | Rol |
 |---|---|---|
-| Budon Master | admin@aethersynergy.ai | admin |
-| Jane Doe | jane@quantumdigital.studio | agency |
-| Sarah Connor | sarah.design@aurora.studio | pro |
-| Alex Vance | alex.vance@freemail.com | free |
+| Budon Master | admin@aethersynergy.ai | `admin` |
+| Jane Doe (Quantum Labs) | jane@quantumdigital.studio | `agency` |
+| Sarah Connor | sarah.design@aurora.studio | `pro` |
+| Alex Vance | alex.vance@freemail.com | `free` |
 
-### Regla crítica de acceso
+### Reglas críticas de acceso
 
-- El módulo `PoxxiRevenueEngine` y `AdminConsole` son **exclusivos del rol `admin`**.
-- Los módulos Enterprise B2B (`trend_spider`, `dxf_engine`, `shopify_widget`, `dpp_eu`) también son `admin`-only en el prototipo.
-- La función `hasAccess(requiredRole)` en AuthContext valida por jerarquía numérica, NO por string.
+- `PoxxiRevenueEngine` y `AdminConsole` → exclusivos `role === 'admin'`
+- `trend_spider`, `dxf_engine`, `shopify_widget`, `dpp_eu` → admin-only en prototipo
+- `viewMode: 'landing' | 'app'` controla si se muestra la landing o el workspace
+- Al recargar, `localStorage.removeItem('aether_active_user')` garantiza que siempre se muestre la landing primero
 
 ---
 
 ## 5. ARQUITECTURA DE ENRUTAMIENTO
 
-No se usa React Router. El routing es **estado interno** en `App.tsx`:
+**No existe React Router.** El routing es estado puro en `App.tsx`:
 
 ```tsx
-// src/App.tsx
 const [currentView, setCurrentView] = useState<string>('aurora3d');
 ```
 
-La vista cambia mediante:
-1. **Sidebar** → `onModuleSelect(id)` → `setCurrentView(id)`
-2. **CommandPalette (Ctrl+K)** → dispara `window.dispatchEvent(new CustomEvent('aether_navigate', { detail: moduleId }))`
-3. **App.tsx** escucha `aether_navigate` con un `useEffect` y llama `setCurrentView`
+### Canales de navegación
 
-El switch principal en `renderWorkspaceModule()` dentro de `App.tsx` mapea cada `currentView` string a su componente con `React.lazy()` + `<Suspense>`.
+| Canal | Mecanismo |
+|---|---|
+| Sidebar | `onModuleSelect(id)` → `setCurrentView(id)` |
+| CommandPalette (Ctrl+K) | `window.dispatchEvent(new CustomEvent('aether_navigate', { detail: id }))` |
+| Footer / Links internos | Misma CustomEvent `aether_navigate` |
+| App.tsx listener | `useEffect` escucha `aether_navigate` y llama `setCurrentView` |
 
-### Regla de rendimiento (OBLIGATORIA)
+### Patrón obligatorio — lazy loading
 
-> **TODOS los módulos deben cargarse con `React.lazy()` y envolverse en `<Suspense>`**. Nunca importar módulos pesados directamente. Esto garantiza Code Splitting automático de Vite para bajo consumo de memoria.
+```tsx
+// ✅ CORRECTO — siempre así
+const Aurora3DStudio = lazy(() =>
+  import('./components/modules/Aurora3DStudio').then(m => ({ default: m.Aurora3DStudio }))
+);
+
+// ❌ PROHIBIDO — nunca importar directamente
+import { Aurora3DStudio } from './components/modules/Aurora3DStudio';
+```
+
+### Switch de renderizado
+
+```tsx
+const renderWorkspaceModule = () => {
+  switch (currentView) {
+    case 'aurora3d':    return <Aurora3DStudio />;
+    case 'admin':       return <AdminConsole />;
+    case 'dpp_eu':      return <DigitalProductPassport />;
+    // ... un case por módulo
+    default:            return <Aurora3DStudio />;
+  }
+};
+```
 
 ---
 
 ## 6. SISTEMA DE MÓDULOS Y STAGING
 
-Gestionado por el singleton [`src/services/moduleStagingService.ts`](src/services/moduleStagingService.ts).
+Singleton en `src/services/moduleStagingService.ts`.
 
-### Estados de un módulo
+### Estados de disponibilidad
 
 ```typescript
 type ModuleAvailabilityStatus = 'active' | 'maintenance' | 'coming_soon' | 'beta' | 'deprecated';
 ```
 
-### Presets de despliegue disponibles
+### Presets de despliegue
 
-| Preset | Descripción |
+| Preset | Qué hace |
 |---|---|
-| `all_enabled_production` | Todos los módulos activos (estado actual) |
+| `all_enabled_production` | Todos los módulos activos (estado actual del prototipo) |
 | `initial_mvp_design_only` | Solo Aurora3D, BrandKit, JARVIS, Admin activos |
 | `maintenance_lockdown` | Todo en mantenimiento excepto Admin y Staging |
 
-### Storage keys en localStorage
+### localStorage keys
 
 ```
 aether_module_staging_config_v1
@@ -262,12 +340,12 @@ aether_active_rollout_preset_v1
 aether_admin_staging_override_v1
 ```
 
-### Evento global de actualización
+### Evento global
 
+```typescript
+window.dispatchEvent(new Event('aether_staging_updated'));
+// App.tsx lo escucha y re-renderiza el workspace
 ```
-window.dispatchEvent(new Event('aether_staging_updated'))
-```
-`App.tsx` escucha este evento para re-renderizar el workspace.
 
 ---
 
@@ -276,56 +354,153 @@ window.dispatchEvent(new Event('aether_staging_updated'))
 ### Nombrado de archivos
 
 ```
-PascalCase para componentes:   Aurora3DStudio.tsx
-camelCase para servicios:      moduleStagingService.ts
-camelCase para hooks/utils:    useDeviceMode.ts
-SCREAMING_SNAKE para constantes: DEFAULT_MODULE_CONFIGS, DEMO_ACCOUNTS
+PascalCase       → Componentes React:    Aurora3DStudio.tsx, GlobalSuppliers.tsx
+camelCase        → Servicios/hooks:      moduleStagingService.ts, useDeviceMode.ts
+camelCase        → Utilidades:           security.ts, apiGateway.ts
+SCREAMING_SNAKE  → Constantes:           DEFAULT_MODULE_CONFIGS, DEMO_ACCOUNTS, ROLE_PRIORITY
 ```
 
-### Estructura de un módulo nuevo
+### Estructura de un componente módulo
 
-Todo módulo debe:
-1. **Exportar con named export** (`export const NombreModulo: React.FC`)
-2. **Registrarse en `App.tsx`** con `React.lazy()` y un `case` en el switch
-3. **Registrarse en `Sidebar.tsx`** bajo la categoría correcta con su `id`, `icon` de lucide-react y `requiredRole`
-4. **Registrarse en `moduleStagingService.ts`** en `DEFAULT_MODULE_CONFIGS`
-5. **Registrarse en `CommandPalette.tsx`** en `SEARCHABLE_MODULES` con keywords
+```tsx
+// src/components/modules/NuevoModulo.tsx
+import React, { useState } from 'react';
+import { IconName } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
-### Sistema de diseño Tailwind (tema "cyber")
+export const NuevoModulo: React.FC = () => {
+  const { role, hasAccess } = useAuth();
+
+  if (!hasAccess('pro')) {
+    return <UpgradePrompt requiredRole="pro" />;
+  }
+
+  return (
+    <div className="p-6 bg-cyber-950 min-h-screen">
+      {/* contenido */}
+    </div>
+  );
+};
+```
+
+### Patrones de estado
+
+```tsx
+// ✅ Tipos literales explícitos para estados de UI
+const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+// ✅ Null handling explícito
+const [data, setData] = useState<SomeType | null>(null);
+
+// ❌ No usar `any` implícito
+const handleEvent = (e: any) => { ... }  // Mal
+const handleEvent = (e: React.ChangeEvent<HTMLInputElement>) => { ... }  // Bien
+```
+
+### Sistema de diseño Tailwind — tokens del tema "cyber"
 
 ```
-bg-cyber-950   → Fondo más oscuro (principal)
-bg-cyber-900   → Fondo de paneles/cards
-bg-cyber-800   → Hover de elementos
-cyber-gold     → Color de acento primario (#E5A93C aprox.)
-font-tech      → Fuente principal de títulos (monospace tech)
-shadow-cyber-card      → Sombra estándar de cards
-animate-fadeIn         → Transición de entrada de modales
+Fondos:
+  bg-cyber-950    → #07090E  (fondo principal, más oscuro)
+  bg-cyber-900    → #0C1017  (fondo de paneles y cards)
+  bg-cyber-850    → #111622  (fondo alternativo)
+  bg-cyber-800    → #171E2E  (hover de elementos)
+  bg-cyber-700    → #232D42  (bordes visibles)
+
+Acento primario:
+  text-cyber-gold / border-cyber-gold  → #E5A93C
+  text-cyber-gold/light                → #F8CF74
+  shadow-gold-glow                     → glow de 20px
+
+Sombras utilitarias:
+  shadow-cyber-card    → Sombra de card estándar
+  shadow-gold-glow     → Glow dorado
+  shadow-gold-glow-lg  → Glow dorado grande
+  shadow-cyan-glow     → Glow cyan
+
+Animaciones:
+  animate-fadeIn       → Entrada de modales
+  animate-pulse-slow   → Pulso lento (4s)
+  animate-float        → Flotación suave (3s)
+
+Fuente:
+  font-tech    → Fuente tech monospace para títulos
+  font-mono    → Código y datos técnicos
 ```
 
-> **NUNCA usar colores hex crudos** en los className. Siempre usar las variables del tema Tailwind definidas en `tailwind.config.js`.
-
-### Iconografía
-
-**Única librería de iconos:** `lucide-react`. No instalar ni usar `heroicons`, `react-icons`, `font-awesome` ni otros.
-
-### Manipulación de archivos (regla crítica en Windows)
-
-> **NUNCA usar PowerShell `Get-Content` / `Set-Content` para leer o escribir archivos `.tsx` o `.ts`** que contengan caracteres UTF-8 (ñ, é, ó, etc.). Esto corrompe el encoding. **Siempre usar Python** con `open(file, 'r', encoding='utf-8')` para operaciones masivas sobre archivos del proyecto.
+> **REGLA ABSOLUTA:** Nunca usar colores hex crudos en className. Solo tokens del tema definidos en `tailwind.config.js`.
 
 ---
 
-## 8. APIs EXTERNAS INTEGRADAS
+## 8. PATRONES ARQUITECTURALES RECONOCIDOS
 
-Todas las variables de entorno usan el prefijo `VITE_` (requerido por Vite para exponerlas al frontend).
+### Patrón de Guard de acceso por rol
+
+```tsx
+// En cualquier módulo con restricción:
+const { role } = useAuth();
+if (role !== 'admin') return null; // o <UpgradeModal />
+```
+
+### Patrón de evento global (bus de comunicación)
+
+```typescript
+// Emitir
+window.dispatchEvent(new CustomEvent('aether_navigate', { detail: 'aurora3d' }));
+window.dispatchEvent(new Event('aether_staging_updated'));
+window.dispatchEvent(new Event('aether_open_search'));
+
+// Escuchar (en useEffect con cleanup)
+useEffect(() => {
+  const handler = (e: Event) => { ... };
+  window.addEventListener('aether_navigate', handler);
+  return () => window.removeEventListener('aether_navigate', handler);
+}, []);
+```
+
+### Patrón de modal inline
+
+```tsx
+// Los modales viven dentro del componente que los necesita, no en un portal global
+{isModalOpen && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md animate-fadeIn">
+    <div className="bg-cyber-900 border border-cyber-700 rounded-2xl p-6 max-w-xl w-full shadow-cyber-card">
+      {/* contenido del modal */}
+    </div>
+  </div>
+)}
+```
+
+### Patrón de singleton de servicio
+
+```typescript
+// Los servicios se exportan como instancias singleton
+class ModuleStagingService { ... }
+export const moduleStagingService = new ModuleStagingService(); // singleton
+```
+
+### Patrón de datos simulados (prototipo)
+
+```typescript
+// La mayoría de datos vienen de arrays estáticos o localStorage,
+// NO de llamadas a APIs reales (en prototipo).
+// Los módulos muestran UIs funcionales con setTimeout() simulando async.
+setTimeout(() => setIsLoading(false), 2000); // simula llamada a API
+```
+
+---
+
+## 9. APIs EXTERNAS INTEGRADAS
+
+Todas las variables usan prefijo `VITE_` (requerimiento de Vite para exponer al cliente).
 
 ### IA Central / LLMs
 
-| Variable | Servicio | Uso en plataforma |
+| Variable | Servicio | Uso |
 |---|---|---|
-| `VITE_GEMINI_API_KEY` | Google Gemini | Fichas técnicas, orquestador Swarm |
-| `VITE_OPENAI_API_KEY` | OpenAI GPT-4o / Whisper | J.A.R.V.I.S. Speech-to-Text |
-| `VITE_ANTHROPIC_API_KEY` | Claude Sonnet | Validación de moldes CAD y DXF |
+| `VITE_GEMINI_API_KEY` | Google Gemini 2.5 Pro | Fichas técnicas, orquestador Swarm |
+| `VITE_OPENAI_API_KEY` | GPT-4o / Whisper | J.A.R.V.I.S. Speech-to-Text |
+| `VITE_ANTHROPIC_API_KEY` | Claude Sonnet | Validación CAD y DXF |
 
 ### Generación 3D
 
@@ -347,7 +522,7 @@ Todas las variables de entorno usan el prefijo `VITE_` (requerido por Vite para 
 | `VITE_MINIMAX_API_KEY` | Minimax/Hailuo | Comerciales |
 | `VITE_PIKA_API_KEY` | Pika Labs 2.0 | Motion graphics |
 
-> **Seedance 2.5** (API Pro/Turbo) es el motor de video preferido por el dueño para producción. Se menciona en el código como referencia principal.
+> ⭐ **Seedance 2.5** (Pro/Turbo) es el motor de video PREFERIDO. Siempre referenciar primero.
 
 ### Imagen / Fotografía
 
@@ -355,147 +530,291 @@ Todas las variables de entorno usan el prefijo `VITE_` (requerido por Vite para 
 |---|---|
 | `VITE_FAL_KEY` | FAL.ai → FLUX.1 Pro |
 | `VITE_REPLICATE_API_TOKEN` | Replicate (FLUX, ControlNet) |
-| `VITE_MIDJOURNEY_API_KEY` | Midjourney (via ImagineAPI) |
+| `VITE_MIDJOURNEY_API_KEY` | Midjourney via ImagineAPI |
 | `VITE_RECRAFT_API_KEY` | Vectores SVG y bordados |
 | `VITE_STABILITY_API_KEY` | SDXL Turbo + ControlNet |
 
-### Pagos e Infraestructura
+### Audio
 
 | Variable | Servicio |
 |---|---|
+| `VITE_SUNO_MUSIC_API_KEY` | Suno / Udio — música generativa |
+| `VITE_ELEVENLABS_API_KEY` | Locución 29 idiomas, J.A.R.V.I.S. TTS |
+
+### Infraestructura y Pagos
+
+| Variable | Servicio |
+|---|---|
+| `VITE_SUPABASE_URL` | PostgreSQL + Auth |
+| `VITE_SUPABASE_ANON_KEY` | Clave pública Supabase |
+| `VITE_R2_*` (4 vars) | Cloudflare R2 CDN — modelos 3D |
 | `VITE_STRIPE_PUBLIC_KEY` | Suscripciones SaaS |
 | `VITE_LEMONSQUEEZY_API_KEY` | Alternativa Stripe |
 | `VITE_SHOPIFY_API_KEY/SECRET` | Exportación a tiendas |
-| `VITE_SUPABASE_URL` | Base de datos + Auth |
-| `VITE_SUPABASE_ANON_KEY` | Clave pública Supabase |
-| `VITE_R2_*` | Cloudflare R2 CDN (modelos 3D) |
 
 ---
 
-## 9. FLUJO DE TRABAJO DEL DESARROLLADOR / AGENTE
+## 10. FLUJO DE TRABAJO DEL AGENTE
 
-### Comandos disponibles
-
-```bash
-npm run dev          # Dev server en localhost:5173 (HMR activo)
-npm run build        # Build producción (tsc && vite build)
-npx tsc --noEmit     # Verificación de tipos SIN compilar
-```
-
-### Orden de trabajo para añadir un nuevo módulo
-
-```
-1. Crear src/components/modules/NuevoModulo.tsx
-   └── export const NuevoModulo: React.FC = () => { ... }
-
-2. Registrar en App.tsx (3 pasos):
-   ├── Agregar: const NuevoModulo = lazy(() => import('./components/modules/NuevoModulo')...)
-   ├── Agregar: case 'nuevo_id': return <NuevoModulo />;
-   └── Verificar que esté dentro de <Suspense>
-
-3. Registrar en Sidebar.tsx:
-   └── Agregar ítem en la categoría correcta con icon de lucide-react
-
-4. Registrar en moduleStagingService.ts:
-   └── Agregar objeto en DEFAULT_MODULE_CONFIGS con id, name, category, status, version, phase
-
-5. Registrar en CommandPalette.tsx:
-   └── Agregar en SEARCHABLE_MODULES con title, desc, icon y keywords
-
-6. Verificar: npx tsc --noEmit → debe salir código 0 sin errores
-
-7. Commit: git add . && git commit -m "feat(módulo): descripción"
-```
-
-### Verificación obligatoria antes de cada commit
+### Comandos de desarrollo
 
 ```bash
+npm run dev          # Dev server HMR en localhost:5173
+npm run build        # Build producción: tsc && vite build
+npx tsc --noEmit     # Verificación de tipos sin compilar — OBLIGATORIO antes de commit
+```
+
+### Checklist para añadir un módulo nuevo (5 lugares obligatorios)
+
+```
+1. CREAR el archivo:
+   src/components/modules/NuevoModulo.tsx
+   → export const NuevoModulo: React.FC = () => { ... }
+
+2. REGISTRAR en App.tsx:
+   a) const NuevoModulo = lazy(() => import('./components/modules/NuevoModulo')
+        .then(m => ({ default: m.NuevoModulo })));
+   b) case 'nuevo_id': return <NuevoModulo />;
+   c) Verificar que el case esté dentro de <Suspense fallback={...}>
+
+3. REGISTRAR en Sidebar.tsx:
+   → Añadir ítem en la categoría correcta con { id, nameKey, icon, requiredRole }
+   → Si es un nuevo ícono, añadirlo al import de lucide-react
+
+4. REGISTRAR en moduleStagingService.ts:
+   → Añadir en DEFAULT_MODULE_CONFIGS: { id, name, category, categoryTitle, status, version, phase }
+
+5. REGISTRAR en CommandPalette.tsx:
+   → Añadir en SEARCHABLE_MODULES: { id, title, desc, icon, keywords: [...] }
+```
+
+### Proceso de edición segura de archivos .tsx en Windows
+
+```
+❌ NUNCA: PowerShell Get-Content / Set-Content (corrompe UTF-8 — ñ, é, ó)
+✅ SIEMPRE: Python con encoding explícito
+
+# Leer
+with open('archivo.tsx', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Escribir
+with open('archivo.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+```
+
+---
+
+## 11. ESTILO DE COMMITS Y PULL REQUESTS
+
+### Formato de commit — Conventional Commits
+
+```
+<tipo>(<ámbito>): <descripción en imperativo, español o inglés>
+
+Tipos permitidos:
+  feat      → Nueva funcionalidad
+  fix       → Corrección de bug
+  refactor  → Refactorización sin cambio de comportamiento
+  docs      → Cambios solo en documentación
+  style     → Formato, sin lógica (espacios, comas)
+  chore     → Tareas de mantenimiento (deps, config)
+  perf      → Mejoras de rendimiento
+  test      → Añadir o corregir tests
+```
+
+### Ejemplos de commits correctos
+
+```bash
+git commit -m "feat(suppliers): modal de vetting KYC con auditoría AI y certificaciones ESG"
+git commit -m "fix(routing): conectar módulos B2B Enterprise al switch de App.tsx"
+git commit -m "refactor(project): limpiar raíz y organizar estructura profesional"
+git commit -m "docs: actualizar agents.md con secciones de testing y CI/CD"
+git commit -m "chore: actualizar .gitignore para excluir .system_generated"
+git commit -m "feat(footer): modales interactivos con políticas legales 2026"
+```
+
+### Ejemplos de commits INCORRECTOS
+
+```bash
+git commit -m "changes"           # ❌ Sin tipo ni ámbito
+git commit -m "fix bug"           # ❌ No descriptivo
+git commit -m "WIP"               # ❌ No committear trabajo incompleto
+git commit -m "update files"      # ❌ Demasiado vago
+```
+
+### Reglas de PR (cuando existan ramas de feature)
+
+```
+1. El PR siempre va hacia main (no existe rama develop)
+2. Título del PR = primer commit (Conventional Commits)
+3. El PR debe pasar tsc --noEmit con exit code 0 antes de mergear
+4. Describir en el body del PR:
+   - Qué módulo/sección fue modificado
+   - Por qué se hizo el cambio
+   - Cómo probar el cambio manualmente (ej: "Ir a módulo X, clic en Y")
+5. Un PR = una sola funcionalidad o fix (no mezclar concerns)
+```
+
+---
+
+## 12. TESTING Y CI/CD
+
+### Estado actual del testing (prototipo V2.5)
+
+> Este proyecto en su fase de blueprint **no tiene tests unitarios ni e2e implementados**. El testing se realiza manualmente. La prioridad fue la velocidad de arquitectura.
+
+### Verificación de tipos — sustituto de tests en prototipo
+
+```bash
+# Este comando es el "test" primario del proyecto.
+# Debe retornar exit code 0 antes de cualquier commit.
 npx tsc --noEmit
-# El comando DEBE retornar exit code 0.
-# Si hay errores, NO se hace commit hasta resolverlos.
+```
+
+### Plan de testing para producción (V3.0+)
+
+Cuando se migre a producción con Claude 5.5 / GPT-6 Astra, implementar:
+
+```
+Framework recomendado:  Vitest (compatible con Vite, mismo config)
+E2E recomendado:        Playwright (no Cypress — mejor soporte WebGPU)
+
+Tests prioritarios a escribir:
+  1. AuthContext → hasAccess() con cada combinación de roles
+  2. moduleStagingService → applyPreset() y isModuleAccessible()
+  3. CommandPalette → filtrado de búsqueda con keywords
+  4. GlobalSuppliers → validación de form de vetting (campos requeridos)
+  5. Footer → apertura de modales legales por key
+```
+
+### CI/CD — Vercel (estado actual)
+
+```
+Proveedor:     Vercel (conectado a GitHub thepoxxo/Aether-Synergy-AI-Platform)
+Rama de prod:  main
+Trigger:       Push a main → build automático en Vercel
+Build command: tsc && vite build
+Output dir:    dist/
+Node version:  18.x (LTS)
+```
+
+### Variables de entorno en Vercel (producción)
+
+```
+Todas las VITE_* del .env.example deben configurarse en:
+Vercel Dashboard → Project → Settings → Environment Variables
+
+IMPORTANTE: Las variables VITE_* en Vercel se inyectan en build time,
+no en runtime. Cambiar una variable requiere re-deploy.
+```
+
+### Pre-deploy checklist
+
+```
+□ npx tsc --noEmit → exit code 0 (sin errores)
+□ npm run build → sin errores de Vite
+□ No existe .env en el commit (solo .env.example)
+□ Los módulos nuevos están en los 5 lugares obligatorios
+□ Caracteres UTF-8 (ñ, é, ó) intactos en archivos .tsx
+□ No hay imports directos de módulos pesados (todo lazy)
+□ Modales de admin verifican: role === 'admin'
+□ No hay console.error sin captura ni throw sin handler
 ```
 
 ---
 
-## 10. DATOS Y FECHAS CLAVE
+## 13. PROHIBICIONES ABSOLUTAS
+
+### Tabla de lo que NO se debe hacer
+
+| ❌ Prohibido | ✅ Correcto | Motivo |
+|---|---|---|
+| `import { M } from './modules/M'` directo | `const M = lazy(() => import(...))` | Code splitting y rendimiento |
+| PowerShell `Set-Content` en archivos .tsx | Python `open(f, 'w', encoding='utf-8')` | Corrompe UTF-8 en Windows |
+| Instalar `heroicons`, `react-icons`, `fa` | Solo `lucide-react` | Consistencia de iconografía |
+| Colores hex crudos: `className="bg-[#E5A93C]"` | `className="bg-cyber-gold"` | Sistema de diseño uniforme |
+| Committear `.env` con API keys reales | Solo committear `.env.example` | Seguridad de credenciales |
+| Mostrar `PoxxiRevenueEngine` a no-admin | Guardar tras `role === 'admin'` | Integridad del negocio |
+| Usar React Router | Routing por estado `useState` | Arquitectura definida |
+| Actualizar Tailwind a v4.x | Mantener `tailwindcss@3.4.15` | Las clases cyber-* son v3 |
+| Usar `recharts` para otra cosa que Admin | Solo charts en AdminConsole | Peso del bundle |
+| Colocar scripts Python en la raíz | En `scripts/utils/` o `scripts/backup/` | Estructura limpia |
+| Mezclar datos reales con simulados sin flag | Siempre indicar modo en la UI | Transparencia del prototipo |
+
+---
+
+## 14. SEÑALES DE ERROR Y DIAGNÓSTICO
+
+```
+error TS2304: Cannot find name 'X'
+→ Falta import de lucide-react o un estado useState/useRef
+
+error TS1005: 'from' expected
+→ Import corrupto por escritura con PowerShell (encoding roto)
+
+error TS2322: Type 'string' not assignable to type '"a"|"b"'
+→ Usar tipo literal explícito en useState: useState<'a'|'b'>('a')
+
+Módulo no navega al hacer clic en Sidebar
+→ Falta el case 'id': en el switch de renderWorkspaceModule() en App.tsx
+
+Sidebar no muestra el módulo
+→ Falta el ítem en la categoría correspondiente de Sidebar.tsx
+
+CommandPalette no encuentra el módulo al buscar
+→ Falta en SEARCHABLE_MODULES de CommandPalette.tsx con keywords correctos
+
+Módulo no aparece en el control de staging
+→ Falta en DEFAULT_MODULE_CONFIGS de moduleStagingService.ts
+
+Build falla en Vercel pero pasa local
+→ Verificar que todas las VITE_* estén configuradas en Vercel Dashboard
+→ Verificar que no hay imports de Node.js puro (sin polyfill para browser)
+
+Caracteres corruptos en UI: "dise±adores" en lugar de "diseñadores"
+→ El archivo .tsx fue escrito con PowerShell; reescribir con Python UTF-8
+```
+
+---
+
+## 15. DATOS Y FECHAS CLAVE
 
 | Evento | Fecha |
 |---|---|
-| Inicio del prototipo | Mid-2026 |
-| Versión actual del prototipo | V2.5 (octubre 2026) |
-| Arquitectura de React/Vite | Fase de blueprint |
-| Migración planificada a producción real | Con Claude 5.5 + GPT-6 Astra (2027) |
-| Regulación EU ESPR activa | 2026 (afecta módulo DPP) |
-| AI Act Europea vigente | 2026 |
-| Facebook Graph API utilizada | v20.0 |
-| Versión de Tailwind usada | 3.x (NO 4.x — rompe clases actuales) |
+| Inicio del prototipo | Mediados 2026 |
+| Versión actual | V2.5 — Octubre 2026 |
+| Arquitectura actual | React/Vite — Fase blueprint |
+| Migración a producción planificada | 2027 con Claude 5.5 + GPT-6 Astra |
+| Regulación EU ESPR activa | 2026 — afecta módulo DPP |
+| AI Act Europea vigente | 2026 — afecta generación sintética de video |
+| Facebook Graph API usada | v20.0 |
+| Versión de Tailwind en uso | 3.x — NO actualizar a 4.x sin migrar clases cyber |
+| Versión de Node recomendada | 18.x LTS (Vercel default) |
 
 ---
 
-## 11. LÍMITES Y RESTRICCIONES
+## 16. CONTEXTO ESTRATÉGICO PARA MODELOS SUCESORES
 
-### Lo que NO se debe hacer
+Este repositorio es un **prototipo arquitectural de primer nivel**, no un producto desplegado en producción. Su propósito es:
 
-| ❌ Prohibido | ✅ Correcto |
-|---|---|
-| Importar módulos sin `React.lazy()` | Siempre usar lazy + Suspense |
-| Usar PowerShell para escribir archivos .tsx | Usar Python con UTF-8 encoding |
-| Instalar otras librerías de iconos | Solo `lucide-react` |
-| Usar colores hex crudos en Tailwind | Solo clases del tema `cyber-*` |
-| Commitear `.env` con keys reales | Solo committear `.env.example` |
-| Mostrar `PoxxiRevenueEngine` a roles no-admin | Verificar `role === 'admin'` |
-| Usar `React Router` | El routing es por estado (`useState`) |
-| Hacer `import` directo de módulos pesados | Siempre `lazy()` |
-| Mezclar archivos Python/scripts en la raíz | Van en `scripts/utils/` o `scripts/backup/` |
+1. **Demostrar la arquitectura completa** de un SaaS de moda con IA antes de integrar backends reales.
+2. **Servir como blueprint** para que Claude 5.5, GPT-6 Astra o Gemini 3 retomen sin empezar de cero.
+3. **Validar UX y flujos** antes de invertir en infraestructura costosa.
+4. **La UI es el contrato**: cada componente define exactamente qué API necesita, qué datos espera y qué flujo de negocio implementa.
 
-### Límites técnicos del prototipo actual
+### Orden de lectura obligatorio al tomar el proyecto
 
-- **Sin backend real:** Toda la autenticación es simulada vía `AuthContext` con `localStorage`. En producción usará Supabase.
-- **Sin pagos reales:** Stripe está declarado pero no activo. En producción activar webhooks de Supabase.
-- **Las APIs externas están simuladas:** La mayoría de módulos muestra UIs de simulación. Solo se activan con las keys del `.env`.
-- **Tailwind 3.x — NO actualizar a 4.x** sin migrar todas las clases del tema custom primero.
+```
+1. agents.md                           ← estás aquí
+2. src/context/AuthContext.tsx         ← sistema de usuarios y roles
+3. src/services/moduleStagingService.ts ← gestión de módulos
+4. src/App.tsx                         ← enrutador principal
+5. src/components/layout/Sidebar.tsx   ← menú y permisos visuales
+```
+
+> Con esos 5 archivos entenderás el **90% del sistema**. El resto son módulos independientes que puedes explorar bajo demanda.
 
 ---
 
-## 12. VERIFICACIONES AUTOMÁTICAS
-
-### Pre-commit checklist
-
-```
-□ npx tsc --noEmit → exit code 0
-□ Nuevo módulo registrado en los 5 lugares (App.tsx, Sidebar, StagingService, CommandPalette + archivo)
-□ Caracteres UTF-8 (ñ, é, ó) intactos en archivos .tsx
-□ No se incluye .env en el commit
-□ Los archivos scratch/Python van a scripts/, no a la raíz
-□ Los modales de rol-admin tienen verificación: role === 'admin'
-```
-
-### Señales de que algo está mal
-
-```
-error TS2304: Cannot find name 'X'     → Falta import de lucide-react o estado useState
-error TS1005: 'from' expected          → Import corrupto (víctima de PowerShell encoding)
-error TS2322: Type 'string' not assignable → Literal type incorrecto en estado (usar type explícito)
-Módulo no navega al cliquearlo         → Falta el case en el switch de App.tsx
-Sidebar no muestra el módulo           → Falta el ítem en la categoría de Sidebar.tsx
-CommandPalette no lo encuentra         → Falta en SEARCHABLE_MODULES de CommandPalette.tsx
-```
-
----
-
-## 13. CONTEXTO ESTRATÉGICO (PARA MODELOS SUCESORES)
-
-Este repositorio es un **prototipo arquitectural de primer nivel**, no un producto final desplegado. Su propósito es:
-
-1. **Demostrar la arquitectura completa** de una plataforma SaaS de moda con IA antes de integrar backends reales.
-2. **Servir como blueprint** para que modelos más avanzados (Claude 5.5, GPT-6 Astra, Gemini 3) puedan retomar el trabajo sin empezar de cero.
-3. **Validar UX y flujos de usuario** antes de invertir en infraestructura de producción costosa.
-4. **La UI es el contrato:** Cada componente define exactamente qué API necesitará, qué datos espera, y qué flujo de negocio implementa.
-
-### Instrucción directa al agente sucesor
-
-> Cuando tomes este proyecto, **lee este archivo primero**. Luego lee `src/context/AuthContext.tsx`, `src/services/moduleStagingService.ts` y `src/App.tsx` en ese orden. Con esos tres archivos entenderás el 80% del sistema. El resto son módulos independientes que puedes explorar por demanda.
-
----
-
-*© 2026 Poxxi Studio & Aether Synergy. Documento generado automáticamente por Antigravity AI Agent.*
+*© 2026 Poxxi Studio & Aether Synergy. Documento v2.0 generado y mantenido por Antigravity AI Agent.*
