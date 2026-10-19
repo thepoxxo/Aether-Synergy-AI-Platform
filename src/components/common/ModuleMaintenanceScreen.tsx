@@ -90,7 +90,7 @@ export const ModuleMaintenanceScreen: React.FC<ModuleMaintenanceScreenProps> = (
             {isMaintenance
               ? moduleConfig.maintenanceMessage ||
                 'Estamos implementando mejoras y actualizando los conectores neuronales de IA en este módulo. Estará disponible en unos instantes sin afectar el resto de la plataforma.'
-              : `Este módulo forma parte de la Fase ${moduleConfig.phase} del despliegue gradual de Aether Synergy. Actualmente el módulo central de Diseño 3D y el Núcleo JARVIS están activos.`}
+              : `Este módulo forma parte de la Fase ${moduleConfig.phase} del despliegue gradual de Aether Synergy. Actualmente el módulo central de Diseño 3D y el Asistente KAI están activos.`}
           </p>
         </div>
 

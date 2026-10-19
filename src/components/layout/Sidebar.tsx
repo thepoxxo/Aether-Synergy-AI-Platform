@@ -136,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       title: 'Agentes IA & Agencias',
       icon: '🤖',
       items: [
-        { id: 'jarvis', nameKey: 'J.A.R.V.I.S. Voz & Arc Core', icon: Zap, requiredRole: 'free', badge: 'JARVIS', isLiteralLabel: true },
+        { id: 'jarvis', nameKey: 'KAI · Asistente de Taller por Voz', icon: Zap, requiredRole: 'free', badge: 'KAI', isLiteralLabel: true },
         { id: 'agentswarm', nameKey: 'Enjambre Agentes IA', icon: Cpu, requiredRole: 'free', badge: 'SWARM', isLiteralLabel: true },
         { id: 'automations', nameKey: 'Automatizaciones n8n & Flujos', icon: Workflow, requiredRole: 'free', badge: 'FLOW', isLiteralLabel: true },
         { id: 'workspaces', nameKey: 'Espacios Multi-Marca', icon: Building2, requiredRole: 'agency', badge: 'TEAMS', isLiteralLabel: true },

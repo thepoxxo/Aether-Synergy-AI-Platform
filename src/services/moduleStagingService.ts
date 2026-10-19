@@ -189,7 +189,7 @@ export const DEFAULT_MODULE_CONFIGS: ModuleStagingConfig[] = [
   // Categoria 4: Agentes IA & Agencias
   {
     id: 'jarvis',
-    name: 'J.A.R.V.I.S. Voz & Arc Core',
+    name: 'KAI · Asistente de Taller por Voz',
     category: 'ai_teams',
     categoryTitle: 'Agentes IA & Agencias',
     status: 'active',

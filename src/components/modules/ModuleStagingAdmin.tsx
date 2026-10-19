@@ -232,7 +232,7 @@ export const ModuleStagingAdmin: React.FC = () => {
               )}
             </div>
             <p className="text-[11px] text-slate-300">
-              Solo activa el <strong>Estudio 3D, BrandKit y JARVIS</strong>. Todos los demás módulos mostrarán pantalla de "Próximamente Fase 2".
+              Solo activa el <strong>Estudio 3D, BrandKit y el Asistente KAI</strong>. Todos los demás módulos mostrarán pantalla de "Próximamente Fase 2".
             </p>
           </button>
 

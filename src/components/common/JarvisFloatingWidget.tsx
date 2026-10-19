@@ -45,7 +45,7 @@ export const JarvisFloatingWidget: React.FC<JarvisFloatingWidgetProps> = ({ onNa
     let reply = '';
 
     if (lower.includes('hola') || lower.includes('quién eres') || lower.includes('quien eres')) {
-      reply = 'Saludos, creador. Soy J.A.R.V.I.S., el asistente holográfico de Aether Synergy a sus órdenes.';
+      reply = 'Hola. Soy KAI, tu asistente de taller en POXXI STUDIO. ¿Qué prenda o ficha revisamos?';
     } else if (lower.includes('pasarela') || lower.includes('runway')) {
       reply = 'Abriendo la Pasarela de Moda 3D en Vivo.';
       if (onNavigateView) onNavigateView('runway');
@@ -118,7 +118,7 @@ export const JarvisFloatingWidget: React.FC<JarvisFloatingWidgetProps> = ({ onNa
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping shadow-[0_0_10px_#06b6d4]" />
               <span className="font-tech font-extrabold text-sm tracking-wider text-cyan-300">
-                J.A.R.V.I.S. HOLOGRAM COPILOT
+                KAI · ASISTENTE DE TALLER
               </span>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white">
@@ -135,7 +135,7 @@ export const JarvisFloatingWidget: React.FC<JarvisFloatingWidgetProps> = ({ onNa
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Habla o escribe a JARVIS..."
+              placeholder="Pregunta o pide una acción a KAI..."
               className="flex-1 px-3 py-2 rounded-xl bg-cyber-900 border border-cyber-700 text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
             />
             <button
@@ -163,10 +163,10 @@ export const JarvisFloatingWidget: React.FC<JarvisFloatingWidgetProps> = ({ onNa
       <button
         onClick={() => {
           setIsOpen(!isOpen);
-          if (!isOpen) speakJarvis('A sus órdenes, creador.');
+          if (!isOpen) speakJarvis('KAI listo.');
         }}
         className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-black/90 border-2 border-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.6)] flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-all group relative"
-        title="J.A.R.V.I.S. Asistente por Voz Holográfico"
+        title="KAI · Asistente de Taller por Voz"
       >
         {/* Pulsing Outer Ring */}
         <div className="absolute inset-0 rounded-full border border-dashed border-cyan-400/80 animate-spin group-hover:border-cyan-300" style={{ animationDuration: '8s' }} />

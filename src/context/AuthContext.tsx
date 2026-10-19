@@ -72,7 +72,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     plan: 'Free Starter ($0)',
     price: 0,
     color: '#38BDF8',
-    description: 'Vista previa de modelos 3D y 3 generaciones IA básicas diarias con marca de agua.',
+    description: 'Visor 3D de prendas en tiempo real y hasta 5 bocetos mensuales con marca de agua.',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'
   }
 ];

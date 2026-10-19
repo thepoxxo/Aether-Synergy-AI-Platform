@@ -867,7 +867,7 @@ export const AutomoCalendar: React.FC = () => {
                   value={newPostCaption}
                   onChange={(e) => setNewPostCaption(e.target.value)}
                   rows={4}
-                  placeholder="Escribe el texto de la publicación o haz clic en 'Redactar con IA' para que J.A.R.V.I.S. cree el copy..."
+                  placeholder="Escribe el texto del lanzamiento o haz clic en 'Redactar copy' para generar una propuesta..."
                   className="w-full bg-cyber-950 border border-cyber-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyber-gold font-mono"
                 />
               </div>

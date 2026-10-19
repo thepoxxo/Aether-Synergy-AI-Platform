@@ -45,9 +45,9 @@ export const AdGenAI: React.FC = () => {
   const [selectedEngine, setSelectedEngine] = useState<AIVideoEngine>('seedance');
   const [cameraMove, setCameraMove] = useState<CameraMove>('zoom');
   const [prompt, setPrompt] = useState(
-    'Hyper-realistic cinematic 4K commercial: A futuristic techwear jacket with glowing amber seams in a rainy Tokyo street at night. Neon reflections on wet asphalt, volumetric fog, dynamic camera whip pan around the product with cinematic slow motion.'
+    'Sudadera heavyweight de algodón carbón lavado (480 GSM) con costuras visibles en percha de madera. Taller de confección con luz natural lateral de ventana, mesa de corte desenfocada al fondo con patrones de papel. Cámara en mano 35mm, ligero movimiento orgánico, grano de película 16mm, tonos mate reales. Sin neón, sin lluvia artificial ni reflejos plásticos.'
   );
-  const [hookText, setHookText] = useState('DON\'T SLEEP ON THIS DROP 🔥');
+  const [hookText, setHookText] = useState('Muestra nº 1. Salió a la primera.');
   
   // 📐 Formato, Calidad y Tiempo Interactivos
   const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('9:16');

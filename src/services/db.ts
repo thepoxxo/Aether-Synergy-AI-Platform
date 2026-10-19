@@ -112,7 +112,7 @@ const INITIAL_USERS: StoredUser[] = [
     estimatedVolume: '1_5_monthly',
     planName: 'Free Starter ($0)',
     planPrice: 0,
-    aiCredits: { total: 3, used: 2 },
+    aiCredits: { total: 5, used: 2 },
     licensesCount: 1,
     registrationType: 'basic',
     createdAt: '2026-08-22',
@@ -179,7 +179,7 @@ class DatabaseService {
       planName: data.role === 'agency' ? 'Agency Enterprise ($149/mo)' : data.role === 'pro' ? 'Pro Studio ($49/mo)' : 'Free Starter ($0)',
       planPrice: data.role === 'agency' ? 149 : data.role === 'pro' ? 49 : 0,
       aiCredits: {
-        total: data.role === 'agency' ? 9999 : data.role === 'pro' ? 500 : 3,
+        total: data.role === 'agency' ? 9999 : data.role === 'pro' ? 500 : 5,
         used: 0
       },
       licensesCount: data.role === 'agency' ? 5 : 1,
@@ -204,7 +204,7 @@ class DatabaseService {
       planName: newRole === 'agency' ? 'Agency Enterprise ($149/mo)' : newRole === 'pro' ? 'Pro Studio ($49/mo)' : newRole === 'admin' ? 'Omni Admin Pass' : 'Free Starter ($0)',
       planPrice: newRole === 'agency' ? 149 : newRole === 'pro' ? 49 : 0,
       aiCredits: {
-        total: newRole === 'admin' || newRole === 'agency' ? 9999 : newRole === 'pro' ? 500 : 3,
+        total: newRole === 'admin' || newRole === 'agency' ? 9999 : newRole === 'pro' ? 500 : 5,
         used: users[index].aiCredits.used
       },
       licensesCount: newRole === 'agency' ? 5 : 1

@@ -60,7 +60,7 @@ export const MobileAppBottomNav: React.FC<MobileAppBottomNavProps> = ({
     { id: 'automo', name: 'Automo Calendario Redes & Piloto', category: 'Marketing & Redes', icon: Calendar },
     { id: 'shopify_landing', name: 'Shopify 3D AR Builder & Tallas IA', category: 'Marketing & Redes', icon: ShoppingBag },
     { id: 'expert_consultations', name: 'Red de Expertos & Mentoría 1-on-1', category: 'Consultoría', icon: Award },
-    { id: 'jarvis', name: 'J.A.R.V.I.S. Voz Holográfica Core', category: 'IA & Agentes', icon: Zap },
+    { id: 'jarvis', name: 'KAI · Asistente de Voz', category: 'IA & Agentes', icon: Zap },
     { id: 'agentswarm', name: 'Enjambre Autónomo de 6 Agentes', category: 'IA & Agentes', icon: Sparkles },
     { id: 'admin', name: 'Consola Administrativa & Radar IA', category: 'Ecosistema', icon: ShieldAlert },
     { id: 'roadmap', name: 'Roadmap Maestro & Metas Personales', category: 'Ecosistema', icon: CheckSquare }

@@ -34,13 +34,13 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(true);
   const [transcript, setTranscript] = useState<string>('');
   const [jarvisResponse, setJarvisResponse] = useState<string>(
-    'Sistemas en línea, creador. Todos los protocolos de diseño 3D, video marketing y manufactura de Aether Synergy están sincronizados al 100% de potencia.'
+    'Mesa de taller lista. Puedo ayudarte a revisar gramaje de tela, ajustar el patrón 2D, preparar la ficha técnica o abrir el estudio 3D.'
   );
 
   const [dialogHistory, setDialogHistory] = useState<{ sender: 'user' | 'jarvis'; text: string; time: string }[]>([
     {
       sender: 'jarvis',
-      text: 'J.A.R.V.I.S. Holographic Core inicializado. ¿Qué orden desea ejecutar hoy?',
+      text: 'Asistente KAI activo. ¿Qué prenda o ficha técnica revisamos hoy?',
       time: '08:15 AM'
     }
   ]);
@@ -101,7 +101,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
     let reply = '';
 
     if (lower.includes('hola') || lower.includes('quién eres') || lower.includes('quien eres')) {
-      reply = 'Saludos, creador. Soy J.A.R.V.I.S., la inteligencia artificial cuántica de Aether Synergy. Coordino sus modelos 3D, publicidad viral, proveedores B2B y finanzas en tiempo real.';
+      reply = 'Hola. Soy KAI, tu asistente técnico de taller en POXXI STUDIO. Te ayudo con medidas, consumo de tela, fichas técnicas, campañas y talleres B2B.';
     } else if (lower.includes('dorado') || lower.includes('cyber gold') || lower.includes('color')) {
       reply = 'Entendido. Calibrando los shaders del modelo 3D con acabado metálico Cyber Gold y reflectividad de lujo al 95%.';
       if (onExecutePlatformAction) onExecutePlatformAction('change_color', 'gold');
@@ -124,7 +124,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
       reply = 'Cargando planos CAD de patronaje industrial 2D con margen de costura de 1.0cm para corte láser Gerber.';
       if (onExecutePlatformAction) onExecutePlatformAction('navigate', 'pattern2d');
     } else if (lower.includes('estado') || lower.includes('diagnostico') || lower.includes('sistema')) {
-      reply = 'Diagnóstico completado: Reactor Arc operando al 100%, 6 agentes autónomos activos, latencia de 14ms y 105 hitos ejecutados con éxito.';
+      reply = 'Estado del estudio: Visor 3D, generador de Tech Pack PDF y directorio de talleres operativos y sincronizados.';
     } else {
       reply = `He recibido su orden: "${command}". Ejecutando optimización en el núcleo neural de Aether Synergy con máxima prioridad.`;
     }
@@ -197,14 +197,14 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
           <div>
             <div className="flex items-center gap-2.5">
               <h2 className="text-xl sm:text-2xl font-tech font-extrabold text-white tracking-widest">
-                A.E.T.H.E.R. J.A.R.V.I.S. VOZ & NÚCLEO HOLOGRÁFICO
+                KAI · ASISTENTE TÉCNICO DE TALLER POR VOZ
               </h2>
               <span className="text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/60 shadow-[0_0_10px_#06b6d4]">
-                ARC REACTOR V8.4
+                COPILOTO DE PATRONAJE
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Asistente de inteligencia artificial por voz bidireccional, reconocimiento en tiempo real y HUD holográfico Iron Man
+              Consulta medidas, consumo de tela, costos de confección o navega por el estudio usando comandos de voz
             </p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
                 ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
                 : 'bg-cyber-950 border-cyber-800 text-slate-500'
             }`}
-            title={voiceEnabled ? 'Voz de JARVIS Activada' : 'Voz Silenciada'}
+            title={voiceEnabled ? 'Voz de KAI Activada' : 'Voz Silenciada'}
           >
             {voiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
@@ -231,7 +231,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
             }`}
           >
             {isListening ? <Mic className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            <span>{isListening ? 'ESCUCHANDO...' : 'HABLAR CON J.A.R.V.I.S.'}</span>
+            <span>{isListening ? 'ESCUCHANDO...' : 'HABLAR CON KAI'}</span>
           </button>
         </div>
       </div>
@@ -243,7 +243,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
           {/* Background Futuristic Grid & Brackets */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.15)_0,transparent_70%)] pointer-events-none" />
           <div className="absolute top-4 left-4 text-[10px] font-mono text-cyan-400 opacity-60">
-            [SYS_ID: JARVIS_CORE_01] • CORE_TEMP: 34.2°C
+            [ESTUDIO: KAI_ATELIER] • PATRONAJE & COSTOS
           </div>
           <div className="absolute top-4 right-4 text-[10px] font-mono text-emerald-400 opacity-80">
             NEURAL_LOAD: {audioLevel}% • UPTIME: 100%
@@ -282,7 +282,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
             >
               <Zap className={`w-8 h-8 ${isSpeaking ? 'text-cyan-200 animate-bounce' : isListening ? 'text-rose-300' : 'text-cyan-400'}`} />
               <span className="text-[10px] font-tech font-extrabold uppercase tracking-widest text-cyan-300 mt-1">
-                {isSpeaking ? 'HABLANDO' : isListening ? 'ESCUCHANDO' : 'J.A.R.V.I.S.'}
+                {isSpeaking ? 'HABLANDO' : isListening ? 'ESCUCHANDO' : 'KAI'}
               </span>
             </div>
           </div>
@@ -304,11 +304,11 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
           {/* Quick Voice Command Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6 z-10 max-w-lg">
             {[
-              'JARVIS, cambia el color a dorado',
-              'JARVIS, activa lluvia en 3D',
-              'JARVIS, abre la pasarela',
-              'JARVIS, abre creador de Shopify',
-              'JARVIS, diagnóstico de sistemas'
+              'KAI, cambia el color a dorado',
+              'KAI, prueba impermeabilidad en 3D',
+              'KAI, abre la pasarela 3D',
+              'KAI, abre página de preventa',
+              'KAI, abre patronaje 2D'
             ].map((cmd, i) => (
               <button
                 key={i}
@@ -326,7 +326,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
           <div>
             <div className="flex items-center justify-between border-b border-cyber-800 pb-3">
               <span className="font-tech font-bold text-sm text-white flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-cyan-400" /> Registro de Interacción Cuántica
+                <Terminal className="w-4 h-4 text-cyan-400" /> Historial de Consultas de Taller
               </span>
               <span className="text-[10px] font-mono text-cyan-300 font-bold">ONLINE</span>
             </div>
@@ -344,7 +344,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
                 >
                   <div className="flex items-center justify-between text-[10px] opacity-70 mb-1">
                     <span className="font-bold uppercase tracking-wider">
-                      {msg.sender === 'jarvis' ? '🤖 J.A.R.V.I.S. AI' : '👤 Creador'}
+                      {msg.sender === 'jarvis' ? 'KAI · Taller' : 'Diseñador'}
                     </span>
                     <span>{msg.time}</span>
                   </div>
@@ -360,7 +360,7 @@ export const JarvisHologramVoiceCore: React.FC<JarvisVoiceCoreProps> = ({
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Escribe una orden para J.A.R.V.I.S. (ej: 'cambia color')..."
+              placeholder="Escribe una consulta para KAI (ej: 'abre patronaje 2D')..."
               className="flex-1 px-4 py-2.5 rounded-2xl bg-cyber-950 border border-cyber-800 text-white text-xs font-mono focus:outline-none focus:border-cyan-400"
             />
             <button
